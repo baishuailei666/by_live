@@ -5,6 +5,8 @@ import com.example.live.common.BaseResult;
 import com.example.live.entity.Merchant;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.service.MerchantService;
+import com.example.live.util.GeneralUtil;
+import com.example.live.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,16 @@ public class MerchantServiceImpl implements MerchantService {
         String mobile = jo.getString("mobile");
         String shop = jo.getString("shop");
         String shopStatus = jo.getString("shopStatus");
-        List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus);
-        return new BaseResult(merchantListByParams);
+        int page = jo.getInteger("page");
+        int size = jo.getInteger("size");
+        int count = merchantMapper.getMerchantListByParamsCount(opeUserId, mobile, shop, shopStatus);
+        if (count == 0) {
+            return new BaseResult<>();
+        }else {
+            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page,size),size);
+            return new BaseResult<>(new Page<List>(merchantListByParams, count, size, page, GeneralUtil.pages(count,size)));
+        }
+
     }
 
 }
