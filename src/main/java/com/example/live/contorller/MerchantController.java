@@ -6,6 +6,7 @@ import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date 2022/7/10 16:14
  * @Description 商户管理
  */
-@RestController("/merchant")
+@RestController
+@RequestMapping("/merchant")
 public class MerchantController {
 
     @Autowired
