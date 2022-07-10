@@ -1,6 +1,9 @@
 package com.example.live.mapper;
 
+import com.example.live.entity.Anchor;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -8,4 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AnchorMapper {
+
+    void batchIns(List<Anchor> list);
 }

@@ -1,6 +1,6 @@
 package com.example.live.common;
 
-public class PayConfig {
+public class PayInfo {
 
     /**
      * 支付宝

@@ -33,7 +33,7 @@ public class Anchor extends BaseRowModel {
     private Integer level;
     // 粉丝
     @ExcelProperty(value = "粉丝",index = 6)
-    private Integer fans;
+    private String fans;
     // 主页链接
     @ExcelProperty(value = "主页链接",index = 7)
     private String url;

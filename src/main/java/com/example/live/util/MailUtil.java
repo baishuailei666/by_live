@@ -2,7 +2,6 @@ package com.example.live.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
-import com.example.live.entity.Configuration;
 import com.example.live.mapper.ConfigurationMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+
 
 /**
  * 邮件发送
