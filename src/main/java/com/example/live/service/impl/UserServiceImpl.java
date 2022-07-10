@@ -14,6 +14,7 @@ import com.example.live.service.UserService;
 import com.example.live.util.DateUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.MD5Util;
+import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -109,5 +111,13 @@ public class UserServiceImpl implements UserService {
             return new BaseResult<>(mvo);
         }
         return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> userList(String keyword, Integer page) {
+        Integer agentUser = UserUtil.getUserId();
+
+        List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page, 10));
+        return new BaseResult<>(list);
     }
 }

@@ -2,6 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.live.mapper.UserMapper">
 
+    <select id="userList" resultType="com.example.live.entity.User">
+        select id, mobile, level, remark, ct from user
+        where id
+        <if test="agentUser!=null">
+            in (select child_user_id from relation_user where main_user_id=#{agentUser})
+        </if>
+        <if test="agentUser==null">
+             is not null
+        </if>
+
+        <if test="keyword!=null and keyword!=''">
+            and mobile LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        limit #{page}, 10
+
+
+
+
+
+    </select>
 
 
 </mapper>

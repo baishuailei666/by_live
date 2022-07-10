@@ -66,7 +66,7 @@ public class MailUtil {
                     "</tbody>" +
                     footer;
 
-            String[] ss = con.split(Constant.split);
+            String[] ss = GeneralUtil.getAgentConfig(con, 0);
             sendSimpleMail(ss[0], ss[1], null, sbd);
         });
         thread.start();

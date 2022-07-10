@@ -48,5 +48,15 @@ public class UserController {
         return new BaseResult<>();
     }
 
+    /**
+     * 用户列表
+     * @param keyword 手机号筛选
+     * @param page 1
+     * @return
+     */
+    @GetMapping("/user")
+    public BaseResult<?> userList(@RequestParam("keyword") String keyword, @RequestParam("page") Integer page) {
+        return userService.userList(keyword, page);
+    }
 
 }

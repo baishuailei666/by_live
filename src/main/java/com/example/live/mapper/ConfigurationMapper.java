@@ -1,6 +1,5 @@
 package com.example.live.mapper;
 
-import com.example.live.entity.Configuration;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

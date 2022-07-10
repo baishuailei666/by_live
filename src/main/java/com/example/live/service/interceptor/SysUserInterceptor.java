@@ -37,10 +37,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         System.out.println("user:" + user);
         System.out.println("path:" + path);
 
-        if (user == null) {
-            handleResponse(request, response, 1001, "用户不存在, 请重新登录!");
-            return false;
-        }
+//        if (user == null) {
+//            handleResponse(request, response, 1001, "用户不存在, 请重新登录!");
+//            return false;
+//        }
         return true;
     }
 

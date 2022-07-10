@@ -1,5 +1,6 @@
 package com.example.live.util;
 
+import com.example.live.common.Constant;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -73,5 +74,12 @@ public final class GeneralUtil {
         int buy_days = typeDays(type);
         long time_days = DateUtil.daysOfTime_2(ut, DateUtil.getTime());
         return (int) (buy_days - time_days);
+    }
+
+    // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
+    public static String[] getAgentConfig(String str, int type) {
+        String[] typeStr = str.split(Constant.split2);
+        // 0-邮箱地址、1-客服电话、2-服务价格
+        return typeStr[type].split(Constant.split);
     }
 }

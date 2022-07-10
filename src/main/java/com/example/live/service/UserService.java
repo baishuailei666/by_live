@@ -13,4 +13,6 @@ public interface UserService {
 
     BaseResult<?> userLogin(HttpSession session, JSONObject jo);
 
+    BaseResult<?> userList(String keyword, Integer page);
+
 }
