@@ -55,5 +55,23 @@ public final class GeneralUtil {
         return (count + size -1) / size;
     }
 
+    public static int typeDays(int type) {
+        int days = 0;
+        switch (type) {
+            case 1: days = 30;
+                break;
+            case 2: days = 90;
+                break;
+            case 3: days = 360;
+                break;
+        }
+        return days;
+    }
 
+    // 服务购买剩余天数
+    public static int buyDays(int type, String ut) {
+        int buy_days = typeDays(type);
+        long time_days = DateUtil.daysOfTime_2(ut, DateUtil.getTime());
+        return (int) (buy_days - time_days);
+    }
 }

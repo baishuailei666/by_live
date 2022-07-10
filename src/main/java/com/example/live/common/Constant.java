@@ -26,11 +26,12 @@ public class Constant {
     // 店铺链接：13939925088
     public static final String  shop_url = "https://haohuo.jinritemai.com/views/shop/index?id=";
 
-    // 数据转换
-    public static Map<String, String> ipMap;
+    // 购买类型数据转换
+    public static Map<Integer, String> buyTypeMap;
     static {
-        ipMap = new HashMap<>();
-        // 定时任务环境  ./deploy.sh 172.17.64.60
-        ipMap.put("VM-64-60-ubuntu", "60");
+        buyTypeMap = new HashMap<>();
+        buyTypeMap.put(1, "月卡");
+        buyTypeMap.put(2, "季卡");
+        buyTypeMap.put(3, "年卡");
     }
 }
