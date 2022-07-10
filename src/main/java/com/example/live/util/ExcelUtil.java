@@ -4,7 +4,9 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
 import com.example.live.entity.Anchor;
+import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.AnchorMapper;
+import com.example.live.mapper.ResourceMerchantMapper;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,11 @@ public class ExcelUtil {
 
     @Autowired
     private AnchorMapper anchorMapper;
+    @Autowired
+    private ResourceMerchantMapper resourceMerchantMapper;
 
     /**
-     * excel上传处理
+     * 主播excel上传处理
      * @param file
      */
     public void excelAnchorHandler(MultipartFile file) {
@@ -44,18 +48,21 @@ public class ExcelUtil {
         }
     }
 
-    public void readExcelHandler() throws FileNotFoundException {
-        String file1 = "C:\\Users\\baide0328\\Desktop\\主播上传模板.xlsx";
-        FileInputStream fis = new FileInputStream(file1);
-        InputStream is = new BufferedInputStream(fis);
-        ExcelListen<Anchor> readExcel = new ExcelListen<>();
-        ExcelReader reader = EasyExcelFactory.getReader(is, readExcel);
-        reader.read(new Sheet(1, 1, Anchor.class));
-        List<Anchor> anchors = readExcel.list;
-        anchors.removeIf(anchor -> StringUtils.isBlank(anchor.getNickname()));
-        System.out.println("anchors:"+anchors.size());
-
-        anchorMapper.batchIns(anchors);
-
+    // 商户资源
+    public void excelResourceHandler(MultipartFile file) {
+        ExcelListen<ResourceMerchant> readExcel = new ExcelListen<>();
+        try {
+            ExcelReader reader = EasyExcelFactory.getReader(file.getInputStream(), readExcel);
+            reader.read(new Sheet(1, 1, ResourceMerchant.class));
+            List<ResourceMerchant> merchants = readExcel.list;
+            // 过滤异常数据
+            merchants.removeIf(m -> StringUtils.isBlank(m.getMobile()));
+            // 设置资源所属管理员（代理商）
+            Integer userId = UserUtil.getUserId();
+            merchants.forEach(m -> m.setAgentUser(userId));
+            resourceMerchantMapper.batchIns(merchants);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

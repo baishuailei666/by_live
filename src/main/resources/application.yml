@@ -15,6 +15,9 @@ mybatis:
     map-underscore-to-camel-case: true
 
 spring:
+  main:
+    # 解决spring boot 2.6后，因循环引用导致启动时报错问题
+    allow-circular-references: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://10.101.116.2:3308/by_live?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
@@ -29,6 +32,12 @@ spring:
       time-between-eviction-runs-millis: 300000
       #连接池空闲连接的有效时间 ，设置30分钟
       soft-min-evictable-idle-time-millis: 1800000
+
+  mail:
+    host: smtp.exmail.qq.com
+    username: baishuailei@zhejianglab.com
+    password: Baide2022
+    default-encoding: UTF-8
 
 logging:
   level:

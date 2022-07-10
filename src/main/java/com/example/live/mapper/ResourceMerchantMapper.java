@@ -1,6 +1,10 @@
 package com.example.live.mapper;
 
+import com.example.live.entity.Anchor;
+import com.example.live.entity.ResourceMerchant;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -8,4 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ResourceMerchantMapper {
+
+    void batchIns(List<ResourceMerchant> list);
+
 }

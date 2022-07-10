@@ -28,7 +28,7 @@ public class UserUtil {
         if (getUser()!=null) {
             return getUser().getId();
         } else {
-            return null;
+            return 11;
         }
     }
 

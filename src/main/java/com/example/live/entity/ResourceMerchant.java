@@ -29,6 +29,8 @@ public class ResourceMerchant extends BaseRowModel {
     private Integer agentUser;
     // 意向程度：未联系-0、跟进中-1、已处理-2
     private int intention;
+    // 业务员
+    private Integer opeUser;
     // 创建时间
     private String ct;
     // 更新时间

@@ -18,11 +18,14 @@ import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +48,8 @@ import java.util.*;
 @RequestMapping("/pay")
 public class PayController {
 
-//    @Autowired
-//    private WxPayService wxService;
+    @Resource
+    private WxPayService wxService;
     @Autowired
     private PayConfigMapper payConfigMapper;
 
@@ -182,93 +185,98 @@ public class PayController {
         return str.toString();
     }
 
-//
-//    /**
-//     * 微信
-//     */
-//    @RequestMapping("/wx")
-//    public <T> T wxPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, WxPayException {
-//        Integer userId = UserUtil.getUserId();
-//        if (userId ==null) {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("code", -1001);
-//            jsonObject.put("status", 200);
-//            jsonObject.put("msg", "用户暂未登录");
-//            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
-//            httpResponse.getWriter().write(jsonObject.toJSONString());
-//            httpResponse.getWriter().flush();
-//            httpResponse.getWriter().close();
-//            return (T) new BaseResult<>(httpResponse);
-//        }
-//
-//        // 4位随机数
-//        int random = (int)((Math.random()*9+1)*1000);
-//        String outTradeNo = "HT-" + type + "-"+ random;
-//        String totalAmount = "1";// 付款金额（必填）
-//        String subject = "灰豚数据(抖音版)";// 订单名称（必填）
-//        String body = null;// 商品描述 （可空）
-//
-//        // 调用微信支付接口
-//        WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
-//        request.setProductId("1");
-//        request.setOutTradeNo(outTradeNo);
-//        request.setSpbillCreateIp("122.234.60.79");
-//        request.setBody(subject+"-"+body+"个月");
-//        request.setDetail(subject+"-"+body+"个月");
-////        // 设置支付过期时间：30分钟
-////        request.setTimeExpire(getOrderExpireTime(30*sec));
-//        // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的
-//        // 订单金额，单位为分
-//        request.setTotalFee((int) (NumberUtils.toFloat(totalAmount) * 100));
-//        request.setNotifyUrl(PayInfo.notify_url2);//线上回调地址
-//        request.setAttach(httpRequest.getSession().getId());//附加数据sessionId
-//        request.setTradeType("NATIVE"); //网页支付
-//
-//        this.wxService.setConfig(wxPayConfig());
-//        Object codeUrl = this.wxService.createOrder(request);
-//        Map<String, Object> map = Maps.newHashMap();
-//        map.put("codeUrl", codeUrl);
-//        map.put("orderNo", outTradeNo);
-//        return (T) new BaseResult<>(map);
-//    }
-//
-//    /**
-//     * 微信异步回调接口
-//     */
-//    @PostMapping("/notify/wx")
-//    public String wxNotifyPay(@RequestBody String xmlData) throws WxPayException {
-//        this.wxService.setConfig(wxPayConfig());
-//
-//        final WxPayOrderNotifyResult notifyResult = this.wxService.parseOrderNotifyResult(xmlData);
-//
-//        String trade_no = notifyResult.getTransactionId(); // 交易号
-//        String order_no = notifyResult.getOutTradeNo(); // 获取订单号
-//        long total_fee = (long) notifyResult.getTotalFee() / 100; // 用户支付金额
-//        String attach = notifyResult.getAttach(); // 交易状态
-//
-//        return WxPayNotifyResponse.success("支付成功");
-//    }
-//
-//    // 自定义构造支付参数
-//    public WxPayConfig wxPayConfig() {
-//        Integer loginUserId = UserUtil.getUserId();
-//
-//        // loginUserId -> agency_user_id
-//        PayConfig payConfig = payConfigMapper.getConfig(loginUserId);
-//        if (payConfig==null) {
-//            // 支付参数无效
-//            return null;
-//        }
-//        WxPayConfig config = new WxPayConfig();
-//        config.setAppId(StringUtils.trimToNull(payConfig.getWxAppId()));
-//        config.setMchId(StringUtils.trimToNull(payConfig.getWxMchId()));
-//        config.setMchKey(StringUtils.trimToNull(payConfig.getWxMchKey()));
-//        // 支付证书（考虑下如何存储和读取）
-//        config.setKeyPath(StringUtils.trimToNull(payConfig.getWxKeyPath()));
-//        // 可以指定是否使用沙箱环境
-//        config.setUseSandboxEnv(false);
-//        return config;
-//    }
+
+    /**
+     * 微信
+     */
+    @RequestMapping("/wx")
+    public <T> T wxPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, WxPayException {
+        Integer userId = UserUtil.getUserId();
+        if (userId ==null) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code", -1001);
+            jsonObject.put("status", 200);
+            jsonObject.put("msg", "用户暂未登录");
+            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.getWriter().write(jsonObject.toJSONString());
+            httpResponse.getWriter().flush();
+            httpResponse.getWriter().close();
+            return (T) new BaseResult<>(httpResponse);
+        }
+
+        // 4位随机数
+        int random = (int)((Math.random()*9+1)*1000);
+        String outTradeNo = "HT-" + type + "-"+ random;
+        String totalAmount = "1";// 付款金额（必填）
+        String subject = "灰豚数据(抖音版)";// 订单名称（必填）
+        String body = null;// 商品描述 （可空）
+
+        // 调用微信支付接口
+        WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
+        request.setProductId("1");
+        request.setOutTradeNo(outTradeNo);
+        request.setSpbillCreateIp("122.234.60.79");
+        request.setBody(subject+"-"+body+"个月");
+        request.setDetail(subject+"-"+body+"个月");
+//        // 设置支付过期时间：30分钟
+//        request.setTimeExpire(getOrderExpireTime(30*sec));
+        // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的
+        // 订单金额，单位为分
+        request.setTotalFee((int) (NumberUtils.toFloat(totalAmount) * 100));
+        request.setNotifyUrl(PayInfo.notify_url2);//线上回调地址
+        request.setAttach(httpRequest.getSession().getId());//附加数据sessionId
+        request.setTradeType("NATIVE"); //网页支付
+
+        this.wxService.setConfig(wxPayConfig());
+        Object codeUrl = this.wxService.createOrder(request);
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("codeUrl", codeUrl);
+        map.put("orderNo", outTradeNo);
+        return (T) new BaseResult<>(map);
+    }
+
+    /**
+     * 微信异步回调接口
+     */
+    @PostMapping("/notify/wx")
+    public String wxNotifyPay(@RequestBody String xmlData) throws WxPayException {
+        this.wxService.setConfig(wxPayConfig());
+
+        final WxPayOrderNotifyResult notifyResult = this.wxService.parseOrderNotifyResult(xmlData);
+
+        String trade_no = notifyResult.getTransactionId(); // 交易号
+        String order_no = notifyResult.getOutTradeNo(); // 获取订单号
+        long total_fee = (long) notifyResult.getTotalFee() / 100; // 用户支付金额
+        String attach = notifyResult.getAttach(); // 交易状态
+
+        return WxPayNotifyResponse.success("支付成功");
+    }
+
+    @Bean
+    public WxPayService wxPayService() {
+        return new WxPayServiceImpl();
+    }
+
+    // 自定义构造支付参数
+    public WxPayConfig wxPayConfig() {
+        Integer loginUserId = UserUtil.getUserId();
+
+        // loginUserId -> agency_user_id
+        PayConfig payConfig = payConfigMapper.getConfig(loginUserId);
+        if (payConfig==null) {
+            // 支付参数无效
+            return null;
+        }
+        WxPayConfig config = new WxPayConfig();
+        config.setAppId(StringUtils.trimToNull(payConfig.getWxAppId()));
+        config.setMchId(StringUtils.trimToNull(payConfig.getWxMchId()));
+        config.setMchKey(StringUtils.trimToNull(payConfig.getWxMchKey()));
+        // 支付证书（考虑下如何存储和读取）
+        config.setKeyPath(StringUtils.trimToNull(payConfig.getWxKeyPath()));
+        // 可以指定是否使用沙箱环境
+        config.setUseSandboxEnv(false);
+        return config;
+    }
 
 
 }
