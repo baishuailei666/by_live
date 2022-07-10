@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Merchant;
+import com.example.live.entity.MobileCode;
 import com.example.live.entity.Order;
 import com.example.live.entity.User;
 import com.example.live.mapper.MerchantMapper;
@@ -116,8 +117,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> userList(String keyword, Integer page) {
         Integer agentUser = UserUtil.getUserId();
-
+        int count = userMapper.count(agentUser, keyword);
+        if (count==0) {
+            return new BaseResult<>();
+        }
         List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page, 10));
-        return new BaseResult<>(list);
+        return new BaseResult<>(GeneralUtil.pages(count), list);
+    }
+
+    @Override
+    public BaseResult<?> mobileCode(String mobile) {
+        MobileCode mobileCode = mobileCodeMapper.getCodeEnt(mobile);
+        if (mobileCode!=null) {
+            boolean com = DateUtil.comTsVal(mobileCode.getTs(), 5);
+            if (!com) {
+                return new BaseResult<>(10, "请勿重复发送验证码");
+            }
+        }
+        // TODO 发送验证码
+
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> modifyPwd(JSONObject jo) {
+        // source：back-管理端、merchant-商户端
+        String source = jo.getString("source");
+        String code = jo.getString("code");
+        String pwd = jo.getString("pwd");
+
+        return new BaseResult<>();
     }
 }

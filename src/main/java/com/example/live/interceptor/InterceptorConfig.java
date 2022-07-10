@@ -1,4 +1,4 @@
-package com.example.live.service.interceptor;
+package com.example.live.interceptor;
 
 import com.example.live.service.UserService;
 import org.springframework.context.annotation.Configuration;

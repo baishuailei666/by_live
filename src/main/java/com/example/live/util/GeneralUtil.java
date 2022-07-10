@@ -52,8 +52,8 @@ public final class GeneralUtil {
     }
 
     // 总页码
-    public static int pages(int count, int size) {
-        return (count + size -1) / size;
+    public static int pages(int count) {
+        return (count + 10 -1) / 10;
     }
 
     public static int typeDays(int type) {

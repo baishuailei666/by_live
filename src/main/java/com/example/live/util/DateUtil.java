@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -43,6 +44,21 @@ public class DateUtil {
 
     public static String getTime() {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
+    }
+
+    // 和当前时间比较
+    public static boolean comTsVal(String ts, int val) {
+        long nm = 1000 * 60;
+        SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
+        try {
+            Date date = sdf.parse(ts);
+            long com = date.getTime();
+            long cur = System.currentTimeMillis();
+            return cur - com > val*nm;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

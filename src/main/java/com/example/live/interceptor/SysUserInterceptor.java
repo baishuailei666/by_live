@@ -1,4 +1,4 @@
-package com.example.live.service.interceptor;
+package com.example.live.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.entity.User;

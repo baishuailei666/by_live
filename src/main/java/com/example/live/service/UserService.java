@@ -15,4 +15,7 @@ public interface UserService {
 
     BaseResult<?> userList(String keyword, Integer page);
 
+    BaseResult<?> mobileCode(String mobile);
+
+    BaseResult<?> modifyPwd(JSONObject jo);
 }

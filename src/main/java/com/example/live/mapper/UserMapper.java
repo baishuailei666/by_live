@@ -19,4 +19,5 @@ public interface UserMapper {
 
     List<User> userList(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword, @Param("page") int page);
 
+    int count(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword);
 }

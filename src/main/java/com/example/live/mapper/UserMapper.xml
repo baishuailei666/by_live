@@ -17,10 +17,21 @@
         </if>
         limit #{page}, 10
 
+    </select>
 
+    <select id="count">
+        select count(1) from user
+        where id
+        <if test="agentUser!=null">
+            in (select child_user_id from relation_user where main_user_id=#{agentUser})
+        </if>
+        <if test="agentUser==null">
+            is not null
+        </if>
 
-
-
+        <if test="keyword!=null and keyword!=''">
+            and mobile LIKE CONCAT('%', #{keyword}, '%')
+        </if>
     </select>
 
 
