@@ -21,6 +21,9 @@ public class Constant {
     public static final String source_back = "back";
     public static final String source_merchant = "merchant";
 
+    // 订单支付成功
+    public static final String pay_success = "TRADE_SUCCESS";
+
     public static final String split = ",";
     public static final String split2 = ";";
     // 发送邮件主题
@@ -38,5 +41,13 @@ public class Constant {
         buyTypeMap.put(1, "月卡");
         buyTypeMap.put(2, "季卡");
         buyTypeMap.put(3, "年卡");
+    }
+    // 支付类型数据转换
+    public static Map<Integer, String> payTypeMap;
+    static {
+        payTypeMap = new HashMap<>();
+        payTypeMap.put(1, "支付宝");
+        payTypeMap.put(2, "微信");
+        payTypeMap.put(3, "对公转账");
     }
 }

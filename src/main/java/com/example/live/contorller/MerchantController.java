@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author Chen Rui
@@ -29,6 +26,15 @@ public class MerchantController {
     @PostMapping("/list")
     public BaseResult<?> merchants(@RequestBody JSONObject jo) {
         return merchantService.getMerchantListByParams(jo);
+    }
+
+    /**
+     * 商户订单记录
+     * @return
+     */
+    @GetMapping("/order")
+    public BaseResult<?> merchantOrder() {
+        return merchantService.merchantOrderList();
     }
 
 
