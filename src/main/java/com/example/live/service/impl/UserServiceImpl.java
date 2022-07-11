@@ -66,6 +66,10 @@ public class UserServiceImpl implements UserService {
                 return new BaseResult<>(12, "账号密码错误,登录失败");
             }
             UserVO vo = new UserVO();
+            vo.setId(user.getId());
+            vo.setLevel(user.getLevel());
+            vo.setMobile(user.getMobile());
+            vo.setWx(user.getWx());
             session.setAttribute(Constant.session_user, vo);
             return new BaseResult<>(vo);
         }

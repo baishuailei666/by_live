@@ -29,7 +29,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
-        Integer opeUserId = jo.getInteger("opeUserId");
+        int opeUserId = UserUtil.getUser().getId();
         String mobile = jo.getString("mobile");
         String shop = jo.getString("shop");
         String shopStatus = jo.getString("shopStatus");

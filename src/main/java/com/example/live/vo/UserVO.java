@@ -15,7 +15,7 @@ import java.util.List;
 public class UserVO {
     private int id;
     private String mobile;
-    private String level;
+    private Integer level;
     private String wx;
     private String ts;
     private List<LevelRight> rights;
