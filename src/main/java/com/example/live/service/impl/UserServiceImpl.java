@@ -18,8 +18,11 @@ import com.example.live.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService {
                 Merchant merchant = merchantMapper.getMerchant1(mobile);
                 if (merchant==null) {
                     // 注册商户
-                    merchantMapper.creatMerchant(mobile, opeUser);
+                    merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
                     String ts = DateUtil.getTime();
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
@@ -165,6 +168,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public BaseResult<?> resetPwd(String mobile, String source) {
+        // source：back-管理端、merchant-商户端
+        if (Constant.source_back.equals(source)) {
+            userMapper.modifyPwd(mobile, GeneralUtil.defaultPwd());
+        } else if (Constant.source_merchant.equals(source)) {
+            merchantMapper.modifyPwd(mobile, GeneralUtil.defaultPwd());
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> uploadImg(MultipartFile file, Integer id) {
+        BASE64Encoder b64 = new BASE64Encoder();
+        try {
+            String img = "data:" + file.getContentType()+";base64," + b64.encode(file.getBytes());
+            userMapper.updateImg(img, id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new BaseResult<>(10, "上传失败");
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
     public BaseResult<?> userCreate(JSONObject jo) {
         String mobile = jo.getString("mobile");
         String remark = jo.getString("remark");
@@ -179,7 +206,7 @@ public class UserServiceImpl implements UserService {
             return new BaseResult<>(10, "手机号已存在");
         }
 
-        userMapper.insUser(mobile, level, remark);
+        userMapper.insUser(mobile, GeneralUtil.defaultPwd(), level, remark);
 
         Integer loginUserId = UserUtil.getUserId();
 

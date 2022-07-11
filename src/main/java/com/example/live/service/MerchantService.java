@@ -14,6 +14,8 @@ public interface MerchantService {
      * @param jo
      * @return
      */
-    BaseResult getMerchantListByParams(JSONObject jo);
+    BaseResult<?> getMerchantListByParams(JSONObject jo);
+
+    BaseResult<?> merchantOrderList();
 
 }

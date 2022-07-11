@@ -1,7 +1,9 @@
 package com.example.live.util;
 
 import com.example.live.common.Constant;
+import com.example.live.entity.Merchant;
 import com.example.live.entity.User;
+import com.example.live.vo.MerchantVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -31,5 +33,25 @@ public class UserUtil {
             return 11;
         }
     }
+
+    // 商户信息
+    public static MerchantVO getMerchant() {
+        Object obj = Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
+                .getAttribute(Constant.session_user, 1);
+        if (obj==null) {
+            return null;
+        }
+        MerchantVO mvo = new MerchantVO();
+        BeanUtils.copyProperties(obj, mvo);
+        return mvo;
+    }
+    public static Integer getMerchantId() {
+        if (getMerchant()!=null) {
+            return getMerchant().getId();
+        } else {
+            return 11;
+        }
+    }
+
 
 }

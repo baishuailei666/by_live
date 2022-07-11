@@ -22,8 +22,11 @@ public interface UserMapper {
     @Update("update `user` set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
-    @Insert("insert into `user`(mobile, level, remark) values(#{mobile}, #{level}, #{remark})")
-    void insUser(@Param("mobile") String mobile, @Param("level") Integer level, @Param("remark") String remark);
+    @Insert("insert into `user`(mobile, pwd, level, remark) values(#{mobile}, #{level}, #{remark})")
+    void insUser(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("level") Integer level, @Param("remark") String remark);
+
+    @Update("update `user` set wx=#{wx} where id=#{id}")
+    void updateImg(@Param("wx") String wx, @Param("id") Integer id);
 
     @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where mobile=#{mobile}")
     User getUserMobile(@Param("mobile") String mobile);

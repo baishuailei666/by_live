@@ -2,6 +2,7 @@ package com.example.live.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,6 +19,10 @@ public interface UserService {
     BaseResult<?> mobileCode(String mobile);
 
     BaseResult<?> modifyPwd(JSONObject jo);
+
+    BaseResult<?> resetPwd(String mobile, String source);
+
+    BaseResult<?> uploadImg(MultipartFile file, Integer id);
 
     BaseResult<?> userCreate(JSONObject jo);
 
