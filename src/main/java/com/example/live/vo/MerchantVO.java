@@ -13,6 +13,7 @@ import lombok.Data;
 public class MerchantVO {
     private int id;
     private String mobile;
+    private String shopId;
     private String shop;
     private Integer opeUser;
     private String buyType;

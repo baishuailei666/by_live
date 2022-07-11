@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.OrderMapper">
+
+    <select id="orderCount" parameterType="com.example.live.contorller.query.OrderQuery">
+        select count(1) from `order`
+        where 1=1
+        <if test="query.mobile!=null and query.mobile!=''">
+            and merchant_id = select m.id from merchant m where m.mobile=#{query.mobile}
+        </if>
+        <if test="query.shop!=null and query.shop!=''">
+            and merchant_id in (select m.id from merchant m where m.shop LIKE CONCAT('%', #{query.shop}, '%'))
+        </if>
+        <if test="query.start!=null and query.start!=''">
+            and ct &gt;= #{query.start}
+        </if>
+        <if test="query.end!=null and query.end!=''">
+            and ct &lt;= #{query.end}
+        </if>
+        <if test="query.opeUser!=null">
+            and ope_user=#{opeUser}
+        </if>
+        <if test="query.orderNo!=null and query.orderNo!=''">
+            and order_no=#{orderNo}
+        </if>
+        <if test="query.buyType!=null">
+            and buy_type=#{buyType}
+        </if>
+        <if test="query.payStatus!=null and query.payStatus==1">
+            and `status`='TRADE_SUCCESS'
+        </if>
+        <if test="query.payStatus!=null and query.payStatus==0">
+            and `status` is null
+        </if>
+
+
+    </select>
+
+    <select id="orderList" parameterType="com.example.live.contorller.query.OrderQuery"
+            resultType="com.example.live.entity.Order">
+        select id, order_no as orderNo, trade_no as tradeNo, merchant_id as merchantId
+             , buy_type, status, money, ope_user as opeUser, pay_type as payType, ct, ut
+        from `order`
+        where 1=1
+        <if test="query.mobile!=null and query.mobile!=''">
+            and merchant_id = select m.id from merchant m where m.mobile=#{query.mobile}
+        </if>
+        <if test="query.shop!=null and query.shop!=''">
+            and merchant_id in (select m.id from merchant m where m.shop LIKE CONCAT('%', #{query.shop}, '%'))
+        </if>
+        <if test="query.start!=null and query.start!=''">
+            and ct &gt;= #{query.start}
+        </if>
+        <if test="query.end!=null and query.end!=''">
+            and ct &lt;= #{query.end}
+        </if>
+        <if test="query.opeUser!=null">
+            and ope_user=#{opeUser}
+        </if>
+        <if test="query.orderNo!=null and query.orderNo!=''">
+            and order_no=#{orderNo}
+        </if>
+        <if test="query.buyType!=null">
+            and buy_type=#{buyType}
+        </if>
+        <if test="query.payStatus!=null and query.payStatus==1">
+            and `status`='TRADE_SUCCESS'
+        </if>
+        <if test="query.payStatus!=null and query.payStatus==0">
+            and `status` is null
+        </if>
+        limit #{page}, 10 order by ct desc
+    </select>
+
+</mapper>

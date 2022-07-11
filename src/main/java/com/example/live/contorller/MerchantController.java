@@ -37,6 +37,42 @@ public class MerchantController {
         return merchantService.merchantOrderList();
     }
 
+    /**
+     * 商户绑定店铺
+     * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
+     * @return
+     */
+    @PostMapping("/shop/bind")
+    public BaseResult<?> merchantShopBind(@RequestBody JSONObject jo) {
+        return merchantService.merchantShopBind(jo);
+    }
+
+    /**
+     * 我的店铺
+     * @return
+     */
+    @GetMapping("/shop")
+    public BaseResult<?> merchantShop() {
+        return merchantService.merchantShop();
+    }
+    /**
+     * 商户绑定店铺
+     * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
+     * @return
+     */
+    @PostMapping("/shop/modify")
+    public BaseResult<?> merchantShopModify(@RequestBody JSONObject jo) {
+        return merchantService.merchantShopModify(jo);
+    }
+    /**
+     * 删除
+     * @param shopId 店铺ID
+     * @return
+     */
+    @PostMapping("/shop/del")
+    public BaseResult<?> merchantShopDel(@RequestParam("shopId") String shopId) {
+        return merchantService.merchantShopDel(shopId);
+    }
 
 
 

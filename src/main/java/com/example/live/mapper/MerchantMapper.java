@@ -15,6 +15,28 @@ public interface MerchantMapper {
     @Select("select id,mobile,pwd,shop,goods,ope_user as opeUser, login_count as loginCount from merchant where mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 
+    @Select("select m.id,m.mobile,m.shop,m.introduce,ma.status,ma.remark from merchant m" +
+            " left join merchant_audit ma on ma.merchant_id=m.id" +
+            " where m.id=#{id}")
+    Merchant getMerchant2(@Param("id") int id);
+
+    @Select("select count(1) from merchant where shop_id=#{shopId}")
+    int existShop(@Param("shopId") String shopId);
+
+    @Select("select id from merchant where shop_id=#{shopId}")
+    int shopMerchant(@Param("shopId") String shopId);
+
+    @Update("update merchant set shop_id=#{shopId}, shop=#{shop}, goods=#{goods}, introduce=#{introduce} where id=#{merchantId}")
+    void bindShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId
+            , @Param("shop") String shop, @Param("goods") String goods, @Param("introduce") String introduce);
+
+    @Update("update merchant set shop_id=#{shopId}, shop=#{shop}, goods=#{goods}, introduce=#{introduce} where id=#{merchantId}")
+    void modifyShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId
+            , @Param("shop") String shop, @Param("goods") String goods, @Param("introduce") String introduce);
+
+    @Update("update merchant set shop_id=null, shop=null, goods=null, introduce=null where id=#{merchantId} and shop_id=#{shopId}")
+    void delShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId);
+
     @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
             " values(#{mobile}, #{opeUser}, 1, now(), now())")
     void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);

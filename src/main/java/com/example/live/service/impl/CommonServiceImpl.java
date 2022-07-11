@@ -1,9 +1,15 @@
 package com.example.live.service.impl;
 
+import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
+import com.example.live.entity.Content;
 import com.example.live.entity.LevelRight;
+import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.LevelRightMapper;
 import com.example.live.mapper.RelationUserMapper;
 import com.example.live.service.CommonService;
+import com.example.live.util.GeneralUtil;
+import com.example.live.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,8 @@ public class CommonServiceImpl implements CommonService {
     private LevelRightMapper levelRightMapper;
     @Autowired
     private RelationUserMapper relationUserMapper;
+    @Autowired
+    private ContentMapper contentMapper;
 
     private static List<LevelRight> rightList;
 
@@ -47,4 +55,25 @@ public class CommonServiceImpl implements CommonService {
         }
         return mid;
     }
+
+    @Override
+    public BaseResult<?> msgList(Integer page) {
+        List<Content> data = contentMapper.contentList(UserUtil.getMerchantId(), GeneralUtil.indexPage(page));
+        return new BaseResult<>(data);
+    }
+
+    @Override
+    public BaseResult<?> notificationMsg(String source) {
+        Integer val = null;
+        if (Constant.source_back.equals(source)) {
+            // 后台接收消息
+            val = contentMapper.getMsg3(UserUtil.getUserId());
+        }
+        if (Constant.source_merchant.equals(source)) {
+            // 商户端接收消息
+            val = contentMapper.getMsg3(UserUtil.getMerchantId());
+        }
+        return new BaseResult<>(val);
+    }
+
 }

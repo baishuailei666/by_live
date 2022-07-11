@@ -3,6 +3,7 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
+import com.example.live.contorller.query.OrderQuery;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.MobileCode;
 import com.example.live.entity.Order;
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserService {
             mvo.setCt(merchant.getCt());
             mvo.setLt(merchant.getLt());
             mvo.setShop(merchant.getShop());
+            mvo.setShopId(merchant.getShopId());
             mvo.setOpeUser(merchant.getOpeUser());
 
             Order order = orderMapper.getOrder1(merchant.getId());
@@ -221,5 +223,18 @@ public class UserServiceImpl implements UserService {
     public BaseResult<?> userDel(Integer id) {
         userMapper.delUser(id);
         return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> orderList(OrderQuery query) {
+        int count = orderMapper.orderCount(query);
+        if (count==0) {
+            return new BaseResult<>();
+        }
+        query.setPage(GeneralUtil.indexPage(query.getPage()));
+
+        List<Order> data = orderMapper.orderList(query);
+        // TODO
+        return new BaseResult<>(count, data);
     }
 }

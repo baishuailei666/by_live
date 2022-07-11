@@ -14,8 +14,12 @@ public class Content {
     private int id;
     // 主对象id
     private int oid;
+    // 接收对象id
+    private int rid;
     // 内容
     private String note;
+    // 跟进记录-1、备注-2、消息通知-3
+    private int type;
     // 时间
     private String ts;
 }

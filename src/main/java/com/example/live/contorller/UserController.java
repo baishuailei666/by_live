@@ -3,6 +3,7 @@ package com.example.live.contorller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
+import com.example.live.contorller.query.OrderQuery;
 import com.example.live.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,4 +80,13 @@ public class UserController {
         return userService.userDel(id);
     }
 
+    /**
+     * 订单列表
+     * @param query
+     * @return
+     */
+    @GetMapping("/order")
+    public BaseResult<?> orderList(OrderQuery query) {
+        return userService.orderList(query);
+    }
 }
