@@ -1,6 +1,10 @@
 package com.example.live.mapper;
 
+import com.example.live.vo.MerchantAuditVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -8,4 +12,15 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MerchantAuditMapper {
+
+    List<MerchantAuditVo> merchantAuditWait(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
+                                            @Param("mobile") String mobile, @Param("shop") String shop,
+                                            @Param("index") Integer index, @Param("size") Integer size);
+
+    int merchantAuditWaitCount(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
+                            @Param("mobile") String mobile, @Param("shop") String shop);
+
+
+    void updateMerchantAudit(@Param("shopId") String shopId, @Param("status") String status,@Param("reason") String reason);
+
 }

@@ -2,6 +2,7 @@ package com.example.live.contorller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.service.impl.MerchantAuditServiceImpl;
 import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class MerchantController {
 
     @Autowired
     private MerchantServiceImpl merchantService;
+
+    @Autowired
+    private MerchantAuditServiceImpl merchantAuditService;
 
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选
@@ -37,6 +41,19 @@ public class MerchantController {
         return merchantService.merchantOrderList();
     }
 
+    /**
+     * 店铺审核列表
+     * @return
+     */
+    @PostMapping("/audits")
+    public BaseResult<?> audits(@RequestBody JSONObject jo){
+       return merchantAuditService.audits(jo);
+    }
+
+    @PostMapping("merchantAudit")
+    public BaseResult<?> merchantAudit(@RequestBody JSONObject jo){
+        return merchantAuditService.merchantAudit(jo);
+    }
 
 
 

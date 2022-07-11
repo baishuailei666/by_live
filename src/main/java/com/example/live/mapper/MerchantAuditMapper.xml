@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.MerchantAuditMapper">
+
+    <select id="merchantAuditWait" resultType="com.example.live.vo.MerchantAuditVo">
+        select m.mobile,m.shop,m.ope_user,a.status,m.introduce,a.ct,a.ut,a.remark
+        from `merchant_audit` a
+        left join `merchant` m on a.merchant_id=m.shop_id
+        where a.ope_user = #{opeUserId}
+        <if test="status !=null and status != ''">
+            and a.status = #{status}
+        </if>
+        <if test="mobile !=null and mobile != ''">
+            and m.mobile = #{mobile}
+        </if>
+        <if test="shop !=null and shop != ''">
+            and m.shop like CONCAT('%',#{shop},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="merchantAuditWaitCount" resultType="java.lang.Integer">
+        select count(*)
+        from `merchant_audit` a
+        left join `merchant` m on a.merchant_id=m.shop_id
+        where a.ope_user = #{opeUserId}
+        <if test="status !=null and status != ''">
+            and a.status = #{status}
+        </if>
+        <if test="mobile !=null and mobile != ''">
+            and m.mobile = #{mobile}
+        </if>
+        <if test="shop !=null and shop != ''">
+            and m.shop like CONCAT('%',#{shop},'%')
+        </if>
+    </select>
+
+    <update id="updateMerchantAudit">
+        update `merchant_audit`
+        set status = #{status},ut = now()
+        <if test="status='已拒绝'">
+            ,remark = #{reason}
+        </if>
+        where merchant_id=#{shopId}
+    </update>
+
+
+</mapper>
