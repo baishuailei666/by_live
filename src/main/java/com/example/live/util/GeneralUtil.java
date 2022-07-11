@@ -52,6 +52,11 @@ public final class GeneralUtil {
         return df6.format(random.nextInt(1000000));
     }
 
+    // 默认密码
+    public static String defaultPwd() {
+        return MD5Util.encode(Constant.defaultPwd);
+    }
+
     // 自定义:page=1、size=10
     public static int indexPage(int page) {
         page = page ==0 ? 1 : page;

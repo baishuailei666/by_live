@@ -15,9 +15,9 @@ public interface MerchantMapper {
     @Select("select id,mobile,pwd,shop,goods,ope_user as opeUser, login_count as loginCount from merchant where mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 
-    @Insert(" insert into merchant(mobile, ope_user, login_count, lt, ct) " +
+    @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
             " values(#{mobile}, #{opeUser}, 1, now(), now())")
-    void creatMerchant(@Param("mobile") String mobile, @Param("opeUser") Integer opeUser);
+    void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);
 
     @Update("update merchant set lt=now(), login_count=#{lc} where id=#{id}")
     void updateLt(@Param("id") int id, @Param("lc") int lc);

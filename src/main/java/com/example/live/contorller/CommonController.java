@@ -45,7 +45,28 @@ public class CommonController {
         return userService.modifyPwd(jo);
     }
 
+    /**
+     * 重置默认密码
+     * @param mobile 手机号
+     * @param source source：back-管理端、merchant-商户端
+     * @return
+     */
+    @GetMapping("/pwd/reset")
+    public BaseResult<?> resetPwd(@RequestParam("mobile") String mobile, @RequestParam("source") String source) {
+        return userService.resetPwd(mobile, source);
+    }
 
+
+    /**
+     * 上传微信二维码
+     * @param file
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/img/upload")
+    public BaseResult<?> uploadImg(@RequestBody MultipartFile file, @RequestParam("id") Integer id) {
+        return userService.uploadImg(file, id);
+    }
 
     /**
      * excel文件上传
@@ -55,8 +76,8 @@ public class CommonController {
      * @param param clear-清空数据上传
      * @return
      */
-    @PostMapping(value = "/upload")
-    public BaseResult<?> uploadAnchor(@RequestBody MultipartFile file
+    @PostMapping(value = "/excel/upload")
+    public BaseResult<?> uploadExcel(@RequestBody MultipartFile file
             , @RequestParam("type") String type, @RequestParam("param") String param) {
         if ("anchor".equals(type)) {
             excelUtil.excelAnchorHandler(file, param);
@@ -65,4 +86,5 @@ public class CommonController {
         }
         return new BaseResult<>();
     }
+
 }

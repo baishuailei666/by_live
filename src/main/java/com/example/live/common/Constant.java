@@ -15,6 +15,11 @@ public class Constant {
     public static final int admin_id = 11;
 
     public static final String session_user = "user";
+    // 默认密码
+    public static final String defaultPwd = "123456";
+    // source：back-管理端、merchant-商户端
+    public static final String source_back = "back";
+    public static final String source_merchant = "merchant";
 
     public static final String split = ",";
     public static final String split2 = ";";
