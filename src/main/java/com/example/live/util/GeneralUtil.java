@@ -1,9 +1,7 @@
 package com.example.live.util;
 
 import com.example.live.common.Constant;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -56,6 +54,13 @@ public final class GeneralUtil {
     public static int indexPage(int page) {
         page = page ==0 ? 1 : page;
         return (page -1) * 10;
+    }
+
+    // 自定义:page=1、size=10
+    public static int indexPage(int page,int size) {
+        size = size == 0 ? 10 : size;
+        page = page == 0 ? 1 : page;
+        return (page -1) * size;
     }
 
     // 服务天数

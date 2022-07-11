@@ -6,7 +6,6 @@ import com.example.live.entity.Merchant;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.service.MerchantService;
 import com.example.live.util.GeneralUtil;
-import com.example.live.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +32,9 @@ public class MerchantServiceImpl implements MerchantService {
         int count = merchantMapper.getMerchantListByParamsCount(opeUserId, mobile, shop, shopStatus);
         if (count == 0) {
             return new BaseResult<>();
-        }else {
-            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page,size),size);
-            return new BaseResult<>(new Page<List>(merchantListByParams, count, size, page, GeneralUtil.pages(count,size)));
+        } else {
+            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page, size), size==0?10:size);
+            return new BaseResult<>(count, merchantListByParams);
         }
 
     }
