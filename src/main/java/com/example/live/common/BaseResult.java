@@ -16,7 +16,7 @@ public class BaseResult<T> implements Serializable {
 
     private String msg;
     private int code;
-    private int pages;
+    private int total;
     private T data;
 
     public BaseResult(int code, String msg, T data) {
@@ -34,11 +34,11 @@ public class BaseResult<T> implements Serializable {
         this.code = 200;
         this.msg = "success";
     }
-    // success pages
-    public BaseResult(int pages, T data) {
+    // success total
+    public BaseResult(int total, T data) {
         this.data = data;
         this.code = 200;
-        this.pages = pages;
+        this.total = total;
         this.msg = "success";
     }
     public BaseResult() {

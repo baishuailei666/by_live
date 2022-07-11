@@ -17,4 +17,5 @@ public class RelationUser {
     private int mainUserId;
     // 子user_id
     private int childUserId;
+    private String ts;
 }

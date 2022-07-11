@@ -59,4 +59,24 @@ public class UserController {
         return userService.userList(keyword, page);
     }
 
+    /**
+     * 用户创建
+     * @param jo 账号、等级、备注
+     * @return
+     */
+    @PostMapping("/user/create")
+    public BaseResult<?> userCreate(@RequestBody JSONObject jo) {
+        return userService.userCreate(jo);
+    }
+
+    /**
+     * 用户删除
+     * @param id
+     * @return
+     */
+    @GetMapping("/user/del")
+    public BaseResult<?> userDel(@RequestParam("id") Integer id) {
+        return userService.userDel(id);
+    }
+
 }

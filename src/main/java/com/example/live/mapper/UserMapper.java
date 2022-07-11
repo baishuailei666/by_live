@@ -1,9 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -20,4 +18,25 @@ public interface UserMapper {
     List<User> userList(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword, @Param("page") int page);
 
     int count(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword);
+
+    @Update("update `user` set pwd=#{pwd} where mobile=#{mobile}")
+    void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
+
+    @Insert("insert into `user`(mobile, level, remark) values(#{mobile}, #{level}, #{remark})")
+    void insUser(@Param("mobile") String mobile, @Param("level") Integer level, @Param("remark") String remark);
+
+    @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where mobile=#{mobile}")
+    User getUserMobile(@Param("mobile") String mobile);
+
+    @Select("select LAST_INSERT_ID()")
+    int lastId();
+
+    @Delete("delete from `user` where id=#{id}")
+    void delUser(@Param("id") Integer id);
+
+    // 超级管理员-1、管理员（代理）-2
+    @Select("select id from `user` where level in (1, 2)")
+    List<Integer> levelUser();
+
+
 }

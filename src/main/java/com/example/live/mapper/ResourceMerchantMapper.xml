@@ -5,11 +5,47 @@
     <insert id="batchIns">
         INSERT
         INTO
-        resource_merchant(shop, agent_user, mobile)
+        resource_merchant(shop, agent_user, mobile, ct)
         VALUES
         <foreach collection="list" item="resourceMerchant" index="index" separator=",">
-            (#{resourceMerchant.shop}, #{resourceMerchant.agentUser}, #{resourceMerchant.mobile})
+            (#{resourceMerchant.shop}, #{resourceMerchant.agentUser}, #{resourceMerchant.mobile}, now())
         </foreach>
     </insert>
+
+    <select id="resourceList" resultType="com.example.live.entity.ResourceMerchant">
+        select id, shop, mobile from resource_merchant
+        where agent_user=#{agentUser}
+        <if test="opeUser!=null">
+            and ope_user = #{opeUser}
+        </if>
+        <if test="intention!=null">
+            and intention = #{intention}
+        </if>
+        limit #{page}, 10
+    </select>
+
+    <select id="resourceCount">
+        select count(1) from resource_merchant
+        where agent_user=#{agentUser}
+        <if test="opeUser!=null">
+            and ope_user = #{opeUser}
+        </if>
+        <if test="intention!=null">
+            and intention = #{intention}
+        </if>
+    </select>
+
+    <select id="taskResource" resultType="com.example.live.entity.ResourceMerchant">
+        select id, shop, mobile, intention, ope_user as opeUser, agent_user as agentUser from resource_merchant
+        where intention in (0, 1, 3)
+    </select>
+
+    <update id="taskDistribution" parameterType="java.util.List">
+        <foreach collection="list" item="resourceMerchant" index="index" open="" close="" separator=";">
+            update resource_merchant set intention=0, ope_user=#{resourceMerchant.opeUser}
+            where id=#{resourceMerchant.id}
+        </foreach>
+    </update>
+
 
 </mapper>

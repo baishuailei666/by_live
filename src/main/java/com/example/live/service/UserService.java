@@ -18,4 +18,9 @@ public interface UserService {
     BaseResult<?> mobileCode(String mobile);
 
     BaseResult<?> modifyPwd(JSONObject jo);
+
+    BaseResult<?> userCreate(JSONObject jo);
+
+    BaseResult<?> userDel(Integer id);
+
 }

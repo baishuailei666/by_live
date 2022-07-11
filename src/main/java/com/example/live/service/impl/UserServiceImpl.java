@@ -7,10 +7,7 @@ import com.example.live.entity.Merchant;
 import com.example.live.entity.MobileCode;
 import com.example.live.entity.Order;
 import com.example.live.entity.User;
-import com.example.live.mapper.MerchantMapper;
-import com.example.live.mapper.MobileCodeMapper;
-import com.example.live.mapper.OrderMapper;
-import com.example.live.mapper.UserMapper;
+import com.example.live.mapper.*;
 import com.example.live.service.UserService;
 import com.example.live.util.DateUtil;
 import com.example.live.util.GeneralUtil;
@@ -41,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private MobileCodeMapper mobileCodeMapper;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private RelationUserMapper relationUserMapper;
 
 
 
@@ -107,7 +106,8 @@ public class UserServiceImpl implements UserService {
                 mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
                 mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
             }
-            merchantMapper.updateLt(merchant.getId());
+            // 更新登录时间、登录次数
+            merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount()+1);
             session.setAttribute(Constant.session_user, mvo);
             return new BaseResult<>(mvo);
         }
@@ -121,8 +121,8 @@ public class UserServiceImpl implements UserService {
         if (count==0) {
             return new BaseResult<>();
         }
-        List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page, 10));
-        return new BaseResult<>(GeneralUtil.pages(count), list);
+        List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page));
+        return new BaseResult<>(count, list);
     }
 
     @Override
@@ -135,6 +135,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         // TODO 发送验证码
+        String context = GeneralUtil.get6Random();
 
         return new BaseResult<>();
     }
@@ -143,9 +144,55 @@ public class UserServiceImpl implements UserService {
     public BaseResult<?> modifyPwd(JSONObject jo) {
         // source：back-管理端、merchant-商户端
         String source = jo.getString("source");
+        String mobile = jo.getString("mobile");
         String code = jo.getString("code");
         String pwd = jo.getString("pwd");
 
+        String val = mobileCodeMapper.getCode(mobile);
+        if (StringUtils.isBlank(val)) {
+            return new BaseResult<>(10, "验证码无效");
+        }
+        if (!val.equals(code)) {
+            return new BaseResult<>(10, "验证码不正确");
+        }
+        String encode = MD5Util.encode(pwd);
+        if ("back".equals(source)) {
+            userMapper.modifyPwd(mobile, encode);
+        } else if ("merchant".equals(source)) {
+            merchantMapper.modifyPwd(mobile, encode);
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> userCreate(JSONObject jo) {
+        String mobile = jo.getString("mobile");
+        String remark = jo.getString("remark");
+        int level = jo.getIntValue("level");
+
+        // 超级管理员-1、管理员（代理）-2、业务员-3
+        if (level>3 || level<1) {
+            return new BaseResult<>(10, "level参数错误");
+        }
+        User user = userMapper.getUserMobile(mobile);
+        if (user!=null) {
+            return new BaseResult<>(10, "手机号已存在");
+        }
+
+        userMapper.insUser(mobile, level, remark);
+
+        Integer loginUserId = UserUtil.getUserId();
+
+        int userId = userMapper.lastId();
+        // 用户从属关系
+        relationUserMapper.insRelation(loginUserId, userId);
+
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> userDel(Integer id) {
+        userMapper.delUser(id);
         return new BaseResult<>();
     }
 }

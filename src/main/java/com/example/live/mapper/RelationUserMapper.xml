@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.RelationUserMapper">
+
+    <select id="relationUserList" resultType="com.example.live.entity.RelationUser">
+        select child_user_id as childUserId, main_user_id as mainUserId from relation_user
+        where main_user_id in
+        <foreach item="mid" collection="list" separator="," open="(" close=")">
+            #{mid}
+        </foreach>
+    </select>
+
+</mapper>

@@ -4,6 +4,7 @@ import com.example.live.common.Constant;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 /**
@@ -44,18 +45,20 @@ public final class GeneralUtil {
         return sb.toString();
     }
 
+    // 获取6位随机数
+    public static String get6Random() {
+        Random random = new Random();
+        DecimalFormat df6 = new DecimalFormat("000000");
+        return df6.format(random.nextInt(1000000));
+    }
+
     // 自定义:page=1、size=10
-    public static int indexPage(int page, int size) {
+    public static int indexPage(int page) {
         page = page ==0 ? 1 : page;
-        size = size ==0 ? 10 : size;
-        return (page -1) * size;
+        return (page -1) * 10;
     }
 
-    // 总页码
-    public static int pages(int count) {
-        return (count + 10 -1) / 10;
-    }
-
+    // 服务天数
     public static int typeDays(int type) {
         int days = 0;
         switch (type) {

@@ -1,5 +1,6 @@
 package com.example.live.vo;
 
+import com.example.live.entity.LevelRight;
 import lombok.Data;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public class UserVO {
     private String level;
     private String wx;
     private String ts;
-    private List<String> apis;
+    private List<LevelRight> rights;
 }

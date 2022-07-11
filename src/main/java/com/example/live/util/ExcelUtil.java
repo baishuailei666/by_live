@@ -33,8 +33,9 @@ public class ExcelUtil {
     /**
      * 主播excel上传处理
      * @param file
+     * @param param clear-清空数据
      */
-    public void excelAnchorHandler(MultipartFile file) {
+    public void excelAnchorHandler(MultipartFile file, String param) {
         ExcelListen<Anchor> readExcel = new ExcelListen<>();
         try {
             ExcelReader reader = EasyExcelFactory.getReader(file.getInputStream(), readExcel);
@@ -42,6 +43,10 @@ public class ExcelUtil {
             List<Anchor> anchors = readExcel.list;
             // 过滤异常数据
             anchors.removeIf(anchor -> StringUtils.isBlank(anchor.getNickname()));
+
+            if ("clear".equals(param)) {
+                anchorMapper.clear();
+            }
             anchorMapper.batchIns(anchors);
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +54,7 @@ public class ExcelUtil {
     }
 
     // 商户资源
-    public void excelResourceHandler(MultipartFile file) {
+    public void excelResourceHandler(MultipartFile file, String param) {
         ExcelListen<ResourceMerchant> readExcel = new ExcelListen<>();
         try {
             ExcelReader reader = EasyExcelFactory.getReader(file.getInputStream(), readExcel);
@@ -60,6 +65,11 @@ public class ExcelUtil {
             // 设置资源所属管理员（代理商）
             Integer userId = UserUtil.getUserId();
             merchants.forEach(m -> m.setAgentUser(userId));
+
+            if ("clear".equals(param)) {
+                resourceMerchantMapper.clear();
+            }
+
             resourceMerchantMapper.batchIns(merchants);
         } catch (IOException e) {
             e.printStackTrace();
