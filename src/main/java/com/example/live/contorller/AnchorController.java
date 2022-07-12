@@ -85,7 +85,7 @@ public class AnchorController {
      */
     @GetMapping("/follow")
     public BaseResult<?> anchorFollow(@RequestParam("id") Integer id) {
-        return anchorService.anchorRemove(id);
+        return anchorService.anchorFollow(id);
     }
 
     /**
@@ -99,6 +99,5 @@ public class AnchorController {
     public BaseResult<?> anchorFollowAdd(@RequestParam("id") Integer id, @RequestParam("content") String content) {
         return anchorService.anchorRemove(id);
     }
-
 
 }

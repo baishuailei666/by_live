@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * 通用接口：
  * 手机验证码发送、修改密码、重置密码
@@ -66,7 +71,7 @@ public class CommonController {
      * @param id
      * @return
      */
-    @PostMapping(value = "/img/upload")
+    @PostMapping(value = "/upload/img")
     public BaseResult<?> uploadImg(@RequestBody MultipartFile file, @RequestParam("id") Integer id) {
         return userService.uploadImg(file, id);
     }
@@ -79,7 +84,7 @@ public class CommonController {
      * @param param clear-清空数据上传
      * @return
      */
-    @PostMapping(value = "/excel/upload")
+    @PostMapping(value = "/upload/excel")
     public BaseResult<?> uploadExcel(@RequestBody MultipartFile file
             , @RequestParam("type") String type, @RequestParam("param") String param) {
         if ("anchor".equals(type)) {
@@ -87,6 +92,26 @@ public class CommonController {
         } else if ("resource".equals(type)) {
             excelUtil.excelResourceHandler(file, param);
         }
+        return new BaseResult<>();
+    }
+
+    /**
+     * 视频上传
+     * @param file
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/upload/video")
+    public BaseResult<?> uploadVideo(@RequestBody MultipartFile file
+            , HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String fn = file.getOriginalFilename();
+        System.out.println("fn:"+fn);
+        // 路径
+        String filePath = "C:\\Users\\baide0328\\Desktop\\";
+        File f = new File(filePath);
+        // 转存文件
+        file.transferTo(new File(filePath + fn));
         return new BaseResult<>();
     }
 
@@ -108,5 +133,13 @@ public class CommonController {
         return commonService.notificationMsg(source);
     }
 
+    /**
+     * 客服信息
+     * @return
+     */
+    @GetMapping("kef")
+    public BaseResult<?> kef() {
+        return commonService.kef();
+    }
 
 }

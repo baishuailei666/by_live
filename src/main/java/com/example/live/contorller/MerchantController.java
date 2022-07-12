@@ -95,10 +95,31 @@ public class MerchantController {
      * @param shopId 店铺ID
      * @return
      */
-    @PostMapping("/shop/del")
+    @GetMapping("/shop/del")
     public BaseResult<?> merchantShopDel(@RequestParam("shopId") String shopId) {
         return merchantService.merchantShopDel(shopId);
     }
+
+    /**
+     * 视频中心
+     * @param type 1-月卡、2-季卡、3-年卡
+     * @return
+     */
+    @GetMapping("/video/centre")
+    public BaseResult<?> videoCentre(@RequestParam("type") Integer type) {
+        return merchantService.videoCentre(type);
+    }
+    /**
+     * 视频播放
+     * @param id
+     * @return
+     */
+    @GetMapping("/video/play")
+    public BaseResult<?> videoPlay(@RequestParam("id") Integer id) {
+        return merchantService.videoPlay(id);
+    }
+
+
 
 
 }

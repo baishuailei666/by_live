@@ -5,10 +5,8 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
-import com.example.live.mapper.ContentMapper;
-import com.example.live.mapper.MerchantAuditMapper;
-import com.example.live.mapper.MerchantMapper;
-import com.example.live.mapper.OrderMapper;
+import com.example.live.entity.Video;
+import com.example.live.mapper.*;
 import com.example.live.service.MerchantService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -35,6 +33,8 @@ public class MerchantServiceImpl implements MerchantService {
     private MerchantAuditMapper merchantAuditMapper;
     @Autowired
     private ContentMapper contentMapper;
+    @Autowired
+    private VideoMapper videoMapper;
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
@@ -163,6 +163,18 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(10, "删除失败,店铺ID不是当前商户");
         }
         merchantMapper.modifyShop(merchantId, null, null, null, null);
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> videoCentre(Integer type) {
+        List<Video> data = videoMapper.videoList(type);
+        return new BaseResult<>(data.size(), data);
+    }
+
+    @Override
+    public BaseResult<?> videoPlay(Integer id) {
+        String path = videoMapper.video1(id);
         return new BaseResult<>();
     }
 

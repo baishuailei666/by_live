@@ -7,7 +7,7 @@ import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.service.MerchantAuditService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
-import com.example.live.vo.MerchantAuditVo;
+import com.example.live.vo.MerchantAuditVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         Integer userId = UserUtil.getUserId();
         int i = merchantAuditMapper.merchantAuditWaitCount(userId, status, mobile, shop);
         if (i != 0) {
-            List<MerchantAuditVo> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page, size), size == 0 ? 10 : size);
+            List<MerchantAuditVO> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page, size), size == 0 ? 10 : size);
             return new BaseResult<>(i, merchantAudits);
         } else {
             return new BaseResult<>();

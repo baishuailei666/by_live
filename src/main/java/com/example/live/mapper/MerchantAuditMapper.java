@@ -1,6 +1,6 @@
 package com.example.live.mapper;
 
-import com.example.live.vo.MerchantAuditVo;
+import com.example.live.vo.MerchantAuditVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface MerchantAuditMapper {
 
-    List<MerchantAuditVo> merchantAuditWait(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
+    List<MerchantAuditVO> merchantAuditWait(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
                                             @Param("mobile") String mobile, @Param("shop") String shop,
                                             @Param("index") Integer index, @Param("size") Integer size);
 

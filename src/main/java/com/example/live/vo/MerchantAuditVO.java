@@ -8,7 +8,7 @@ import lombok.Data;
  * @Description 审核
  */
 @Data
-public class MerchantAuditVo {
+public class MerchantAuditVO {
 
     private String mobile;
     private String shop;

@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
             vo.setId(user.getId());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
-            vo.setWx(user.getWx());
             session.setAttribute(Constant.session_user, vo);
             return new BaseResult<>(vo);
         }
@@ -109,6 +108,12 @@ public class UserServiceImpl implements UserService {
             mvo.setShop(merchant.getShop());
             mvo.setShopId(merchant.getShopId());
             mvo.setOpeUser(merchant.getOpeUser());
+            if (merchant.getOpeUser()!=null) {
+                User user2 = userMapper.getUser2(merchant.getOpeUser());
+                if (user2!=null) {
+                    mvo.setOpeUserWx(user2.getWx());
+                }
+            }
 
             Order order = orderMapper.getOrder1(merchant.getId());
             if (order!=null) {

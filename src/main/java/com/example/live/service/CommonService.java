@@ -20,4 +20,8 @@ public interface CommonService {
 
     BaseResult<?> notificationMsg(String source);
 
+    BaseResult<?> payConfigInfo();
+
+    BaseResult<?> kef();
+
 }

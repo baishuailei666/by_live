@@ -26,4 +26,8 @@ public interface MerchantService {
 
     BaseResult<?> merchantShopDel(String shopId);
 
+    BaseResult<?> videoCentre(Integer type);
+
+    BaseResult<?> videoPlay(Integer id);
+
 }

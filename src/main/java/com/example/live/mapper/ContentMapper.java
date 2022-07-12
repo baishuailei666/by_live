@@ -1,6 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.Content;
+import com.example.live.vo.ContentVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,4 +25,8 @@ public interface ContentMapper {
 
     @Select("select note, ts from `content` where rid=#{rid} limit #{page}, 10")
     List<Content> contentList(@Param("rid") int rid, @Param("page") int page);
+
+    @Select("select note, ts from `content` where oid=#{oid} and rid=#{rid} and type=#{type}")
+    List<ContentVO> contentListParam(@Param("oid") int oid, @Param("rid") int rid, @Param("type") int type);
+
 }

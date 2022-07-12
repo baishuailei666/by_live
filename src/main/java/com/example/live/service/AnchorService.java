@@ -17,4 +17,8 @@ public interface AnchorService {
     BaseResult<?> anchorAddWx(Integer id);
 
     BaseResult<?> anchorRemove(Integer id);
+
+    BaseResult<?> anchorFollow(Integer id);
+
+    BaseResult<?> anchorFollowAdd(Integer id, String content);
 }
