@@ -5,6 +5,7 @@ import com.example.live.entity.ResourceMerchant;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -35,5 +36,10 @@ public interface ResourceMerchantMapper {
     // 需要清理的数据
     @Delete(" delete from resource_merchant where intention = 2")
     void needClearList();
+
+    //更新意向
+    @Update("update resource_merchant set intention=#{intention},ut=now() where id=#{id} ")
+    void updateResourceMerchant(@Param("intention") Integer intention, @Param("id") Integer id);
+
 
 }

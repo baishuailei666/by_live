@@ -1,5 +1,6 @@
 package com.example.live.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 
 /**
@@ -9,4 +10,8 @@ import com.example.live.common.BaseResult;
 public interface ResourceMerchantService {
 
     BaseResult<?> resourceList(Integer intention, Integer page);
+
+    BaseResult<?> editResource(JSONObject jo);
+
+
 }

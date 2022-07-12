@@ -44,6 +44,14 @@ public class MerchantController {
     }
 
     /**
+     * 商户订单筛选(业务员)
+     */
+    @PostMapping("/orderScreen")
+    public BaseResult<?> merchantOrderByParam(@RequestBody JSONObject jo){
+        return merchantService.merchantOrderByParam(jo);
+    }
+
+    /**
      * 店铺审核列表
      *
      * @return
@@ -53,6 +61,11 @@ public class MerchantController {
         return merchantAuditService.audits(jo);
     }
 
+    /**
+     * 店铺审核是否通过
+     * @param jo
+     * @return
+     */
     @PostMapping("merchantAudit")
     public BaseResult<?> merchantAudit(@RequestBody JSONObject jo) {
         return merchantAuditService.merchantAudit(jo);

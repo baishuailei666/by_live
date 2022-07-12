@@ -3,8 +3,10 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
+import com.example.live.contorller.query.OrderQuery;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
+import com.example.live.entity.User;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
@@ -20,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -73,6 +74,19 @@ public class MerchantServiceImpl implements MerchantService {
         });
         return new BaseResult<>(voList);
     }
+
+    @Override
+    public BaseResult<?> merchantOrderByParam(JSONObject jo) {
+        OrderQuery orderQuery = jo.toJavaObject(OrderQuery.class);
+        User user = UserUtil.getUser();
+        int count = orderMapper.orderListByUserIdCount(orderQuery, user.getId());
+        if (count == 0) {
+            return new BaseResult<>();
+        }
+        List<Order> orders = orderMapper.orderListByUserId(orderQuery, user.getId(), 0);
+        return new BaseResult<>(count, orders);
+    }
+
 
     @Override
     public BaseResult<?> merchantShopBind(JSONObject jo) {

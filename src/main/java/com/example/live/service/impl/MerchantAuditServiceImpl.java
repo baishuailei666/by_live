@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.User;
 import com.example.live.mapper.MerchantAuditMapper;
+import com.example.live.mapper.MerchantMapper;
 import com.example.live.service.MerchantAuditService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -24,6 +25,9 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Autowired
     private MerchantAuditMapper merchantAuditMapper;
+
+    @Autowired
+    private MerchantMapper merchantMapper;
 
     @Override
     public BaseResult<?> audits(JSONObject jo) {
@@ -60,10 +64,9 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         }
         //更新merchant_audit表
         merchantAuditMapper.updateMerchantAudit(shopId, status ? "审核通过" : "已拒绝", reason);
-        //更新merchant表
-
         if (status) {
-            //TODO 是否还得做其他操作
+            //更新merchant表
+            merchantMapper.updateMerchantCheck(shopId);
         }
         return new BaseResult<>();
     }

@@ -1,14 +1,14 @@
 package com.example.live.contorller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.service.ResourceMerchantService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Base64;
 
 /**
  * 商户资源
@@ -32,6 +32,15 @@ public class ResourceController {
     public BaseResult<?> resourceList(@Param("intention") Integer intention, @Param("page") Integer page) {
         return resourceMerchantService.resourceList(intention, page);
     }
+
+    /**
+     * 意向程度修改
+     */
+    @PostMapping("/edit")
+    public BaseResult<?> editResource(JSONObject jo){
+        return resourceMerchantService.editResource(jo);
+    }
+
 
 }
 
