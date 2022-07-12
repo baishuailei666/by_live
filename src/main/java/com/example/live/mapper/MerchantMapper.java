@@ -47,6 +47,9 @@ public interface MerchantMapper {
     @Update("update merchant set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
+    @Update("update merchant set shop_status = '已认证' where shop_id = #{shopId}")
+    void updateMerchantCheck(@Param("shopId")String shopId);
+
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选
      * @param opeUserId
@@ -78,5 +81,6 @@ public interface MerchantMapper {
             + " </where>"
             + " </script> "})
     int getMerchantListByParamsCount(@Param("opeUserId") Integer opeUserId, @Param("mobile")String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
+
 
 }
