@@ -1,5 +1,6 @@
 package com.example.live.service;
 
+import com.example.live.common.BaseResult;
 import com.example.live.entity.LevelRight;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public interface CommonService {
 
     // 返回当前登录业务员上层管理员用户
     Integer agentUser(Integer opeUser);
+
+    BaseResult<?> msgList(Integer page);
+
+    BaseResult<?> notificationMsg(String source);
 
 }

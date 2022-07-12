@@ -18,4 +18,12 @@ public interface MerchantService {
 
     BaseResult<?> merchantOrderList();
 
+    BaseResult<?> merchantShopBind(JSONObject jo);
+
+    BaseResult<?> merchantShop();
+
+    BaseResult<?> merchantShopModify(JSONObject jo);
+
+    BaseResult<?> merchantShopDel(String shopId);
+
 }

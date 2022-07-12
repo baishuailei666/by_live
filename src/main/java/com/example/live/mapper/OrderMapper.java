@@ -1,5 +1,6 @@
 package com.example.live.mapper;
 
+import com.example.live.contorller.query.OrderQuery;
 import com.example.live.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -22,5 +23,9 @@ public interface OrderMapper {
     @Select("select id, order_no as orderNo, buy_type as buyType, money, pay_type as payType, ct, ut" +
             " where merchant_id=#{merchantId} and `status`='TRADE_SUCCESS'")
     List<Order> merchantOrderList(@Param("merchantId") Integer merchantId);
+
+    int orderCount(@Param("query") OrderQuery query);
+
+    List<Order> orderList(@Param("query") OrderQuery query);
 
 }

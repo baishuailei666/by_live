@@ -2,8 +2,11 @@ package com.example.live.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 主播
@@ -37,9 +40,11 @@ public class Anchor extends BaseRowModel {
     // 主页链接
     @ExcelProperty(value = "主页链接",index = 7)
     private String url;
-    // 推广类目（类目:数量,类目:数量）
+    // 推广类目（类目=数量;类目=数量）
     @ExcelProperty(value = "推广类目(类目:数量,类目:数量)",index = 8)
     private String category;
+    // 类目
+    private List<JSONObject> cateList;
     // 推广商品
     @ExcelProperty(value = "推广商品",index = 9)
     private Integer goods;

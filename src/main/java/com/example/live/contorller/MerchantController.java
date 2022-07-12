@@ -24,6 +24,7 @@ public class MerchantController {
 
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选
+     *
      * @param jo
      * @return
      */
@@ -34,6 +35,7 @@ public class MerchantController {
 
     /**
      * 商户订单记录
+     *
      * @return
      */
     @GetMapping("/order")
@@ -43,19 +45,60 @@ public class MerchantController {
 
     /**
      * 店铺审核列表
+     *
      * @return
      */
     @PostMapping("/audits")
-    public BaseResult<?> audits(@RequestBody JSONObject jo){
-       return merchantAuditService.audits(jo);
+    public BaseResult<?> audits(@RequestBody JSONObject jo) {
+        return merchantAuditService.audits(jo);
     }
 
     @PostMapping("merchantAudit")
-    public BaseResult<?> merchantAudit(@RequestBody JSONObject jo){
+    public BaseResult<?> merchantAudit(@RequestBody JSONObject jo) {
         return merchantAuditService.merchantAudit(jo);
     }
 
+    /**
+     * 商户绑定店铺
+     * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
+     * @return
+     */
+    @PostMapping("/shop/bind")
+    public BaseResult<?> merchantShopBind(@RequestBody JSONObject jo) {
+        return merchantService.merchantShopBind(jo);
+    }
 
+    /**
+     * 我的店铺
+     *
+     * @return
+     */
+    @GetMapping("/shop")
+    public BaseResult<?> merchantShop() {
+        return merchantService.merchantShop();
+    }
+
+    /**
+     * 商户绑定店铺
+     *
+     * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
+     * @return
+     */
+    @PostMapping("/shop/modify")
+    public BaseResult<?> merchantShopModify(@RequestBody JSONObject jo) {
+        return merchantService.merchantShopModify(jo);
+    }
+
+    /**
+     * 删除
+     *
+     * @param shopId 店铺ID
+     * @return
+     */
+    @PostMapping("/shop/del")
+    public BaseResult<?> merchantShopDel(@RequestParam("shopId") String shopId) {
+        return merchantService.merchantShopDel(shopId);
+    }
 
 
 }

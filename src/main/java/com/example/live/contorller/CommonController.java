@@ -2,6 +2,7 @@ package com.example.live.contorller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import com.example.live.util.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class CommonController {
     private ExcelUtil excelUtil;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommonService commonService;
 
     /**
      * 验证码发送
@@ -86,5 +89,24 @@ public class CommonController {
         }
         return new BaseResult<>();
     }
+
+    /**
+     * 通知中心
+     * @return
+     */
+    @GetMapping("/msg/center")
+    public BaseResult<?> msgList(@RequestParam("page") Integer page) {
+        return commonService.msgList(page);
+    }
+    /**
+     * 消息通知：1.5s轮询
+     * @param source 后台-back、商户端-merchant
+     * @return
+     */
+    @GetMapping("/msg")
+    public BaseResult<?> notificationMsg(@RequestParam("source") String source) {
+        return commonService.notificationMsg(source);
+    }
+
 
 }

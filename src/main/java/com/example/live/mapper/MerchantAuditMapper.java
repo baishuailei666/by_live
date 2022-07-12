@@ -1,6 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.vo.MerchantAuditVo;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,9 +19,13 @@ public interface MerchantAuditMapper {
                                             @Param("index") Integer index, @Param("size") Integer size);
 
     int merchantAuditWaitCount(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
-                            @Param("mobile") String mobile, @Param("shop") String shop);
+                               @Param("mobile") String mobile, @Param("shop") String shop);
 
 
-    void updateMerchantAudit(@Param("shopId") String shopId, @Param("status") String status,@Param("reason") String reason);
+    void updateMerchantAudit(@Param("shopId") String shopId, @Param("status") String status, @Param("reason") String reason);
+
+    @Insert("insert into(merchant_id, ope_user, ct, ut)" +
+            "values(#{merchantId}, #{opeUser}, now(), now())")
+    void merchantShopAudit(@Param("merchantId") int merchantId, @Param("opeUser") int opeUser);
 
 }
