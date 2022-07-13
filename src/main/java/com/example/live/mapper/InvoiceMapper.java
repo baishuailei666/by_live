@@ -2,6 +2,8 @@ package com.example.live.mapper;
 
 import com.example.live.controller.query.InvoiceQuery;
 import com.example.live.vo.InvoiceVo;
+import com.example.live.entity.Invoice;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
@@ -21,5 +23,9 @@ public interface InvoiceMapper {
 
     @Update("update invoice set status=#{status},remark=#{remark},ut=now()  where id=#{id} ")
     void invoiceUpdate(@Param("id")Integer id,@Param("status")Integer status,@Param("remark")String remark);
+
+    @Insert("insert into invoice(merchant_id, ope_user, money, company, tax, email, ct, ut)" +
+            "values(#{merchantId}, #{opeUser}, #{money}, #{company}, #{tax}, #{email}, now(), now() )")
+    void insInvoice(Invoice invoice);
 
 }

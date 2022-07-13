@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.ContractMapper">
+
+    <update id="modifyContract" parameterType="com.example.live.entity.Contract">
+        update contract
+        set ut=now()
+        <if test="company!=null and company!=''">
+            , company=#{company}
+        </if>
+        <if test="tax!=null and tax!=''">
+            , tax=#{tax}
+        </if>
+        <if test="owner!=null and owner!=''">
+            , owner=#{owner}
+        </if>
+        <if test="mobile!=null and mobile!=''">
+            , mobile=#{mobile}
+        </if>
+        where id=#{id}
+    </update>
+
+</mapper>

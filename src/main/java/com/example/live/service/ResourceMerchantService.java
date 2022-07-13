@@ -9,7 +9,7 @@ import com.example.live.common.BaseResult;
  */
 public interface ResourceMerchantService {
 
-    BaseResult<?> resourceList(Integer intention, Integer page);
+    BaseResult<?> resourceList(String mobile, String shop, Integer intention, Integer page);
 
     BaseResult<?> editResource(JSONObject jo);
 

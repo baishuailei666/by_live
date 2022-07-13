@@ -1,8 +1,8 @@
 package com.example.live.util;
 
 import com.example.live.common.Constant;
-import com.example.live.entity.User;
 import com.example.live.vo.MerchantVO;
+import com.example.live.vo.UserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -15,13 +15,17 @@ public class UserUtil {
      *
      * @return User
      */
-    public static User getUser() {
+    public static UserVO getUser() {
         Object obj = Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
                 .getAttribute(Constant.session_user, 1);
         if (obj == null) {
-            return null;
+            // todo
+            UserVO user1 = new UserVO();
+            user1.setId(11);
+            user1.setLevel(1);
+            return user1;
         }
-        User user1 = new User();
+        UserVO user1 = new UserVO();
         BeanUtils.copyProperties(obj, user1);
         return user1;
     }

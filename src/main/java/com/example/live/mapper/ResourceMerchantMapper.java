@@ -22,10 +22,10 @@ public interface ResourceMerchantMapper {
     void clear();
 
     List<ResourceMerchant> resourceList(@Param("agentUser") Integer agentUser, @Param("opeUser") Integer opeUser
-            , @Param("intention") Integer intention, @Param("page") int page);
+            , @Param("intention") Integer intention, @Param("mobile") String mobile, @Param("shop") String shop, @Param("page") int page);
 
     int resourceCount(@Param("agentUser") Integer agentUser, @Param("opeUser") Integer opeUser
-            , @Param("intention") Integer intention);
+            , @Param("intention") Integer intention, @Param("mobile") String mobile, @Param("shop") String shop);
 
     // 未联系-0、跟进中-1、已拒绝-3
     List<ResourceMerchant> taskResource();

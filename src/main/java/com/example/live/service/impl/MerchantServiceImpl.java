@@ -7,8 +7,8 @@ import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
 import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.Video;
+import com.example.live.entity.*;
 import com.example.live.mapper.*;
-import com.example.live.entity.User;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
@@ -18,6 +18,7 @@ import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantOrderVO;
 import com.example.live.vo.MerchantVO;
+import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,11 @@ public class MerchantServiceImpl implements MerchantService {
     private ContentMapper contentMapper;
     @Autowired
     private VideoMapper videoMapper;
+    @Autowired
+    private ContractMapper contractMapper;
+    @Autowired
+    private InvoiceMapper invoiceMapper;
+
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
@@ -82,7 +88,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> merchantOrderByParam(JSONObject jo) {
         OrderQuery orderQuery = jo.toJavaObject(OrderQuery.class);
-        User user = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
         int count = orderMapper.orderListByUserIdCount(orderQuery, user.getId());
         if (count == 0) {
             return new BaseResult<>();
@@ -193,6 +199,30 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> videoPlay(Integer id) {
         String path = videoMapper.video1(id);
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> merchantContractCreate(Contract contract) {
+        MerchantVO mvo = UserUtil.getMerchant();
+
+        contract.setMerchantId(mvo.getId());
+        contract.setOpeUser(mvo.getOpeUser());
+        contractMapper.insContract(contract);
+        return new BaseResult<>();
+    }
+    @Override
+    public BaseResult<?> merchantContractModify(Contract contract) {
+        contractMapper.modifyContract(contract);
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> merchantInvoiceCreate(Invoice invoice) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        invoice.setMerchantId(mvo.getId());
+        invoice.setOpeUser(mvo.getOpeUser());
+        invoiceMapper.insInvoice(invoice);
         return new BaseResult<>();
     }
 
