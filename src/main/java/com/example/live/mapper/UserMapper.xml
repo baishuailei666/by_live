@@ -19,7 +19,7 @@
 
     </select>
 
-    <select id="count">
+    <select id="count" resultType="int">
         select count(1) from user
         where id
         <if test="agentUser!=null">

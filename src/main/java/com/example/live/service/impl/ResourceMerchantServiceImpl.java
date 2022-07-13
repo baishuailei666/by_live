@@ -2,6 +2,7 @@ package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.entity.Content;
 import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.ResourceMerchantMapper;
@@ -9,10 +10,14 @@ import com.example.live.service.CommonService;
 import com.example.live.service.ResourceMerchantService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.ResourceMerchantVO;
+import com.google.common.collect.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -38,18 +43,39 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
             return new BaseResult<>();
         }
         List<ResourceMerchant> data = resourceMerchantMapper.resourceList(agentUser, loginUser, intention, GeneralUtil.indexPage(page));
-        return new BaseResult<>(count, data);
+        List<ResourceMerchantVO> voList = Lists.newLinkedList();
+        List<Integer> ids = Lists.newArrayList();
+        data.forEach(rm -> ids.add(rm.getId()));
+
+        // 备注信息
+        List<Content> conList = contentMapper.contentList2(loginUser, ids, 2);
+        Map<Integer, List<Content>> conMap = conList.stream().collect(Collectors.groupingBy(Content::getRid));
+        data.forEach(rm ->{
+            List<Content> list = conMap.getOrDefault(rm.getId(), new ArrayList<>());
+            list.sort(Comparator.comparing(Content::getTs));
+            Collections.reverse(list);
+
+            ResourceMerchantVO vo = new ResourceMerchantVO();
+            BeanUtils.copyProperties(rm, vo);
+            vo.setContentTotal(list.size());
+            if (list.size()!=0) {
+                vo.setContent(list.get(0).getNote());
+            }
+            voList.add(vo);
+        });
+        return new BaseResult<>(count, voList);
     }
 
     @Override
     public BaseResult<?> editResource(JSONObject jo) {
         Integer intention = jo.getInteger("intention");
         Integer id = jo.getInteger("id");
-        String node = jo.getString("node");
+        String note = jo.getString("note");
         //更新资源池
         resourceMerchantMapper.updateResourceMerchant(intention, id);
-        //更新备注表  意向程度：未联系-0、跟进中-1、已处理-2、已拒绝-3
-        contentMapper.insertByOid(id, node, intention);
+        // todo
+        //更新备注表  意向程度：跟进中-1、已处理-2、已拒绝-3
+        contentMapper.insertByOid(id, note, intention);
         return new BaseResult<>();
     }
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.live.mapper.MerchantAuditMapper">
 
-    <select id="merchantAuditWait" resultType="com.example.live.vo.MerchantAuditVo">
+    <select id="merchantAuditWait" resultType="com.example.live.vo.MerchantAuditVO">
         select a.merchant_id,m.mobile,m.shop,m.ope_user,a.status,m.introduce,a.ct,a.ut,a.remark
         from `merchant_audit` a
         left join `merchant` m on a.merchant_id=m.shop_id
@@ -38,7 +38,7 @@
     <update id="updateMerchantAudit">
         update `merchant_audit`
         set status = #{status},ut = now()
-        <if test="status = '已拒绝'">
+        <if test="status == '已拒绝'">
             ,remark = #{reason}
         </if>
         where merchant_id=#{shopId}

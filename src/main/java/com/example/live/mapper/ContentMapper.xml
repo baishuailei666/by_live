@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.ContentMapper">
+
+    <insert id="batchIns">
+        INSERT
+        INTO
+        anchor(nickname, img, author_id, gender, `level`, fans, url, category, goods, sales
+        , introduce, live, live_day, `view`, avg_dur, rate, avg_gmv, price, score)
+        VALUES
+        <foreach collection="list" item="anchor" index="index" separator=",">
+            (#{anchor.nickname}, #{anchor.img}, #{anchor.authorId}, #{anchor.gender}, #{anchor.level}, #{anchor.fans},
+            #{anchor.url}, #{anchor.category}, #{anchor.goods}, #{anchor.sales}, #{anchor.introduce}, #{anchor.live},
+            #{anchor.liveDay}, #{anchor.view}, #{anchor.avgDur}, #{anchor.rate}, #{anchor.avgGmv}, #{anchor.price},
+            #{anchor.score})
+        </foreach>
+    </insert>
+
+    <select id="contentList2" resultType="com.example.live.entity.Content">
+        select id, oid, rid, note,ts
+        from content
+        where oid=#{oid}
+        and `type`=#{type}
+        and rid in
+        <foreach collection="rids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

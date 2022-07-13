@@ -15,6 +15,9 @@ public interface UserMapper {
     @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where mobile=#{mobile} and pwd=#{pwd}")
     User getUser1(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
+    @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where id=#{id}")
+    User getUser2(@Param("id") Integer id);
+
     List<User> userList(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword, @Param("page") int page);
 
     int count(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword);
@@ -22,7 +25,7 @@ public interface UserMapper {
     @Update("update `user` set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
-    @Insert("insert into `user`(mobile, pwd, level, remark) values(#{mobile}, #{level}, #{remark})")
+    @Insert("insert into `user`(mobile, pwd, level, remark) values(#{mobile}, #{pwd}, #{level}, #{remark})")
     void insUser(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("level") Integer level, @Param("remark") String remark);
 
     @Update("update `user` set wx=#{wx} where id=#{id}")

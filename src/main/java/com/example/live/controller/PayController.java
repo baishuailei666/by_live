@@ -1,4 +1,4 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
@@ -11,6 +11,7 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.PayInfo;
 import com.example.live.entity.PayConfig;
 import com.example.live.mapper.PayConfigMapper;
+import com.example.live.service.CommonService;
 import com.example.live.util.UserUtil;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
@@ -24,12 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +47,8 @@ public class PayController {
 
     @Resource
     private WxPayService wxService;
+    @Autowired
+    private CommonService commonService;
     @Autowired
     private PayConfigMapper payConfigMapper;
 

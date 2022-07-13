@@ -50,7 +50,7 @@ public class UserUtil {
         if (getMerchant() != null) {
             return getMerchant().getId();
         } else {
-            return 11;
+            return 1;
         }
     }
 

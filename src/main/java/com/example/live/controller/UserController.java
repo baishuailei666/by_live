@@ -1,9 +1,11 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
+import com.example.live.entity.PayConfig;
+import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommonService commonService;
 
     @GetMapping("/index")
     public BaseResult<?> index() {
@@ -29,8 +33,9 @@ public class UserController {
 
     /**
      * 密码登录、验证码登录
+     *
      * @param session 单点项目不用考虑分布式session
-     * @param jo mobile\pwd\code\source:back-管理端、merchant-商户端
+     * @param jo      mobile\pwd\code\source:back-管理端、merchant-商户端
      * @return BaseResult
      */
     @PostMapping("/login")
@@ -40,6 +45,7 @@ public class UserController {
 
     /**
      * 退出登录
+     *
      * @param session session
      * @return BaseResult
      */
@@ -51,8 +57,9 @@ public class UserController {
 
     /**
      * 用户列表
+     *
      * @param keyword 手机号筛选
-     * @param page 1
+     * @param page    1
      * @return
      */
     @GetMapping("/user")
@@ -62,6 +69,7 @@ public class UserController {
 
     /**
      * 用户创建
+     *
      * @param jo 账号、等级、备注
      * @return
      */
@@ -72,6 +80,7 @@ public class UserController {
 
     /**
      * 用户删除
+     *
      * @param id
      * @return
      */
@@ -82,6 +91,7 @@ public class UserController {
 
     /**
      * 订单列表
+     *
      * @param query
      * @return
      */
@@ -89,4 +99,61 @@ public class UserController {
     public BaseResult<?> orderList(OrderQuery query) {
         return userService.orderList(query);
     }
+
+    /**
+     * 配置列表
+     *
+     * @param mobile 手机号
+     * @return
+     */
+    @GetMapping("/config/data")
+    public BaseResult<?> dataConfig(@RequestParam("mobile") String mobile) {
+        return commonService.dataConfig(mobile);
+    }
+
+    /**
+     * 配置新增、修改
+     *
+     * @param jo
+     * @return
+     */
+    @PostMapping("/config/data/modify")
+    public BaseResult<?> dataConfigModify(JSONObject jo) {
+        return commonService.dataConfigModify(jo);
+    }
+
+    /**
+     * 支付配置列表
+     *
+     * @param mobile 手机号
+     * @return
+     */
+    @GetMapping("/config/pay")
+    public BaseResult<?> payConfig(@RequestParam("mobile") String mobile) {
+        return commonService.payConfig(mobile);
+    }
+
+    /**
+     * 支付配置新增
+     *
+     * @param payConfig
+     * @return
+     */
+    @GetMapping("/config/pay/ins")
+    public BaseResult<?> payConfigIns(PayConfig payConfig) {
+        return commonService.payConfigIns(payConfig);
+    }
+
+    /**
+     * 支付配置删除
+     *
+     * @param id id
+     * @return
+     */
+    @GetMapping("/config/pay/del")
+    public BaseResult<?> payConfigDel(@RequestParam("id") Integer id) {
+        return commonService.payConfigDel(id);
+    }
+
+
 }

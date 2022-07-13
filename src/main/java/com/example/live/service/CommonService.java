@@ -1,7 +1,9 @@
 package com.example.live.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.LevelRight;
+import com.example.live.entity.PayConfig;
 
 import java.util.List;
 
@@ -19,5 +21,19 @@ public interface CommonService {
     BaseResult<?> msgList(Integer page);
 
     BaseResult<?> notificationMsg(String source);
+
+    BaseResult<?> payConfigInfo();
+
+    BaseResult<?> kef();
+
+    BaseResult<?> dataConfig(String mobile);
+
+    BaseResult<?> dataConfigModify(JSONObject jo);
+
+    BaseResult<?> payConfig(String mobile);
+
+    BaseResult<?> payConfigIns(PayConfig payConfig);
+
+    BaseResult<?> payConfigDel(Integer id);
 
 }

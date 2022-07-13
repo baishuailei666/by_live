@@ -50,4 +50,12 @@ public class Constant {
         payTypeMap.put(2, "微信");
         payTypeMap.put(3, "对公转账");
     }
+    // 跟进记录-1、备注-2、消息通知-3
+    public static Map<Integer, String> contentTypeMap;
+    static {
+        contentTypeMap = new HashMap<>();
+        contentTypeMap.put(1, "跟进记录");
+        contentTypeMap.put(2, "备注");
+        contentTypeMap.put(3, "消息通知");
+    }
 }

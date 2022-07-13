@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.DataConfigMapper">
+
+    <select id="configList" resultType="com.example.live.entity.DataConfig">
+        select dc.id, dc.content, dc.ct, dc.agent_user as agentUser, u.mobile, u.remark as agentRemark
+        from data_config dc
+        left join `user` u on dc.agent_user=u.id
+        <where>
+            <if test="agentUser!=null">
+                dc.agent_user=#{agentUser}
+            </if>
+        </where>
+    </select>
+
+</mapper>

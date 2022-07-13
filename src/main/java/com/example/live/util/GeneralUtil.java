@@ -1,6 +1,7 @@
 package com.example.live.util;
 
 import com.example.live.common.Constant;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -89,10 +90,18 @@ public final class GeneralUtil {
         return (int) (buy_days - time_days);
     }
 
-    // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
+    // 0-邮箱地址、1-客服电话、2-服务价格
     public static String[] getAgentConfig(String str, int type) {
+        if (StringUtils.isBlank(str)) {
+            return new String[]{"",""};
+        }
+        // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
         String[] typeStr = str.split(Constant.split2);
-        // 0-邮箱地址、1-客服电话、2-服务价格
-        return typeStr[type].split(Constant.split);
+        if (typeStr[type].contains(",")) {
+            return typeStr[type].split(Constant.split);
+        } else {
+            return new String[]{"","",""};
+        }
     }
+
 }

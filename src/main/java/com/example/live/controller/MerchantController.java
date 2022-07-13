@@ -1,4 +1,4 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
@@ -47,7 +47,7 @@ public class MerchantController {
      * 商户订单筛选(业务员)
      */
     @PostMapping("/orderScreen")
-    public BaseResult<?> merchantOrderByParam(@RequestBody JSONObject jo){
+    public BaseResult<?> merchantOrderByParam(@RequestBody JSONObject jo) {
         return merchantService.merchantOrderByParam(jo);
     }
 
@@ -73,6 +73,7 @@ public class MerchantController {
 
     /**
      * 商户绑定店铺
+     *
      * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
      * @return
      */
@@ -92,7 +93,7 @@ public class MerchantController {
     }
 
     /**
-     * 商户绑定店铺
+     * 商户修改店铺
      *
      * @param jo 店铺id：shopId、店铺名称：shop、商品链接：goods、商家介绍：introduce
      * @return
@@ -103,14 +104,36 @@ public class MerchantController {
     }
 
     /**
-     * 删除
+     * 删除店铺
      *
      * @param shopId 店铺ID
      * @return
      */
-    @PostMapping("/shop/del")
+    @GetMapping("/shop/del")
     public BaseResult<?> merchantShopDel(@RequestParam("shopId") String shopId) {
         return merchantService.merchantShopDel(shopId);
+    }
+
+    /**
+     * 视频中心
+     *
+     * @param type 1-月卡、2-季卡、3-年卡
+     * @return
+     */
+    @GetMapping("/video/centre")
+    public BaseResult<?> videoCentre(@RequestParam("type") Integer type) {
+        return merchantService.videoCentre(type);
+    }
+
+    /**
+     * 视频播放
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/video/play")
+    public BaseResult<?> videoPlay(@RequestParam("id") Integer id) {
+        return merchantService.videoPlay(id);
     }
 
 
