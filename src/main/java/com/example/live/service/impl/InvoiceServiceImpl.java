@@ -3,12 +3,12 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.controller.query.InvoiceQuery;
-import com.example.live.entity.User;
 import com.example.live.mapper.InvoiceMapper;
 import com.example.live.service.InvoiceService;
 import com.example.live.util.MailUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.InvoiceVo;
+import com.example.live.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BaseResult<?> invoiceList(JSONObject jo) {
-        User user = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
         InvoiceQuery invoiceQuery = jo.toJavaObject(InvoiceQuery.class);
         if (user == null) {
             return new BaseResult<>(14, "登录已过期，请重新登录");
@@ -51,7 +51,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Integer id = jo.getInteger("id");
         Integer status = jo.getInteger("status");
         String remark = jo.getString("remark");
-        User user = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
         if (user == null) {
             return new BaseResult<>(14, "登录已过期，请重新登录");
         }
