@@ -1,9 +1,9 @@
 package com.example.live.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.live.entity.User;
 import com.example.live.service.UserService;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.UserVO;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
-        User user = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
         // 请求路径
         String path = request.getServletPath();
         System.out.println("user:" + user);

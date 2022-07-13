@@ -57,6 +57,9 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public Integer agentUser(Integer opeUser) {
+        if (opeUser==Constant.admin_id) {
+            return opeUser;
+        }
         Integer mid = relationUserMapper.getMainId(opeUser);
         if (mid==null) {
             // 当前用户就是管理员

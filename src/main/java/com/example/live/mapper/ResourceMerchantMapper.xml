@@ -21,6 +21,12 @@
         <if test="intention!=null">
             and intention = #{intention}
         </if>
+        <if test="mobile!=null and mobile!=''">
+            and mobile LIKE CONCAT('%', #{mobile}, '%')
+        </if>
+        <if test="shop!=null and shop!=''">
+            and shop LIKE CONCAT('%', #{shop}, '%')
+        </if>
         limit #{page}, 10
     </select>
 
@@ -32,6 +38,12 @@
         </if>
         <if test="intention!=null">
             and intention = #{intention}
+        </if>
+        <if test="mobile!=null and mobile!=''">
+            and mobile LIKE CONCAT('%', #{mobile}, '%')
+        </if>
+        <if test="shop!=null and shop!=''">
+            and shop LIKE CONCAT('%', #{shop}, '%')
         </if>
     </select>
 

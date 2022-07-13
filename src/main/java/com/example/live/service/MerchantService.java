@@ -2,6 +2,8 @@ package com.example.live.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.entity.Contract;
+import com.example.live.entity.Invoice;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -32,4 +34,9 @@ public interface MerchantService {
 
     BaseResult<?> videoPlay(Integer id);
 
+    BaseResult<?> merchantContractCreate(Contract contract);
+
+    BaseResult<?> merchantContractModify(Contract contract);
+
+    BaseResult<?> merchantInvoiceCreate(Invoice invoice);
 }

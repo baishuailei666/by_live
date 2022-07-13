@@ -2,6 +2,8 @@ package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.entity.Contract;
+import com.example.live.entity.Invoice;
 import com.example.live.service.impl.MerchantAuditServiceImpl;
 import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,5 +139,32 @@ public class MerchantController {
         return merchantService.videoPlay(id);
     }
 
+    /**
+     * 提交合同
+     * @param contract
+     * @return
+     */
+    @PostMapping("/contract/create")
+    public BaseResult<?> merchantContractCreate(@RequestBody Contract contract) {
+        return merchantService.merchantContractCreate(contract);
+    }
+    /**
+     * 修改合同
+     * @param contract
+     * @return
+     */
+    @PostMapping("/contract/modify")
+    public BaseResult<?> merchantContractModify(@RequestBody Contract contract) {
+        return merchantService.merchantContractModify(contract);
+    }
+    /**
+     * 提交发票
+     * @param invoice
+     * @return
+     */
+    @PostMapping("/invoice/create")
+    public BaseResult<?> merchantInvoiceCreate(@RequestBody Invoice invoice) {
+        return merchantService.merchantInvoiceCreate(invoice);
+    }
 
 }

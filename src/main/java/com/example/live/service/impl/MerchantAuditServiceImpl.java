@@ -9,6 +9,7 @@ import com.example.live.service.MerchantAuditService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantAuditVO;
+import com.example.live.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         String shop = jo.getString("shop");
         int page = jo.getInteger("page");
         int size = jo.getInteger("size");
-        User user = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
         if (user == null) {
             return new BaseResult<>(13, "登录已过期，重新登录！");
         }
