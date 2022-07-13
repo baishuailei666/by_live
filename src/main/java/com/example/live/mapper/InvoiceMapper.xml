@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.live.mapper.InvoiceMapper">
+
+    <select id="invoiceList" parameterType="com.example.live.controller.query.InvoiceQuery"
+            resultType="com.example.live.vo.InvoiceVo">
+        select n.id,m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.remark,n.ct,n.ut
+        from invoice n left join merchant m on n.merchant_id=m.shop_id
+        where n.ope_user in(select child_user_id from relation_user where main_user_id=#{userId})
+        <if test="query.mobile != null and query.mobile != ''">
+            and m.mobile = #{query.mobile}
+        </if>
+        <if test="query.shop != null and query.shop != ''">
+            and m.company like concat('%',#{query.shop},'%')
+        </if>
+        <if test="query.status != null">
+            and m.status = #{query.status}
+        </if>
+        order by ct DESC
+        limit #{query.index},#{query.size}
+    </select>
+
+
+    <select id="invoiceListCount" parameterType="com.example.live.controller.query.InvoiceQuery"
+            resultType="int">
+        select m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.ct,n.ut
+        from invoice n left join merchant m on n.merchant_id=m.shop_id
+        where n.ope_user in(select child_user_id from relation_user where main_user_id=#{userId})
+        <if test="query.mobile != null and query.mobile != ''">
+            and m.mobile = #{query.mobile}
+        </if>
+        <if test="query.shop != null and query.shop != ''">
+            and m.company like concat('%',#{query.shop},'%')
+        </if>
+        <if test="query.status != null">
+            and m.status = #{query.status}
+        </if>
+    </select>
+
+
+
+</mapper>
