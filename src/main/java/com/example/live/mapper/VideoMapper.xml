@@ -6,11 +6,10 @@
     <select id="videoList" resultType="com.example.live.entity.Video">
         select id, title
         from video
-        <where>
-            <if test="type!=null">
-                type=#{type}
-            </if>
-        </where>
+        where 1=1
+        <if test="type!=null">
+            and level =#{type}
+        </if>
     </select>
 
 

@@ -1,4 +1,4 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 商户资源
+ *
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/10 17:53
  */
@@ -24,8 +25,9 @@ public class ResourceController {
 
     /**
      * 商户资源列表
+     *
      * @param intention 意向程度：未联系-0、跟进中-1、已处理-2、已拒绝-3
-     * @param page 1
+     * @param page      1
      * @return
      */
     @GetMapping("/list")
@@ -33,11 +35,15 @@ public class ResourceController {
         return resourceMerchantService.resourceList(intention, page);
     }
 
+
     /**
-     * 意向程度修改
+     * 商户资源意向程度修改
+     *
+     * @param jo id、intention：跟进中-1、已处理-2、已拒绝-3
+     * @return
      */
     @PostMapping("/edit")
-    public BaseResult<?> editResource(JSONObject jo){
+    public BaseResult<?> editResource(JSONObject jo) {
         return resourceMerchantService.editResource(jo);
     }
 

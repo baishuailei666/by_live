@@ -9,9 +9,11 @@ import com.example.live.mapper.AnchorMapper;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.service.AnchorService;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.AnchorVO;
 import com.example.live.vo.ContentVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,8 +76,17 @@ public class AnchorServiceImpl implements AnchorService {
     @Override
     public BaseResult<?> anchorList() {
         List<Anchor> data = anchorMapper.anchorList();
-        data.forEach(a -> a.setCateList(categoryHandler(a.getCategory())));
-        return new BaseResult<>(data.size(), data);
+        List<AnchorVO> voList = Lists.newLinkedList();
+        data.forEach(a -> {
+            AnchorVO avo = new AnchorVO();
+            BeanUtils.copyProperties(a, avo);
+            List<JSONObject> list = categoryHandler(a.getCategory());
+            if (list!=null) {
+                avo.setCategory(list.get(0).getString("key"));
+            }
+            voList.add(avo);
+        });
+        return new BaseResult<>(data.size(), voList);
     }
 
     @Override

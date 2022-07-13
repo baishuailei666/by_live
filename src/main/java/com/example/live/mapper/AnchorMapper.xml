@@ -11,24 +11,48 @@
         <foreach collection="list" item="anchor" index="index" separator=",">
             (#{anchor.nickname}, #{anchor.img}, #{anchor.authorId}, #{anchor.gender}, #{anchor.level}, #{anchor.fans},
             #{anchor.url}, #{anchor.category}, #{anchor.goods}, #{anchor.sales}, #{anchor.introduce}, #{anchor.live},
-            #{anchor.liveDay}, #{anchor.view}, #{anchor.avgDur}, #{anchor.rate}, #{anchor.avgGmv}, #{anchor.price}, #{anchor.score})
+            #{anchor.liveDay}, #{anchor.view}, #{anchor.avgDur}, #{anchor.rate}, #{anchor.avgGmv}, #{anchor.price},
+            #{anchor.score})
         </foreach>
     </insert>
 
     <select id="anchorList" resultType="com.example.live.entity.Anchor">
-        select id, nickname, img, author_id as authorId, gender, level, fans, url
-             , category, goods, sales, introduce, live, live_day as liveDay, view, avg_dur as avgDur
-             , rate, price, score
+        --         select id, nickname, img, author_id as authorId, gender, level, fans, url
+--              , category, goods, sales, introduce, live, live_day as liveDay, view, avg_dur as avgDur
+--              , rate, price, score
+--         from anchor
+        select id
+             , nickname
+             , img
+             , fans
+             , category
+             , goods
+             , sales
         from anchor
     </select>
 
     <select id="anchorCollect" resultType="com.example.live.entity.Anchor">
-        select a.id, a.nickname, a.img, a.author_id as a.authorId, a.gender, a.level, a.fans, a.url
-                 , a.category, a.goods, a.sales, a.introduce, a.live, a.live_day as liveDay, a.view, a.avg_dur as avgDur
-                 , a.rate, a.price, a.score
+        select a.id
+             , a.nickname
+             , a.img
+             , a.author_id as a.authorId, a.gender
+             , a.level
+             , a.fans
+             , a.url
+             , a.category
+             , a.goods
+             , a.sales
+             , a.introduce
+             , a.live
+             , a.live_day as liveDay
+             , a.view
+             , a.avg_dur  as avgDur
+             , a.rate
+             , a.price
+             , a.score
         from anchor a
-        left join merchant_anchor ma on ma.anchor_id=a.id
-        where ma.merchant_id=#{merchantId}
+                 left join merchant_anchor ma on ma.anchor_id = a.id
+        where ma.merchant_id = #{merchantId}
     </select>
 
 </mapper>

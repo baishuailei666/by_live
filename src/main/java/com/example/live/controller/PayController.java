@@ -1,4 +1,4 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,14 +52,6 @@ public class PayController {
     @Autowired
     private PayConfigMapper payConfigMapper;
 
-    /**
-     * 支付配置信息
-     * @return
-     */
-    @GetMapping("/info")
-    public BaseResult<?> payConfigInfo() {
-        return commonService.payConfigInfo();
-    }
 
     /**
      * 支付宝

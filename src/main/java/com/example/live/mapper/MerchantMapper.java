@@ -12,6 +12,8 @@ import java.util.List;
 @Mapper
 public interface MerchantMapper {
 
+    List<Merchant> merchantList(@Param("ids") List<Integer> ids);
+
     @Select("select id,mobile,pwd,shop,goods,ope_user as opeUser, login_count as loginCount from merchant where mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 

@@ -1,4 +1,4 @@
-package com.example.live.contorller.query;
+package com.example.live.controller.query;
 
 import lombok.Data;
 
@@ -17,7 +17,7 @@ public class OrderQuery {
     private String end;
     private Integer opeUser;
     private String orderNo;
-    // 购买类型：1-月卡、2-季卡、3月卡
+    // 购买类型：1-月卡、2-季卡、3-年卡
     private Integer buyType;
     // 支付状态：0-未支付、1-已支付
     private Integer payStatus;

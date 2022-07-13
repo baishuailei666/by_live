@@ -3,7 +3,7 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.MobileCode;
 import com.example.live.entity.Order;
@@ -15,8 +15,11 @@ import com.example.live.util.GeneralUtil;
 import com.example.live.util.MD5Util;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
+import com.example.live.vo.OrderVO;
 import com.example.live.vo.UserVO;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +28,10 @@ import sun.misc.BASE64Encoder;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -131,6 +137,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> userList(String keyword, Integer page) {
         Integer agentUser = UserUtil.getUserId();
+        // 超级管理员查看所有
+        if (agentUser==Constant.admin_id) {
+            agentUser = null;
+        }
         int count = userMapper.count(agentUser, keyword);
         if (count==0) {
             return new BaseResult<>();
@@ -210,11 +220,11 @@ public class UserServiceImpl implements UserService {
 
         // 超级管理员-1、管理员（代理）-2、业务员-3
         if (level>3 || level<1) {
-            return new BaseResult<>(10, "level参数错误");
+            return new BaseResult<>(10, "参数错误");
         }
         User user = userMapper.getUserMobile(mobile);
         if (user!=null) {
-            return new BaseResult<>(10, "手机号已存在");
+            return new BaseResult<>(11, "手机号已存在");
         }
 
         userMapper.insUser(mobile, GeneralUtil.defaultPwd(), level, remark);
@@ -224,7 +234,6 @@ public class UserServiceImpl implements UserService {
         int userId = userMapper.lastId();
         // 用户从属关系
         relationUserMapper.insRelation(loginUserId, userId);
-
         return new BaseResult<>();
     }
 
@@ -243,7 +252,24 @@ public class UserServiceImpl implements UserService {
         query.setPage(GeneralUtil.indexPage(query.getPage()));
 
         List<Order> data = orderMapper.orderList(query);
-        // TODO
-        return new BaseResult<>(count, data);
+        List<Integer> ids = Lists.newArrayList();
+        data.forEach(o -> ids.add(o.getMerchantId()));
+        List<Merchant> merchantList = merchantMapper.merchantList(ids);
+        Map<Integer, Merchant> merchantMap = merchantList.stream().collect(Collectors.toMap(Merchant::getId, Function.identity(), (k1, k2) -> k2));
+
+        List<OrderVO> voList = Lists.newLinkedList();
+        data.forEach(o ->{
+            OrderVO ovo = new OrderVO();
+            BeanUtils.copyProperties(o, ovo);
+            Merchant merchant = merchantMap.get(o.getMerchantId());
+            if (merchant!=null) {
+                ovo.setMerchant(merchant.getMobile());
+                ovo.setShop(merchant.getShop());
+            }
+            ovo.setBuyType1(Constant.buyTypeMap.get(o.getBuyType()));
+            ovo.setPayType1(Constant.payTypeMap.get(o.getPayType()));
+            voList.add(ovo);
+        });
+        return new BaseResult<>(count, voList);
     }
 }

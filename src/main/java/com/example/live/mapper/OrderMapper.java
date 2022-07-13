@@ -1,6 +1,6 @@
 package com.example.live.mapper;
 
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,13 +20,13 @@ public interface OrderMapper {
 
 
     // 商户订单列表
-    @Select("select id, order_no as orderNo, buy_type as buyType, money, pay_type as payType, ct, ut" +
+    @Select("select id, order_no as orderNo, buy_type as buyType, money, pay_type as payType, ct, ut from `order`" +
             " where merchant_id=#{merchantId} and `status`='TRADE_SUCCESS'")
     List<Order> merchantOrderList(@Param("merchantId") Integer merchantId);
 
-    int orderCount(@Param("query") OrderQuery query);
+    int orderCount(OrderQuery query);
 
-    List<Order> orderList(@Param("query") OrderQuery query);
+    List<Order> orderList(OrderQuery query);
 
     List<Order> orderListByUserId(@Param("query") OrderQuery query, @Param("userId") Integer userId,@Param("page") Integer page);
 

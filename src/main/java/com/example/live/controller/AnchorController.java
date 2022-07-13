@@ -1,4 +1,4 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.example.live.common.BaseResult;
 import com.example.live.service.AnchorService;
@@ -25,7 +25,7 @@ public class AnchorController {
      * @param id
      * @return
      */
-    @GetMapping("info")
+    @GetMapping("/info")
     public BaseResult<?> anchorInfo(@RequestParam("id") Integer id) {
         return anchorService.anchorInfo(id);
     }
@@ -38,7 +38,7 @@ public class AnchorController {
      * @return
      */
     @GetMapping("/list")
-    public BaseResult<?> anchorMerchantList(@RequestParam("category") String category, @RequestParam("page") Integer page) {
+    public BaseResult<?> anchorMerchantList(String category, Integer page) {
         return anchorService.anchorList();
     }
 
@@ -51,7 +51,7 @@ public class AnchorController {
      * @return
      */
     @GetMapping("/collect")
-    public BaseResult<?> anchorMerchantCollect(@RequestParam("keyword") String keyword, @RequestParam("sort") String sort) {
+    public BaseResult<?> anchorMerchantCollect(String keyword, String sort) {
         return anchorService.anchorCollect();
     }
 
@@ -97,7 +97,7 @@ public class AnchorController {
      */
     @GetMapping("/follow/add")
     public BaseResult<?> anchorFollowAdd(@RequestParam("id") Integer id, @RequestParam("content") String content) {
-        return anchorService.anchorRemove(id);
+        return anchorService.anchorFollowAdd(id, content);
     }
 
 }

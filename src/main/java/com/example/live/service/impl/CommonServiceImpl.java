@@ -89,7 +89,7 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> payConfigInfo() {
         // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
         String val = dataConfigMapper.getConfigStr(Constant.admin_id);
-        String[] price = GeneralUtil.getAgentConfig(val, 3);
+        String[] price = GeneralUtil.getAgentConfig(val, 2);
         List<JSONObject> joList = Lists.newLinkedList();
         JSONObject j1 = new JSONObject();
         j1.put("type", 1);
@@ -115,7 +115,7 @@ public class CommonServiceImpl implements CommonService {
         Integer mid = relationUserMapper.getMainId(mvo.getOpeUser());
         String val = dataConfigMapper.getConfigStr(mid);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);
-        return new BaseResult<>(phone[0]+"\n"+phone[1]);
+        return new BaseResult<>(phone[0]+";"+phone[1]);
     }
 
     @Override

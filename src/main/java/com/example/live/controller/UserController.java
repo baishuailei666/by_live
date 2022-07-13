@@ -1,9 +1,9 @@
-package com.example.live.contorller;
+package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
@@ -117,7 +117,7 @@ public class UserController {
      * @param jo
      * @return
      */
-    @GetMapping("/config/data/modify")
+    @PostMapping("/config/data/modify")
     public BaseResult<?> dataConfigModify(JSONObject jo) {
         return commonService.dataConfigModify(jo);
     }

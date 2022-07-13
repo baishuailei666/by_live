@@ -18,8 +18,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 1000MB
-      max-request-size: 1000MB
+      max-file-size: 1GB
+      max-request-size: 1GB
   main:
     # 解决spring boot 2.6后，因循环引用导致启动时报错问题
     allow-circular-references: true

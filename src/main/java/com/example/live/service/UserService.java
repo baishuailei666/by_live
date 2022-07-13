@@ -2,7 +2,7 @@ package com.example.live.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;

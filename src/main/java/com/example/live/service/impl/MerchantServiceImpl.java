@@ -3,7 +3,7 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.contorller.query.OrderQuery;
+import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
 import com.example.live.entity.Video;
@@ -107,18 +107,18 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(10, "店铺ID不能为空");
         }
         if (StringUtils.isBlank(goods)) {
-            return new BaseResult<>(10, "商品链接不能为空");
+            return new BaseResult<>(11, "商品链接不能为空");
         }
         if (StringUtils.isBlank(introduce)) {
-            return new BaseResult<>(10, "商家介绍不能为空");
+            return new BaseResult<>(12, "商家介绍不能为空");
         }
         if (introduce.length()>140) {
-            return new BaseResult<>(10, "商家介绍最多140字");
+            return new BaseResult<>(13, "商家介绍最多140字");
         }
 
         int ex = merchantMapper.existShop(shopId);
         if (ex!=0) {
-            return new BaseResult<>(10, "店铺已被认证");
+            return new BaseResult<>(14, "店铺已被认证");
         }
         // 店铺绑定
         merchantMapper.bindShop(loginMvo.getId(), shopId, shop, goods, introduce);
@@ -151,18 +151,18 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(10, "店铺ID不能为空");
         }
         if (StringUtils.isBlank(goods)) {
-            return new BaseResult<>(10, "商品链接不能为空");
+            return new BaseResult<>(11, "商品链接不能为空");
         }
         if (StringUtils.isBlank(introduce)) {
-            return new BaseResult<>(10, "商家介绍不能为空");
+            return new BaseResult<>(12, "商家介绍不能为空");
         }
         if (introduce.length()>140) {
-            return new BaseResult<>(10, "商家介绍最多140字");
+            return new BaseResult<>(13, "商家介绍最多140字");
         }
 
         int ex = merchantMapper.existShop(shopId);
         if (ex!=0) {
-            return new BaseResult<>(10, "店铺已被认证");
+            return new BaseResult<>(14, "店铺已被认证");
         }
         // 店铺修改
         merchantMapper.modifyShop(loginMvo.getId(), shopId, shop, goods, introduce);
