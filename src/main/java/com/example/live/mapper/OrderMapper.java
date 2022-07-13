@@ -24,16 +24,13 @@ public interface OrderMapper {
             " where merchant_id=#{merchantId} and `status`='TRADE_SUCCESS'")
     List<Order> merchantOrderList(@Param("merchantId") Integer merchantId);
 
-    int orderCount(OrderQuery query);
+    int orderCount(@Param("query")OrderQuery query);
 
-    List<Order> orderList(OrderQuery query);
-
-    List<Order> orderListByUserId(@Param("query") OrderQuery query, @Param("userId") Integer userId,@Param("page") Integer page);
-
-    int orderListByUserIdCount(@Param("query") OrderQuery query,@Param("userId") Integer userId);
+    List<Order> orderList(@Param("query")OrderQuery query);
 
     List<Order> orderListByUserId(@Param("query") OrderQuery query, @Param("userId") Integer userId,@Param("page") Integer page);
 
     int orderListByUserIdCount(@Param("query") OrderQuery query,@Param("userId") Integer userId);
+
 
 }
