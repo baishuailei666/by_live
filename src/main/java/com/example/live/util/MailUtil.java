@@ -2,7 +2,7 @@ package com.example.live.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
-import com.example.live.mapper.ConfigurationMapper;
+import com.example.live.mapper.DataConfigMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,14 +25,14 @@ public class MailUtil {
     @Resource
     private JavaMailSender mailSender;
     @Autowired
-    private ConfigurationMapper configurationMapper;
+    private DataConfigMapper dataConfigMapper;
 
     // 发送邮箱
     public void sendMailHandler(Integer agentUser, JSONObject jo) {
         Thread thread = new Thread(() -> {
             System.out.println("#jo: " + jo);
 
-            String con = configurationMapper.getConfigStr(agentUser);
+            String con = dataConfigMapper.getConfigStr(agentUser);
             if (StringUtils.isBlank(con)) {
                 System.out.println("##邮箱地址为空, agentUser:"+agentUser);
                 return;

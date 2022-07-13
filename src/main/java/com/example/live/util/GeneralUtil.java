@@ -97,7 +97,11 @@ public final class GeneralUtil {
         }
         // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
         String[] typeStr = str.split(Constant.split2);
-        return typeStr[type].split(Constant.split);
+        if (typeStr[type].contains(",")) {
+            return typeStr[type].split(Constant.split);
+        } else {
+            return new String[]{"","",""};
+        }
     }
 
 }

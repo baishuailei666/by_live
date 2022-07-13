@@ -1,18 +1,18 @@
-package com.example.live.entity;
+package com.example.live.vo;
 
 import lombok.Data;
 
 /**
- * 管理员（代理商）支付配置信息
- *
  * @author baishuailei@zhejianglab.com
- * @date 2022/7/9 15:16
+ * @date 2022/7/13 10:43
  */
 @Data
-public class PayConfig {
+public class PayConfigVO {
     private int id;
     // 对应每个管理员（代理商）支付信息
     private Integer agentUser;
+    private String mobile;
+    private String agentRemark;
     // 支付宝支付，appid
     private String aliAppId;
     // 支付宝支付，私钥
@@ -38,9 +38,4 @@ public class PayConfig {
     // 更新时间
     private String ut;
     private String remark;
-
-    // 管理员（代理商）手机、备注等
-    private String mobile;
-    private String agentRemark;
-
 }
