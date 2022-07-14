@@ -35,7 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (user == null) {
             return new BaseResult<>(14, "登录已过期，请重新登录");
         }
-        if (user.getLevel() == 1) {
+        if (user.getLevel() == 3) {
             return new BaseResult<>(13, "您没有权限查看！");
         }
         int i = invoiceMapper.invoiceListCount(invoiceQuery, user.getId());
