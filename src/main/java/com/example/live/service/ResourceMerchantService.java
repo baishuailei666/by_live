@@ -13,5 +13,7 @@ public interface ResourceMerchantService {
 
     BaseResult<?> editResource(JSONObject jo);
 
+    BaseResult<?> nodes(Integer rid,Integer page);
+
 
 }

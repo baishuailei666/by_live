@@ -3,9 +3,11 @@ package com.example.live.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.service.ResourceMerchantService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 商户资源
@@ -39,12 +41,23 @@ public class ResourceController {
     /**
      * 商户资源意向程度修改
      *
-     * @param jo id、intention：跟进中-1、已处理-2、已拒绝-3
+     * @param jo id、intention：跟进中-1、已拒绝-2、已处理-3
      * @return
      */
     @PostMapping("/edit")
     public BaseResult<?> editResource(JSONObject jo) {
         return resourceMerchantService.editResource(jo);
+    }
+
+    /**
+     * 备注列表
+     * @param id
+     * @param page
+     * @return
+     */
+    @GetMapping("/nodes")
+    public BaseResult<?> nodes(Integer id,Integer page){
+        return resourceMerchantService.nodes(id,page);
     }
 
 

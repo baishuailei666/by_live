@@ -2,9 +2,7 @@ package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
-import com.example.live.common.Constant;
 import com.example.live.entity.Content;
-import com.example.live.entity.Contract;
 import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.ResourceMerchantMapper;
@@ -94,10 +92,14 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
         String note = jo.getString("note");
         //更新资源池
         resourceMerchantMapper.updateResourceMerchant(intention, id);
-        // todo
-        //更新备注表  意向程度：跟进中-1、已处理-2、已拒绝-3
+        //更新备注表  意向程度：跟进中-1、已拒绝-2、已处理-3
         contentMapper.insertByOid(id, note, intention);
         return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> nodes(Integer rid,Integer page) {
+        return new BaseResult<>(contentMapper.nodeList(rid, GeneralUtil.indexPage(page))) ;
     }
 
 }
