@@ -8,11 +8,19 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.common.PayInfo;
+import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
+import com.example.live.mapper.DataConfigMapper;
+import com.example.live.mapper.OrderMapper;
 import com.example.live.mapper.PayConfigMapper;
 import com.example.live.service.CommonService;
+import com.example.live.util.DateUtil;
+import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.MerchantVO;
+import com.example.live.vo.UserVO;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
@@ -48,44 +56,94 @@ public class PayController {
     @Resource
     private WxPayService wxService;
     @Autowired
+    private PayConfigMapper payConfigMapper;
+    @Autowired
+    private OrderMapper orderMapper;
+    @Autowired
     private CommonService commonService;
     @Autowired
-    private PayConfigMapper payConfigMapper;
+    private DataConfigMapper dataConfigMapper;
 
+
+    // 获取代理商支付配置信息
+    public PayConfig getPayConfig(Integer agentUser) {
+        PayConfig config = payConfigMapper.getConfig(agentUser);
+        if (config==null) {
+            config = payConfigMapper.getConfig(Constant.admin_id);
+        }
+        return config;
+    }
 
     /**
      * 支付宝
      */
     @RequestMapping("/ali")
     public void aliPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-        Integer userId = UserUtil.getUserId();
-        if (userId ==null) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo ==null) {
             httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", -1001);
+            jsonObject.put("code", 11);
             jsonObject.put("status", 200);
-            jsonObject.put("msg", "用户暂未登录");
+            jsonObject.put("data", null);
+            jsonObject.put("msg", "用户登录状态已过期");
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
             httpResponse.getWriter().close();
             return;
         }
 
-        //获得初始化的AlipayClient 向支付宝发送支付请求
-        AlipayClient alipayClient = new DefaultAlipayClient(PayInfo.gatewayUrl, PayInfo.app_id,
-                PayInfo.merchant_private_key, AlipayConstants.FORMAT_JSON, PayInfo.charset, PayInfo.alipay_public_key, PayInfo.sign_type);
-
         // 请求
         String form = "";
         String body = null;
-        String subject = null;
-        String totalAmount = "1";
-        String outTradeNo = "";
+        String totalAmount;
         String platform = "";
+        String subject = Constant.buy_subject;
+        String outTradeNo = GeneralUtil.getOrderNo(type);
         String sessionId = httpRequest.getSession().getId();
+
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        String data = dataConfigMapper.getConfigStr(agentUser);
+        String[] prices = GeneralUtil.getAgentConfig(data, 2);
+        if (type==1) {
+            totalAmount = prices[0];
+        } else if (type==2) {
+            totalAmount = prices[1];
+        } else if (type==3) {
+            totalAmount = prices[2];
+        } else {
+            // 无效的请求参数
+            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code", 10);
+            jsonObject.put("data", null);
+            jsonObject.put("status", 200);
+            jsonObject.put("msg", "无效的请求参数");
+            httpResponse.getWriter().write(jsonObject.toJSONString());
+            httpResponse.getWriter().flush();
+            httpResponse.getWriter().close();
+            return;
+        }
+
+        Order order = new Order();
+        order.setPayType(1);
+        order.setBuyType(type);
+        order.setOrderNo(outTradeNo);
+        order.setMerchantId(mvo.getId());
+        order.setOpeUser(mvo.getOpeUser());
+        order.setMoney(Double.valueOf(totalAmount));
+        orderMapper.insOrder(order);
+        System.out.println("#pay ali:"+order);
+
+        PayConfig payConfig = getPayConfig(agentUser);
+
+        //获得初始化的AlipayClient 向支付宝发送支付请求
+        AlipayClient alipayClient = new DefaultAlipayClient(PayInfo.gatewayUrl, payConfig.getAliAppId(),
+                payConfig.getAliPrivateKey(), AlipayConstants.FORMAT_JSON, PayInfo.charset, payConfig.getAliPublicKey(), PayInfo.sign_type);
         try {
             // 网页端
-            AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();// 创建API对应的request
+            // 创建API对应的request
+            AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
             // 同步通知url: 前端路径
             alipayRequest.setReturnUrl(PayInfo.return_url);
             // 异步通知url: 后台服务接口路径
@@ -100,7 +158,8 @@ public class PayController {
             e.printStackTrace();
         }
         httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
-        httpResponse.getWriter().write(form);// 直接将完整的表单html输出到页面
+        // 直接将完整的表单html输出到页面
+        httpResponse.getWriter().write(form);
         httpResponse.getWriter().flush();
         httpResponse.getWriter().close();
     }
@@ -119,6 +178,7 @@ public class PayController {
             //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
         }
 
+        // TODO 支付宝回调
         PrintWriter out = response.getWriter();
         boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, PayInfo.alipay_public_key, PayInfo.charset, PayInfo.sign_type); // 调用SDK验证签名
 
@@ -134,9 +194,14 @@ public class PayController {
 
         if (signVerified) {
             if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
-
-                System.out.println("trade_no:"+trade_no);
-
+                Order order = orderMapper.getOrderByNo(order_no);
+                if (StringUtils.isNotBlank(order.getTradeNo())) {
+                    out.println("success");
+                }
+                order.setTradeNo(trade_no);
+                order.setUt(DateUtil.getTime());
+                order.setStatus(Constant.pay_success);
+                orderMapper.updateSuccess(order);
             }
             out.println("success");
         } else {
@@ -190,12 +255,13 @@ public class PayController {
      */
     @RequestMapping("/wx")
     public <T> T wxPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, WxPayException {
-        Integer userId = UserUtil.getUserId();
-        if (userId ==null) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo ==null) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", -1001);
+            jsonObject.put("code", 11);
+            jsonObject.put("data", null);
             jsonObject.put("status", 200);
-            jsonObject.put("msg", "用户暂未登录");
+            jsonObject.put("msg", "用户登录状态已过期");
             httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
@@ -203,30 +269,66 @@ public class PayController {
             return (T) new BaseResult<>(httpResponse);
         }
 
-        // 4位随机数
-        int random = (int)((Math.random()*9+1)*1000);
-        String outTradeNo = "HT-" + type + "-"+ random;
-        String totalAmount = "1";// 付款金额（必填）
-        String subject = "灰豚数据(抖音版)";// 订单名称（必填）
-        String body = null;// 商品描述 （可空）
+        String totalAmount;
+        String body = Constant.buy_subject;
+        String subject = Constant.buy_subject;
+        String outTradeNo = GeneralUtil.getOrderNo(type);
+        String sessionId = httpRequest.getSession().getId();
+
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        String data = dataConfigMapper.getConfigStr(agentUser);
+        String[] prices = GeneralUtil.getAgentConfig(data, 2);
+        if (type==1) {
+            totalAmount = prices[0];
+            subject = subject+"-月卡";
+        } else if (type==2) {
+            totalAmount = prices[1];
+            subject = subject+"-季卡";
+        } else if (type==3) {
+            totalAmount = prices[2];
+            subject = subject+"-年卡";
+        } else {
+            // 无效的请求参数
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code", 10);
+            jsonObject.put("data", null);
+            jsonObject.put("status", 200);
+            jsonObject.put("msg", "无效的请求参数");
+            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.getWriter().write(jsonObject.toJSONString());
+            httpResponse.getWriter().flush();
+            httpResponse.getWriter().close();
+            return (T) new BaseResult<>(httpResponse);
+        }
+
+        Order order = new Order();
+        order.setPayType(2);
+        order.setBuyType(type);
+        order.setOrderNo(outTradeNo);
+        order.setMerchantId(mvo.getId());
+        order.setOpeUser(mvo.getOpeUser());
+        order.setMoney(Double.valueOf(totalAmount));
+        orderMapper.insOrder(order);
+        System.out.println("#wx ali:"+order);
+
 
         // 调用微信支付接口
         WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
+        request.setBody(body);
+        request.setDetail(subject);
         request.setProductId("1");
         request.setOutTradeNo(outTradeNo);
         request.setSpbillCreateIp("122.234.60.79");
-        request.setBody(subject+"-"+body+"个月");
-        request.setDetail(subject+"-"+body+"个月");
 //        // 设置支付过期时间：30分钟
 //        request.setTimeExpire(getOrderExpireTime(30*sec));
         // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的
         // 订单金额，单位为分
         request.setTotalFee((int) (NumberUtils.toFloat(totalAmount) * 100));
         request.setNotifyUrl(PayInfo.notify_url2);//线上回调地址
-        request.setAttach(httpRequest.getSession().getId());//附加数据sessionId
+        request.setAttach(sessionId);//附加数据sessionId
         request.setTradeType("NATIVE"); //网页支付
 
-        this.wxService.setConfig(wxPayConfig());
+        this.wxService.setConfig(wxPayConfig(agentUser));
         Object codeUrl = this.wxService.createOrder(request);
         Map<String, Object> map = Maps.newHashMap();
         map.put("codeUrl", codeUrl);
@@ -239,7 +341,8 @@ public class PayController {
      */
     @PostMapping("/notify/wx")
     public String wxNotifyPay(@RequestBody String xmlData) throws WxPayException {
-        this.wxService.setConfig(wxPayConfig());
+        // TODO 微信支付回调
+        this.wxService.setConfig(wxPayConfig(null));
 
         final WxPayOrderNotifyResult notifyResult = this.wxService.parseOrderNotifyResult(xmlData);
 
@@ -248,6 +351,14 @@ public class PayController {
         long total_fee = (long) notifyResult.getTotalFee() / 100; // 用户支付金额
         String attach = notifyResult.getAttach(); // 交易状态
 
+        Order order = orderMapper.getOrderByNo(order_no);
+        if (StringUtils.isNotBlank(order.getTradeNo())) {
+            return WxPayNotifyResponse.success("支付成功");
+        }
+        order.setTradeNo(trade_no);
+        order.setUt(DateUtil.getTime());
+        order.setStatus(Constant.pay_success);
+        orderMapper.updateSuccess(order);
         return WxPayNotifyResponse.success("支付成功");
     }
 
@@ -257,11 +368,8 @@ public class PayController {
     }
 
     // 自定义构造支付参数
-    public WxPayConfig wxPayConfig() {
-        Integer loginUserId = UserUtil.getUserId();
-
-        // loginUserId -> agency_user_id
-        PayConfig payConfig = payConfigMapper.getConfig(loginUserId);
+    public WxPayConfig wxPayConfig(Integer agentUser) {
+        PayConfig payConfig = getPayConfig(agentUser);
         if (payConfig==null) {
             // 支付参数无效
             return null;

@@ -18,6 +18,8 @@ public interface CommonService {
     // 返回当前登录业务员上层管理员用户
     Integer agentUser(Integer opeUser);
 
+    Integer merchantAgentUser(Integer opeUser);
+
     // 返回当前管理员下层业务员
     List<Integer> opeUserIds(Integer agentUser);
 

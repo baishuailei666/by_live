@@ -23,6 +23,11 @@ public interface OrderMapper {
     @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType where `status`='TRADE_SUCCESS' and merchant_id=#{merchantId} order by ut desc limit 1")
     Order getOrder1(@Param("id") int merchantId);
 
+    @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType where order_no=#{orderNo} order by ut desc limit 1")
+    Order getOrderByNo(@Param("orderNo") String orderNo);
+
+    void updateSuccess(Order order);
+
     // 商户订单列表
     @Select("select id, order_no as orderNo, buy_type as buyType, money, pay_type as payType, ct, ut from `order`" +
             " where merchant_id=#{merchantId} and `status`='TRADE_SUCCESS'")
@@ -31,9 +36,5 @@ public interface OrderMapper {
     int orderCount(OrderQuery query);
 
     List<Order> orderList(OrderQuery query);
-
-    List<Order> orderListByUserId(@Param("query") OrderQuery query, @Param("userId") Integer userId,@Param("page") Integer page);
-
-    int orderListByUserIdCount(@Param("query") OrderQuery query,@Param("userId") Integer userId);
 
 }

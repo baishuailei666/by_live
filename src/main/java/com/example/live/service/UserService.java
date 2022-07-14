@@ -34,4 +34,6 @@ public interface UserService {
 
     BaseResult<?> orderIns(Order order);
 
+    BaseResult<?> opeUserMerchantOrderList(OrderQuery orderQuery);
+
 }

@@ -45,34 +45,6 @@ public class MerchantController {
         return merchantService.merchantOrderList();
     }
 
-    /**
-     * 商户订单筛选(业务员)
-     */
-    @PostMapping("/orderScreen")
-    public BaseResult<?> merchantOrderByParam(@RequestBody JSONObject jo) {
-        return merchantService.merchantOrderByParam(jo);
-    }
-
-    /**
-     * 店铺审核列表
-     *
-     * @return
-     */
-    @PostMapping("/audits")
-    public BaseResult<?> audits(@RequestBody JSONObject jo) {
-        return merchantAuditService.audits(jo);
-    }
-
-    /**
-     * 店铺审核是否通过
-     *
-     * @param jo
-     * @return
-     */
-    @PostMapping("merchantAudit")
-    public BaseResult<?> merchantAudit(@RequestBody JSONObject jo) {
-        return merchantAuditService.merchantAudit(jo);
-    }
 
     /**
      * 商户绑定店铺
@@ -141,6 +113,7 @@ public class MerchantController {
 
     /**
      * 提交合同
+     *
      * @param contract
      * @return
      */
@@ -148,8 +121,10 @@ public class MerchantController {
     public BaseResult<?> merchantContractCreate(@RequestBody Contract contract) {
         return merchantService.merchantContractCreate(contract);
     }
+
     /**
      * 修改合同
+     *
      * @param contract
      * @return
      */
@@ -157,14 +132,26 @@ public class MerchantController {
     public BaseResult<?> merchantContractModify(@RequestBody Contract contract) {
         return merchantService.merchantContractModify(contract);
     }
+
     /**
      * 提交发票
+     *
      * @param invoice
      * @return
      */
     @PostMapping("/invoice/create")
     public BaseResult<?> merchantInvoiceCreate(@RequestBody Invoice invoice) {
         return merchantService.merchantInvoiceCreate(invoice);
+    }
+
+    /**
+     * 微信支付验收是否支付成功
+     * @param orderNo 订单号
+     * @return
+     */
+    @GetMapping("/paySuccess")
+    public BaseResult<?> paySuccessCheck(@RequestParam("orderNo") String orderNo) {
+        return merchantService.paySuccessCheck(orderNo);
     }
 
 }

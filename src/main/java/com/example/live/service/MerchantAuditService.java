@@ -11,6 +11,5 @@ public interface MerchantAuditService {
 
     BaseResult<?> audits(JSONObject jo);
 
-
     BaseResult<?> merchantAudit(JSONObject jo);
 }
