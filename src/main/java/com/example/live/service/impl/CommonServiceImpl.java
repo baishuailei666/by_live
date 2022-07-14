@@ -69,6 +69,14 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
+    public List<Integer> opeUserIds(Integer agentUser) {
+        if (agentUser==Constant.admin_id) {
+            return null;
+        }
+        return relationUserMapper.relationIds(agentUser);
+    }
+
+    @Override
     public BaseResult<?> msgList(Integer page) {
         List<Content> data = contentMapper.contentList(UserUtil.getMerchantId(), GeneralUtil.indexPage(page));
         return new BaseResult<>(data);

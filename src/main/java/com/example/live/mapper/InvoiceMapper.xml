@@ -3,10 +3,13 @@
 <mapper namespace="com.example.live.mapper.InvoiceMapper">
 
     <select id="invoiceList" parameterType="com.example.live.controller.query.InvoiceQuery"
-            resultType="com.example.live.vo.InvoiceVo">
+            resultType="com.example.live.vo.InvoiceVO">
         select n.id,m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.remark,n.ct,n.ut
         from invoice n left join merchant m on n.merchant_id=m.shop_id
-        where n.ope_user in(select child_user_id from relation_user where main_user_id=#{userId})
+        where n.ope_user in
+        <foreach collection="ids" index="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="query.mobile != null and query.mobile != ''">
             and m.mobile = #{query.mobile}
         </if>
@@ -17,7 +20,7 @@
             and m.status = #{query.status}
         </if>
         order by ct DESC
-        limit #{query.index},#{query.size}
+        limit #{query.index}, #{query.size}
     </select>
 
 
@@ -25,7 +28,10 @@
             resultType="int">
         select m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.ct,n.ut
         from invoice n left join merchant m on n.merchant_id=m.shop_id
-        where n.ope_user in(select child_user_id from relation_user where main_user_id=#{userId})
+        where n.ope_user in
+        <foreach collection="ids" index="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="query.mobile != null and query.mobile != ''">
             and m.mobile = #{query.mobile}
         </if>

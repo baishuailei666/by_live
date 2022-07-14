@@ -104,4 +104,9 @@ public final class GeneralUtil {
         }
     }
 
+    public static String getOrderNo(int type) {
+        int random = (int)((Math.random()*9+1)*1000);
+        return DateUtil.getTime2() + random + type;
+    }
+
 }

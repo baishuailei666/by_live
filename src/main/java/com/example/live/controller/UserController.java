@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
+import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
@@ -98,6 +99,16 @@ public class UserController {
     @GetMapping("/order")
     public BaseResult<?> orderList(OrderQuery query) {
         return userService.orderList(query);
+    }
+
+    /**
+     * 新增订单（针对线下交易）
+     * @param order
+     * @return
+     */
+    @PostMapping("/order/ins")
+    public BaseResult<?> orderIns(Order order) {
+        return userService.orderIns(order);
     }
 
     /**

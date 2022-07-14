@@ -15,8 +15,10 @@ import java.util.List;
 public class UserVO {
     private int id;
     private String mobile;
+    // 等级：超级管理员-1、管理员（代理）-2、业务员-3
     private Integer level;
     private String wx;
     private String ts;
+    private Integer agentUser;
     private List<LevelRight> rights;
 }

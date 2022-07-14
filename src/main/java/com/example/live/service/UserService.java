@@ -3,6 +3,7 @@ package com.example.live.service;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.controller.query.OrderQuery;
+import com.example.live.entity.Order;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -30,5 +31,7 @@ public interface UserService {
     BaseResult<?> userDel(Integer id);
 
     BaseResult<?> orderList(OrderQuery query);
+
+    BaseResult<?> orderIns(Order order);
 
 }
