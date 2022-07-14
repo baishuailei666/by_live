@@ -58,4 +58,18 @@ public class Constant {
         contentTypeMap.put(2, "备注");
         contentTypeMap.put(3, "消息通知");
     }
+    // 签署类型：1-企业签署、2-个人签署
+    public static Map<Integer, String> signTypeMap;
+    static {
+        signTypeMap = new HashMap<>();
+        signTypeMap.put(1, "企业签署");
+        signTypeMap.put(2, "个人签署");
+    }
+    // 签署状态：0-未签、1-已签
+    public static Map<Integer, String> signStatusMap;
+    static {
+        signStatusMap = new HashMap<>();
+        signStatusMap.put(0, "未签署");
+        signStatusMap.put(1, "已签署");
+    }
 }

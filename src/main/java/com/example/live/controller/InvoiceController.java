@@ -32,8 +32,8 @@ public class InvoiceController {
 
 
     /**
-     * 发票审核 id:发票id status:-1通过，2拒绝 remark:备注，拒绝原因
-     * @param jo
+     * 发票审核
+     * @param jo id-发票id、status：1-通过、2-拒绝、remark-拒绝原因
      * @return
      */
     @PostMapping("/check")

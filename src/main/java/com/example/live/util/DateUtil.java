@@ -45,6 +45,11 @@ public class DateUtil {
     public static String getTime() {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
     }
+    public static String getTime2() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        Date date = new Date();
+        return sdf.format(date);
+    }
 
     // 和当前时间比较
     public static boolean comTsVal(String ts, int val) {

@@ -76,6 +76,14 @@ public class UserServiceImpl implements UserService {
             vo.setId(user.getId());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
+            if (user.getLevel()==3) {
+                // 上级id
+                Integer mid = relationUserMapper.getMainId(user.getId());
+                vo.setAgentUser(mid);
+            } else {
+                // 超级管理员、管理员使用自己的id
+                vo.setAgentUser(user.getId());
+            }
             session.setAttribute(Constant.session_user, vo);
             return new BaseResult<>(vo);
         }
@@ -271,5 +279,17 @@ public class UserServiceImpl implements UserService {
             voList.add(ovo);
         });
         return new BaseResult<>(count, voList);
+    }
+
+    @Override
+    public BaseResult<?> orderIns(Order order) {
+        UserVO uvo = UserUtil.getUser();
+
+        String orderNo = GeneralUtil.getOrderNo(order.getBuyType());
+        order.setOrderNo(orderNo);
+        order.setOpeUser(uvo.getId());
+        order.setStatus(Constant.pay_success);
+        orderMapper.insOrder(order);
+        return new BaseResult<>();
     }
 }

@@ -2,7 +2,9 @@ package com.example.live.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
+import com.example.live.entity.Invoice;
 import com.example.live.mapper.DataConfigMapper;
+import com.example.live.mapper.InvoiceMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,23 +28,27 @@ public class MailUtil {
     private JavaMailSender mailSender;
     @Autowired
     private DataConfigMapper dataConfigMapper;
+    @Autowired
+    private InvoiceMapper invoiceMapper;
 
     // 发送邮箱
-    public void sendMailHandler(Integer agentUser, JSONObject jo) {
-        Thread thread = new Thread(() -> {
-            System.out.println("#jo: " + jo);
+    public void sendMailHandler(Integer agentUser, Integer id) {
+        Invoice invoice = invoiceMapper.getInvoice(id);
+        if (invoice==null) {
+            return;
+        }
 
+        Thread thread = new Thread(() -> {
             String con = dataConfigMapper.getConfigStr(agentUser);
             if (StringUtils.isBlank(con)) {
                 System.out.println("##邮箱地址为空, agentUser:"+agentUser);
                 return;
             }
 
-            int id = jo.getIntValue("id");
-            String company = jo.getString("company");
-            String tax = jo.getString("tax");
-            String money = jo.getString("money");
-            String email = jo.getString("email");
+            String company = invoice.getCompany();
+            String tax = invoice.getTax();
+            String money = invoice.getMoney()+"";
+            String email = invoice.getEmail();
 
             String sbd = head +
                     "<tbody>" +

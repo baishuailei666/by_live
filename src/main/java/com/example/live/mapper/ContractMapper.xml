@@ -20,4 +20,39 @@
         where id=#{id}
     </update>
 
+    <select id="contractCount" resultType="int" parameterType="com.example.live.controller.query.ContractQuery">
+        select count(1) from contract
+        <where>
+            <if test="company!=null and company!=''">
+                company like concat('%',#{company},'%')
+            </if>
+            <if test="mobile!=null and mobile!=''">
+                and mobile like concat('%',#{mobile},'%')
+            </if>
+            <if test="shop!=null and shop!=''">
+                and merchant_id in
+                (select id from merchant where shop like concat('%',#{shop},'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="contractList" resultType="com.example.live.entity.Contract" parameterType="com.example.live.controller.query.ContractQuery">
+        select id, merchant_id as merchantId, ope_user as opeUser, buy_type as buyType
+             , ct, ut, remark, sign_status as signStatus, sign_type as signType, company, tax, owner, mobile
+        from contract
+        <where>
+            <if test="company!=null and company!=''">
+                company like concat('%',#{company},'%')
+            </if>
+            <if test="mobile!=null and mobile!=''">
+                and mobile like concat('%',#{mobile},'%')
+            </if>
+            <if test="shop!=null and shop!=''">
+                and merchant_id in
+                (select id from merchant where shop like concat('%',#{shop},'%'))
+            </if>
+        </where>
+        limit #{page}, 10
+    </select>
+
 </mapper>

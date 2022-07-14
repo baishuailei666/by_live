@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.controller.query.InvoiceQuery;
 import com.example.live.mapper.InvoiceMapper;
+import com.example.live.service.CommonService;
 import com.example.live.service.InvoiceService;
 import com.example.live.util.MailUtil;
 import com.example.live.util.UserUtil;
-import com.example.live.vo.InvoiceVo;
+import com.example.live.vo.InvoiceVO;
 import com.example.live.vo.UserVO;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,25 +26,31 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private InvoiceMapper invoiceMapper;
-
     @Autowired
     private MailUtil mailUtil;
+    @Autowired
+    private CommonService commonService;
 
     @Override
     public BaseResult<?> invoiceList(JSONObject jo) {
         UserVO user = UserUtil.getUser();
         InvoiceQuery invoiceQuery = jo.toJavaObject(InvoiceQuery.class);
         if (user == null) {
-            return new BaseResult<>(14, "登录已过期，请重新登录");
+            return new BaseResult<>(10, "登录已过期，请重新登录");
         }
-        if (user.getLevel() == 1) {
-            return new BaseResult<>(13, "您没有权限查看！");
+        List<Integer> opeUserIds = Lists.newArrayList();
+        if (user.getLevel()!=3) {
+            // 不是业务员级别
+            opeUserIds = commonService.opeUserIds(user.getId());
+        } else {
+            opeUserIds.add(user.getId());
         }
-        int i = invoiceMapper.invoiceListCount(invoiceQuery, user.getId());
+
+        int i = invoiceMapper.invoiceListCount(invoiceQuery, opeUserIds);
         if (i == 0) {
             return new BaseResult<>();
         }
-        List<InvoiceVo> invoices = invoiceMapper.invoiceList(invoiceQuery, user.getId());
+        List<InvoiceVO> invoices = invoiceMapper.invoiceList(invoiceQuery, opeUserIds);
         return new BaseResult<>(i, invoices);
     }
 
@@ -53,20 +61,18 @@ public class InvoiceServiceImpl implements InvoiceService {
         String remark = jo.getString("remark");
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(14, "登录已过期，请重新登录");
-        }
-        if (user.getLevel() == 1) {
-            return new BaseResult<>(13, "您没有权限查看！");
+            return new BaseResult<>(10, "登录已过期，请重新登录");
         }
         if (id == null || status == null) {
-            return new BaseResult<>(12, "传参有误，请检查");
+            return new BaseResult<>(11, "参数不能为空");
         }
-        if (status == 1) {
-            try {
-                mailUtil.sendMailHandler(user.getId(), jo);
-            } catch (Exception e) {
-                return new BaseResult<>(14, "邮件发送失败，请重新提交！");
-            }
+        // status：1-通过、2-拒绝
+        if (status!=1&&status!=2) {
+            return new BaseResult<>(12, "参数错误");
+        }
+        // 审核通过发送邮箱
+        if (status==1) {
+            mailUtil.sendMailHandler(user.getAgentUser(), id);
         }
         invoiceMapper.invoiceUpdate(id, status, remark);
         return new BaseResult<>();
