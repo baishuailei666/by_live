@@ -208,4 +208,13 @@ public class MerchantServiceImpl implements MerchantService {
         return new BaseResult<>();
     }
 
+    @Override
+    public BaseResult<?> paySuccessCheck(String orderNo) {
+        Order order = orderMapper.getOrderByNo(orderNo);
+        if (order!=null&&Constant.pay_success.equals(order.getStatus())) {
+            return new BaseResult<>("支付成功");
+        }
+        return new BaseResult<>(10, "支付验证");
+    }
+
 }

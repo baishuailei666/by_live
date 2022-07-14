@@ -72,4 +72,10 @@
         limit #{page}, 10
     </select>
 
+    <update id="updateSuccess" parameterType="com.example.live.entity.Order">
+        update `order`
+        set `status`=#{status}, trade_no=#{tradeNo}, ut=#{ut}
+        where id=#{id}
+    </update>
+
 </mapper>

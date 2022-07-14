@@ -21,6 +21,9 @@ public class Constant {
     public static final String source_back = "back";
     public static final String source_merchant = "merchant";
 
+    // 购买服务说明
+    public static final String buy_subject = "直播推广服务";
+
     // 订单支付成功
     public static final String pay_success = "TRADE_SUCCESS";
 

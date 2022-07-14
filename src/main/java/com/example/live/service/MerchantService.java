@@ -37,4 +37,7 @@ public interface MerchantService {
     BaseResult<?> merchantContractModify(Contract contract);
 
     BaseResult<?> merchantInvoiceCreate(Invoice invoice);
+
+    BaseResult<?> paySuccessCheck(String orderNo);
+
 }

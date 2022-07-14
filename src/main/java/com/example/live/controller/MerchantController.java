@@ -144,4 +144,14 @@ public class MerchantController {
         return merchantService.merchantInvoiceCreate(invoice);
     }
 
+    /**
+     * 微信支付验收是否支付成功
+     * @param orderNo 订单号
+     * @return
+     */
+    @GetMapping("/paySuccess")
+    public BaseResult<?> paySuccessCheck(@RequestParam("orderNo") String orderNo) {
+        return merchantService.paySuccessCheck(orderNo);
+    }
+
 }

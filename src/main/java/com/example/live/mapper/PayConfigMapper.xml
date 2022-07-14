@@ -7,7 +7,7 @@
              , pc.wx_app_id as wxAppId, pc.wx_mch_id as wxMchId, pc.wx_mch_key as wxMchKey, pc.wx_key_path as wxKeyPath, pc.contrary
              , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount, pc.ct, pc.ut, pc.remark
         from pay_config pc
-        where agent_user=#{userId}
+        where pc.agent_user=#{userId}
     </select>
 
     <select id="configList" resultType="com.example.live.entity.PayConfig">

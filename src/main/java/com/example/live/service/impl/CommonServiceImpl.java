@@ -67,6 +67,18 @@ public class CommonServiceImpl implements CommonService {
         }
         return mid;
     }
+    @Override
+    public Integer merchantAgentUser(Integer opeUser) {
+        if (opeUser==null) {
+            return Constant.admin_id;
+        }
+        Integer mid = relationUserMapper.getMainId(opeUser);
+        if (mid==null) {
+            // 当前用户就是管理员
+            mid = opeUser;
+        }
+        return mid;
+    }
 
     @Override
     public List<Integer> opeUserIds(Integer agentUser) {
