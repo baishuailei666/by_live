@@ -7,6 +7,7 @@ import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
+import com.example.live.service.MerchantAuditService;
 import com.example.live.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private MerchantAuditService merchantAuditService;
 
     @GetMapping("/index")
     public BaseResult<?> index() {
@@ -109,6 +112,40 @@ public class UserController {
     @PostMapping("/order/ins")
     public BaseResult<?> orderIns(Order order) {
         return userService.orderIns(order);
+    }
+
+
+    /**
+     * 业务员-商户订单列表
+     *
+     * @param orderQuery start-查询时间开始、end-查询时间结束、page-1、mobile-商户手机号
+     *                   、shop-商户店铺、orderNo-订单号、buyType-购买类型 1-月卡、2-季卡、3-年卡
+     * @return
+     */
+    @PostMapping("/merchant/order")
+    public BaseResult<?> opeUserMerchantOrderList(@RequestBody OrderQuery orderQuery) {
+        return userService.opeUserMerchantOrderList(orderQuery);
+    }
+
+    /**
+     * 业务员-商户店铺审核列表
+     *
+     * @return
+     */
+    @PostMapping("/merchant/auditList")
+    public BaseResult<?> auditList(@RequestBody JSONObject jo) {
+        return merchantAuditService.audits(jo);
+    }
+
+    /**
+     * 业务员-商户店铺审核操作
+     *
+     * @param jo
+     * @return
+     */
+    @PostMapping("/merchant/audit")
+    public BaseResult<?> merchantAudit(@RequestBody JSONObject jo) {
+        return merchantAuditService.merchantAudit(jo);
     }
 
     /**

@@ -292,4 +292,14 @@ public class UserServiceImpl implements UserService {
         orderMapper.insOrder(order);
         return new BaseResult<>();
     }
+
+    @Override
+    public BaseResult<?> opeUserMerchantOrderList(OrderQuery orderQuery) {
+        // orderQuery start-查询时间开始、end-查询时间结束、page-1、mobile-商户手机号
+        //  、shop-商户店铺、orderNo-订单号、buyType-购买类型 1-月卡、2-季卡、3-年卡
+        UserVO user = UserUtil.getUser();
+        orderQuery.setOpeUser(user.getId());
+        return this.orderList(orderQuery);
+    }
+
 }

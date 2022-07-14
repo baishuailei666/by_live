@@ -20,8 +20,6 @@ public interface MerchantService {
 
     BaseResult<?> merchantOrderList();
 
-    BaseResult<?> merchantOrderByParam(JSONObject jo);
-
     BaseResult<?> merchantShopBind(JSONObject jo);
 
     BaseResult<?> merchantShop();

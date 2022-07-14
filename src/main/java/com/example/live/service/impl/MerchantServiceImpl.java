@@ -42,6 +42,8 @@ public class MerchantServiceImpl implements MerchantService {
     private ContractMapper contractMapper;
     @Autowired
     private InvoiceMapper invoiceMapper;
+    @Autowired
+    private OrderMapper orderMapper;
 
 
     @Override
@@ -61,10 +63,6 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
-
-    @Autowired
-    private OrderMapper orderMapper;
-
     @Override
     public BaseResult<?> merchantOrderList() {
         Integer merchantId = UserUtil.getMerchantId();
@@ -81,19 +79,6 @@ public class MerchantServiceImpl implements MerchantService {
         });
         return new BaseResult<>(voList);
     }
-
-    @Override
-    public BaseResult<?> merchantOrderByParam(JSONObject jo) {
-        OrderQuery orderQuery = jo.toJavaObject(OrderQuery.class);
-        UserVO user = UserUtil.getUser();
-        int count = orderMapper.orderListByUserIdCount(orderQuery, user.getId());
-        if (count == 0) {
-            return new BaseResult<>();
-        }
-        List<Order> orders = orderMapper.orderListByUserId(orderQuery, user.getId(), 0);
-        return new BaseResult<>(count, orders);
-    }
-
 
     @Override
     public BaseResult<?> merchantShopBind(JSONObject jo) {

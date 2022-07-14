@@ -15,8 +15,8 @@ public class MerchantAudit {
     private Integer merchantId;
     // 业务员
     private Integer opeUser;
-    // 状态：待审核、审核通过、已拒绝
-    private String status;
+    // 状态：待审核-0、审核通过-1、已拒绝-2
+    private int status;
     // 申请时间
     private String ct;
     // 操作时间

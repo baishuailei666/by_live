@@ -32,8 +32,4 @@ public interface OrderMapper {
 
     List<Order> orderList(OrderQuery query);
 
-    List<Order> orderListByUserId(@Param("query") OrderQuery query, @Param("userId") Integer userId,@Param("page") Integer page);
-
-    int orderListByUserIdCount(@Param("query") OrderQuery query,@Param("userId") Integer userId);
-
 }

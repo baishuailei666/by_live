@@ -32,42 +32,50 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Override
     public BaseResult<?> audits(JSONObject jo) {
-        String status = jo.getString("status");
+        // 1-审核通过、2-审核拒绝
+        Integer status = jo.getInteger("status");
         String mobile = jo.getString("mobile");
         String shop = jo.getString("shop");
         int page = jo.getInteger("page");
-        int size = jo.getInteger("size");
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(13, "登录已过期，重新登录！");
+            return new BaseResult<>(10, "登录已过期，重新登录！");
         }
-        Integer userId = UserUtil.getUserId();
+        Integer userId = user.getId();
         int i = merchantAuditMapper.merchantAuditWaitCount(userId, status, mobile, shop);
-        if (i != 0) {
-            List<MerchantAuditVO> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page, size), size == 0 ? 10 : size);
+        if (i!=0) {
+            List<MerchantAuditVO> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page));
+            merchantAudits.forEach(v ->{
+                if ("1".equals(v.getStatus())) {
+                    v.setStatus("已通过");
+                } else if ("2".equals(v.getStatus())) {
+                    v.setStatus("已拒绝");
+                } else {
+                    v.setStatus("待审核");
+                }
+            });
             return new BaseResult<>(i, merchantAudits);
         } else {
             return new BaseResult<>();
         }
-
     }
 
     @Override
     public BaseResult<?> merchantAudit(JSONObject jo) {
-        String shopId = jo.getString("shopId");
-        Boolean status = jo.getBoolean("status");
+        String merchantId = jo.getString("merchantId");
+        int status = jo.getIntValue("status");
         String reason = jo.getString("reason");
-        if (StringUtils.isEmpty(shopId)) {
-            return new BaseResult<>(14, "请求参数有误（shopId未传）");
+        if (StringUtils.isEmpty(merchantId)) {
+            return new BaseResult<>(12, "参数不能为空");
         }
-        if (status == null) {
-            return new BaseResult<>(14, "请求参数有误（审核状态未传）");
+        if (status!=1&&status!=2) {
+            return new BaseResult<>(14, "请求参数有误");
         }
-        //更新merchant_audit表
-        merchantAuditMapper.updateMerchantAudit(shopId, status ? "审核通过" : "已拒绝", reason);
-        if (status) {
-            //更新merchant表
-            merchantMapper.updateMerchantCheck(shopId);
+        // 更新merchant_audit表
+        merchantAuditMapper.updateMerchantAudit(merchantId, status, reason);
+        if (status==1) {
+            // 更新merchant表
+            merchantMapper.updateMerchantCheck(merchantId);
         }
         return new BaseResult<>();
     }

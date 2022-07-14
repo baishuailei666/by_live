@@ -14,15 +14,15 @@ import java.util.List;
 @Mapper
 public interface MerchantAuditMapper {
 
-    List<MerchantAuditVO> merchantAuditWait(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
+    List<MerchantAuditVO> merchantAuditWait(@Param("opeUserId") Integer opeUserId, @Param("status") Integer status,
                                             @Param("mobile") String mobile, @Param("shop") String shop,
-                                            @Param("index") Integer index, @Param("size") Integer size);
+                                            @Param("index") Integer index);
 
-    int merchantAuditWaitCount(@Param("opeUserId") Integer opeUserId, @Param("status") String status,
+    int merchantAuditWaitCount(@Param("opeUserId") Integer opeUserId, @Param("status") Integer status,
                                @Param("mobile") String mobile, @Param("shop") String shop);
 
 
-    void updateMerchantAudit(@Param("shopId") String shopId, @Param("status") String status, @Param("reason") String reason);
+    void updateMerchantAudit(@Param("merchantId") String merchantId, @Param("status") Integer status, @Param("reason") String reason);
 
     @Insert("insert into(merchant_id, ope_user, ct, ut)" +
             "values(#{merchantId}, #{opeUser}, now(), now())")
