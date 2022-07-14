@@ -3,14 +3,11 @@ package com.example.live.vo;
 import lombok.Data;
 
 /**
- * 发票
- *
  * @author baishuailei@zhejianglab.com
- * @date 2022/7/6
+ * @date 2022/7/14 11:01
  */
 @Data
-public class InvoiceVo {
-
+public class InvoiceVO {
     private Integer id;
     //手机号
     private String mobile;
