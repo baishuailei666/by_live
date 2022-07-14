@@ -21,5 +21,5 @@ public interface InvoiceService {
      * @param jo
      * @return
      */
-    BaseResult<?> invoiceUpdate(JSONObject jo);
+    BaseResult<?> invoiceCheck(JSONObject jo);
 }

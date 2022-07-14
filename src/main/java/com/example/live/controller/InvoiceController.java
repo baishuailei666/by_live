@@ -31,9 +31,14 @@ public class InvoiceController {
     }
 
 
-    @PostMapping("/update")
-    public BaseResult<?> invoiceUpdate(JSONObject jo){
-        return invoiceService.invoiceUpdate(jo);
+    /**
+     * 发票审核 id:发票id status:-1通过，2拒绝 remark:备注，拒绝原因
+     * @param jo
+     * @return
+     */
+    @PostMapping("/check")
+    public BaseResult<?> invoiceCheck(JSONObject jo){
+        return invoiceService.invoiceCheck(jo);
     }
 
 

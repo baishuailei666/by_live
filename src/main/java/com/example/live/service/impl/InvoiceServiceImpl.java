@@ -47,7 +47,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public BaseResult<?> invoiceUpdate(JSONObject jo) {
+    public BaseResult<?> invoiceCheck(JSONObject jo) {
         Integer id = jo.getInteger("id");
         Integer status = jo.getInteger("status");
         String remark = jo.getString("remark");
