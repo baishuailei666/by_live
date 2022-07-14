@@ -63,6 +63,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (user == null) {
             return new BaseResult<>(10, "登录已过期，请重新登录");
         }
+        if (user.getLevel() == 3) {
+            return new BaseResult<>(14, "您没有权限！");
+        }
         if (id == null || status == null) {
             return new BaseResult<>(11, "参数不能为空");
         }
