@@ -10,6 +10,7 @@ import com.example.live.service.CommonService;
 import com.example.live.service.ResourceMerchantService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.ContentVO;
 import com.example.live.vo.ResourceMerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
@@ -87,19 +88,29 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
 
     @Override
     public BaseResult<?> editResource(JSONObject jo) {
+        UserVO uvo = UserUtil.getUser();
+        // 意向程度：跟进中-1、已处理-2、已拒绝-3
         Integer intention = jo.getInteger("intention");
         Integer id = jo.getInteger("id");
-        String note = jo.getString("note");
-        //更新资源池
-        resourceMerchantMapper.updateResourceMerchant(intention, id);
-        //更新备注表  意向程度：跟进中-1、已拒绝-2、已处理-3
-        contentMapper.insertByOid(id, note, intention);
+        resourceMerchantMapper.updateResourceMerchant(intention, id, uvo.getId());
         return new BaseResult<>();
     }
 
     @Override
-    public BaseResult<?> nodes(Integer rid,Integer page) {
-        return new BaseResult<>(contentMapper.nodeList(rid, GeneralUtil.indexPage(page))) ;
+    public BaseResult<?> noteAdd(JSONObject jo) {
+        UserVO uvo = UserUtil.getUser();
+        Integer id = jo.getInteger("id");
+        String note = jo.getString("note");
+        // 跟进记录-1、备注-2、消息通知-3
+        contentMapper.insContent(uvo.getId(), id, note, 2);
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> noteList(Integer id) {
+        UserVO uvo = UserUtil.getUser();
+        List<ContentVO> data = contentMapper.contentListParam(uvo.getId(), id, 2);
+        return new BaseResult<>(data.size(), data) ;
     }
 
 }

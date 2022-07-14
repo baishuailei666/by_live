@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.service.ResourceMerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 商户资源
@@ -39,9 +36,9 @@ public class ResourceController {
 
 
     /**
-     * 商户资源意向程度修改
+     * 商户资源-意向程度修改
      *
-     * @param jo id、intention：跟进中-1、已拒绝-2、已处理-3
+     * @param jo id、intention：跟进中-1、已处理-2、已拒绝-3
      * @return
      */
     @PostMapping("/edit")
@@ -50,14 +47,25 @@ public class ResourceController {
     }
 
     /**
-     * 备注列表
-     * @param id
-     * @param page
+     * 商户资源-添加备注
+     *
+     * @param jo id、note
      * @return
      */
-    @GetMapping("/nodes")
-    public BaseResult<?> nodes(Integer id,Integer page){
-        return resourceMerchantService.nodes(id,page);
+    @PostMapping("/note/add")
+    public BaseResult<?> noteAdd(@RequestBody JSONObject jo) {
+        return resourceMerchantService.noteAdd(jo);
+    }
+
+    /**
+     * 商户资源-备注列表
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/note")
+    public BaseResult<?> noteList(@RequestParam("id") Integer id) {
+        return resourceMerchantService.noteList(id);
     }
 
 

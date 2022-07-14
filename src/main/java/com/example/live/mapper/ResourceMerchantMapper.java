@@ -27,19 +27,20 @@ public interface ResourceMerchantMapper {
     int resourceCount(@Param("agentUser") Integer agentUser, @Param("opeUser") Integer opeUser
             , @Param("intention") Integer intention, @Param("mobile") String mobile, @Param("shop") String shop);
 
-    // 未联系-0、跟进中-1、已拒绝-3
+
+    // 未联系-0、跟进中-1、已处理-2
     List<ResourceMerchant> taskResource();
 
     // 资源进行分配
     void taskDistribution(List<ResourceMerchant> list);
 
-    // 需要清理的数据
+    // 已处理-需要清理的数据
     @Delete(" delete from resource_merchant where intention = 2")
     void needClearList();
 
     //更新意向
-    @Update("update resource_merchant set intention=#{intention},ut=now() where id=#{id} ")
-    void updateResourceMerchant(@Param("intention") Integer intention, @Param("id") Integer id);
+    @Update("update resource_merchant set intention=#{intention},ut=now() where id=#{id} and ope_user=#{opeUser} ")
+    void updateResourceMerchant(@Param("intention") Integer intention, @Param("id") Integer id, @Param("opeUser") Integer opeUser);
 
 
 }

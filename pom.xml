@@ -109,6 +109,7 @@
                     <include>**/*.yml</include>
                     <include>**/*.xml</include>
                     <include>**/*.xlsx</include>
+                    <include>**/*.sql</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

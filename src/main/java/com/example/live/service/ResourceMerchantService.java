@@ -13,7 +13,9 @@ public interface ResourceMerchantService {
 
     BaseResult<?> editResource(JSONObject jo);
 
-    BaseResult<?> nodes(Integer rid,Integer page);
+    BaseResult<?> noteAdd(JSONObject jo);
+
+    BaseResult<?> noteList(Integer id);
 
 
 }

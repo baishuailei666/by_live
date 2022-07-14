@@ -35,8 +35,4 @@ public interface ContentMapper {
     @Insert("insert into `content`(oid, note, type) values(#{oid}, #{rid}, #{note}, #{type})")
     void insertByOid(@Param("oid") int oid, @Param("note") String note, @Param("type") int type);
 
-    @Select("select oid,node,ts from content where rid=#{rid} order by ts DESC limit page,10")
-    List<Content> nodeList(@Param("rid")Integer rid,@Param("page")Integer page);
-
-
 }
