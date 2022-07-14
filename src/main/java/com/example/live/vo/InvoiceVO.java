@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class InvoiceVO {
+
     private Integer id;
     //手机号
     private String mobile;
