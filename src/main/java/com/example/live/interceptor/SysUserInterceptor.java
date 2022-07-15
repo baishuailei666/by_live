@@ -33,17 +33,18 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
-        String path = request.getServletPath();
-        String from = request.getParameter("from");
-        System.out.println("path:" + path + ",from:"+from);
-        if (Constant.source_back.equals(from)) {
-            return handleUser(path, request, response);
-        } else if (Constant.source_merchant.equals(from)) {
-            return handleMerchant(path, request, response);
-        } else {
-            handleResponse(request, response, 18, "无效请求");
-            return false;
-        }
+//        String path = request.getServletPath();
+//        String from = request.getParameter("from");
+//        System.out.println("path:" + path + ",from:"+from);
+//        if (Constant.source_back.equals(from)) {
+//            return handleUser(path, request, response);
+//        } else if (Constant.source_merchant.equals(from)) {
+//            return handleMerchant(path, request, response);
+//        } else {
+//            handleResponse(request, response, 18, "无效请求");
+//            return false;
+//        }
+        return true;
     }
     // 未登录处理
     private boolean handleNoLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
