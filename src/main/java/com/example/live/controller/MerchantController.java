@@ -146,6 +146,7 @@ public class MerchantController {
 
     /**
      * 微信支付验收是否支付成功
+     *
      * @param orderNo 订单号
      * @return
      */
@@ -157,12 +158,24 @@ public class MerchantController {
 
     /**
      * 商户电子签
+     *
      * @param type 0-企业、1-个人
      * @return
      */
-    @GetMapping("/sign")
+    @GetMapping("/sign/create")
     public BaseResult<?> merchantSign(@RequestParam("type") Integer type) {
         return merchantService.merchantSign(type);
+    }
+
+    /**
+     * 商户电子签-获取链接
+     *
+     * @param flowId
+     * @return
+     */
+    @GetMapping("/sign/url")
+    public BaseResult<?> merchantSignUrl(@RequestParam("flowId") String flowId) {
+        return merchantService.merchantSignUrl(flowId);
     }
 
 }

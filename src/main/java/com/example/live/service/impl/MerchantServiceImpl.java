@@ -244,6 +244,7 @@ public class MerchantServiceImpl implements MerchantService {
         jo.put("owner", contract.getOwner());
         jo.put("mobile", contract.getMobile());
         jo.put("company", contract.getCompany());
+        // flowId、filename、documentId、previewFileUrl
         JSONObject jo2 = cloudSignUtil.signPreview(jo);
         return new BaseResult<>(jo2);
     }
