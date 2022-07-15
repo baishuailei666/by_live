@@ -37,6 +37,34 @@ public class Constant {
     // 店铺链接：13939925088
     public static final String  shop_url = "https://haohuo.jinritemai.com/views/shop/index?id=";
 
+    /**
+     * 支付宝支付
+     */
+    // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+    public static final String notify_url = "";
+
+    // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+    public static final String return_url = "";
+
+    // 签名方式
+    public static final String sign_type = "RSA2";
+
+    // 字符编码格式
+    public static final String charset = "utf-8";
+
+    public static final String alipay_public_key = "";
+
+    // 支付宝网关
+    public static String gatewayUrl = "https://openapi.alipay.com/gateway.do";
+
+
+    /**
+     * 微信支付
+     */
+    // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+    public static final String notify_url2 = "";
+
+
     // 购买类型数据转换
     public static Map<Integer, String> buyTypeMap;
     static {

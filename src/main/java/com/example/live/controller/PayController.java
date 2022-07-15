@@ -9,7 +9,6 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.common.PayInfo;
 import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.mapper.DataConfigMapper;
@@ -20,7 +19,6 @@ import com.example.live.util.DateUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
-import com.example.live.vo.UserVO;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
@@ -81,7 +79,7 @@ public class PayController {
     public void aliPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo ==null) {
-            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.setContentType("text/html;charset=" + Constant.charset);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code", 11);
             jsonObject.put("status", 200);
@@ -113,7 +111,7 @@ public class PayController {
             totalAmount = prices[2];
         } else {
             // 无效的请求参数
-            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.setContentType("text/html;charset=" + Constant.charset);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code", 10);
             jsonObject.put("data", null);
@@ -138,16 +136,16 @@ public class PayController {
         PayConfig payConfig = getPayConfig(agentUser);
 
         //获得初始化的AlipayClient 向支付宝发送支付请求
-        AlipayClient alipayClient = new DefaultAlipayClient(PayInfo.gatewayUrl, payConfig.getAliAppId(),
-                payConfig.getAliPrivateKey(), AlipayConstants.FORMAT_JSON, PayInfo.charset, payConfig.getAliPublicKey(), PayInfo.sign_type);
+        AlipayClient alipayClient = new DefaultAlipayClient(Constant.gatewayUrl, payConfig.getAliAppId(),
+                payConfig.getAliPrivateKey(), AlipayConstants.FORMAT_JSON, Constant.charset, payConfig.getAliPublicKey(), Constant.sign_type);
         try {
             // 网页端
             // 创建API对应的request
             AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
             // 同步通知url: 前端路径
-            alipayRequest.setReturnUrl(PayInfo.return_url);
+            alipayRequest.setReturnUrl(Constant.return_url);
             // 异步通知url: 后台服务接口路径
-            alipayRequest.setNotifyUrl(PayInfo.notify_url);
+            alipayRequest.setNotifyUrl(Constant.notify_url);
             // 填充业务参数
             alipayRequest.setBizContent(bizContentBuild(outTradeNo, totalAmount, subject, body,
                     sessionId, platform, type));
@@ -157,7 +155,7 @@ public class PayController {
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
-        httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+        httpResponse.setContentType("text/html;charset=" + Constant.charset);
         // 直接将完整的表单html输出到页面
         httpResponse.getWriter().write(form);
         httpResponse.getWriter().flush();
@@ -180,7 +178,7 @@ public class PayController {
 
         // TODO 支付宝回调
         PrintWriter out = response.getWriter();
-        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, PayInfo.alipay_public_key, PayInfo.charset, PayInfo.sign_type); // 调用SDK验证签名
+        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, Constant.alipay_public_key, Constant.charset, Constant.sign_type); // 调用SDK验证签名
 
         String sessionId = request.getSession().getId();
         String trade_no = request.getParameter("trade_no"); // 支付宝交易号
@@ -262,7 +260,7 @@ public class PayController {
             jsonObject.put("data", null);
             jsonObject.put("status", 200);
             jsonObject.put("msg", "用户登录状态已过期");
-            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.setContentType("text/html;charset=" + Constant.charset);
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
             httpResponse.getWriter().close();
@@ -294,7 +292,7 @@ public class PayController {
             jsonObject.put("data", null);
             jsonObject.put("status", 200);
             jsonObject.put("msg", "无效的请求参数");
-            httpResponse.setContentType("text/html;charset=" + PayInfo.charset);
+            httpResponse.setContentType("text/html;charset=" + Constant.charset);
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
             httpResponse.getWriter().close();
@@ -324,7 +322,7 @@ public class PayController {
         // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的
         // 订单金额，单位为分
         request.setTotalFee((int) (NumberUtils.toFloat(totalAmount) * 100));
-        request.setNotifyUrl(PayInfo.notify_url2);//线上回调地址
+        request.setNotifyUrl(Constant.notify_url2);//线上回调地址
         request.setAttach(sessionId);//附加数据sessionId
         request.setTradeType("NATIVE"); //网页支付
 
