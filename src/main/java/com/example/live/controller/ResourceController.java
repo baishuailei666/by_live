@@ -42,7 +42,7 @@ public class ResourceController {
      * @return
      */
     @PostMapping("/edit")
-    public BaseResult<?> editResource(JSONObject jo) {
+    public BaseResult<?> editResource(@RequestBody JSONObject jo) {
         return resourceMerchantService.editResource(jo);
     }
 
