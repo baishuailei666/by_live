@@ -133,6 +133,7 @@ public class UserServiceImpl implements UserService {
             if (order!=null) {
                 mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
                 mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+                mvo.setVipType(order.getBuyType());
             }
             // 更新登录时间、登录次数
             merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount()+1);

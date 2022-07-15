@@ -19,6 +19,7 @@ public class MerchantVO {
     // 对应业务员微信
     private String opeUserWx;
     private String buyType;
+    private int vipType;
     // 剩余天数
     private Integer days;
     private String ct;

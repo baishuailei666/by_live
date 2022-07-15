@@ -104,9 +104,11 @@ public final class GeneralUtil {
         }
     }
 
+    // 1-月卡、2-季卡、3-年卡
     public static String getOrderNo(int type) {
         int random = (int)((Math.random()*9+1)*1000);
-        return DateUtil.getTime2() + random + type;
+        // 年月日时分秒+0+购买类型
+        return DateUtil.getTime2() + random + "0" +type;
     }
 
 }

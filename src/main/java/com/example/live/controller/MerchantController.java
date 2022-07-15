@@ -154,4 +154,15 @@ public class MerchantController {
         return merchantService.paySuccessCheck(orderNo);
     }
 
+
+    /**
+     * 商户电子签
+     * @param type 0-企业、1-个人
+     * @return
+     */
+    @GetMapping("/sign")
+    public BaseResult<?> merchantSign(@RequestParam("type") Integer type) {
+        return merchantService.merchantSign(type);
+    }
+
 }

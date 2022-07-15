@@ -1,8 +1,10 @@
 package com.example.live.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.Constant;
 import com.example.live.service.UserService;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -31,16 +33,38 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
-        UserVO user = UserUtil.getUser();
-        // 请求路径
         String path = request.getServletPath();
-        System.out.println("user:" + user);
-        System.out.println("path:" + path);
-
-//        if (user == null) {
-//            handleResponse(request, response, 1001, "用户不存在, 请重新登录!");
-//            return false;
-//        }
+        String from = request.getParameter("from");
+        System.out.println("path:" + path + ",from:"+from);
+        if (Constant.source_back.equals(from)) {
+            return handleUser(path, request, response);
+        } else if (Constant.source_merchant.equals(from)) {
+            return handleMerchant(path, request, response);
+        } else {
+            handleResponse(request, response, 18, "无效请求");
+            return false;
+        }
+    }
+    // 未登录处理
+    private boolean handleNoLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        handleResponse(request, response, 19, "登录失效");
+        return false;
+    }
+    // 后台管理端逻辑处理
+    private boolean handleUser(String path, HttpServletRequest request, HttpServletResponse response) {
+        UserVO user = UserUtil.getUser();
+        return true;
+    }
+    // 商户端逻辑处理
+    private boolean handleMerchant(String path, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (path.contains("/anchor/info")) {
+            // 主播详情
+            if (mvo.getVipType()<1) {
+                handleResponse(request, response, 10, "暂无权限");
+                return false;
+            }
+        }
         return true;
     }
 

@@ -11,6 +11,7 @@ import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
 import com.example.live.service.MerchantService;
+import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantOrderVO;
@@ -44,6 +45,8 @@ public class MerchantServiceImpl implements MerchantService {
     private InvoiceMapper invoiceMapper;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private CloudSignUtil cloudSignUtil;
 
 
     @Override
@@ -83,7 +86,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> merchantShopBind(JSONObject jo) {
         MerchantVO loginMvo = UserUtil.getMerchant();
-        if (loginMvo==null) {
+        if (loginMvo == null) {
             return new BaseResult<>(1, "未登录");
         }
         String shop = jo.getString("shop");
@@ -100,12 +103,12 @@ public class MerchantServiceImpl implements MerchantService {
         if (StringUtils.isBlank(introduce)) {
             return new BaseResult<>(12, "商家介绍不能为空");
         }
-        if (introduce.length()>140) {
+        if (introduce.length() > 140) {
             return new BaseResult<>(13, "商家介绍最多140字");
         }
 
         int ex = merchantMapper.existShop(shopId);
-        if (ex!=0) {
+        if (ex != 0) {
             return new BaseResult<>(14, "店铺已被认证");
         }
         // 店铺绑定
@@ -113,7 +116,7 @@ public class MerchantServiceImpl implements MerchantService {
         // 提交审核
         merchantAuditMapper.merchantShopAudit(loginMvo.getId(), loginMvo.getOpeUser());
         // 消息通知
-        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:"+shopId,3);
+        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:" + shopId, 3);
         return new BaseResult<>();
     }
 
@@ -127,7 +130,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> merchantShopModify(JSONObject jo) {
         MerchantVO loginMvo = UserUtil.getMerchant();
-        if (loginMvo==null) {
+        if (loginMvo == null) {
             return new BaseResult<>(1, "未登录");
         }
         String shop = jo.getString("shop");
@@ -144,12 +147,12 @@ public class MerchantServiceImpl implements MerchantService {
         if (StringUtils.isBlank(introduce)) {
             return new BaseResult<>(12, "商家介绍不能为空");
         }
-        if (introduce.length()>140) {
+        if (introduce.length() > 140) {
             return new BaseResult<>(13, "商家介绍最多140字");
         }
 
         int ex = merchantMapper.existShop(shopId);
-        if (ex!=0) {
+        if (ex != 0) {
             return new BaseResult<>(14, "店铺已被认证");
         }
         // 店铺修改
@@ -157,7 +160,7 @@ public class MerchantServiceImpl implements MerchantService {
         // 提交审核
         merchantAuditMapper.merchantShopAudit(loginMvo.getId(), loginMvo.getOpeUser());
         // 消息通知
-        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:"+shopId,3);
+        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:" + shopId, 3);
         return new BaseResult<>();
     }
 
@@ -165,7 +168,7 @@ public class MerchantServiceImpl implements MerchantService {
     public BaseResult<?> merchantShopDel(String shopId) {
         int merchantId = UserUtil.getMerchantId();
         int shop_merchant_id = merchantMapper.shopMerchant(shopId);
-        if (merchantId!=shop_merchant_id) {
+        if (merchantId != shop_merchant_id) {
             return new BaseResult<>(10, "删除失败,店铺ID不是当前商户");
         }
         merchantMapper.modifyShop(merchantId, null, null, null, null);
@@ -193,6 +196,7 @@ public class MerchantServiceImpl implements MerchantService {
         contractMapper.insContract(contract);
         return new BaseResult<>();
     }
+
     @Override
     public BaseResult<?> merchantContractModify(Contract contract) {
         contractMapper.modifyContract(contract);
@@ -211,10 +215,43 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> paySuccessCheck(String orderNo) {
         Order order = orderMapper.getOrderByNo(orderNo);
-        if (order!=null&&Constant.pay_success.equals(order.getStatus())) {
+        if (order != null && Constant.pay_success.equals(order.getStatus())) {
             return new BaseResult<>("支付成功");
         }
         return new BaseResult<>(10, "支付验证");
+    }
+
+    @Override
+    public BaseResult<?> merchantSign(Integer type) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        // type 0-企业、1-个人
+        if (type == null) {
+            return new BaseResult<>(10, "参数无效");
+        }
+        if (type != 1 && type != 0) {
+            return new BaseResult<>(11, "参数错误");
+        }
+
+        Contract contract = contractMapper.getContract2(mvo.getId());
+        if (contract == null) {
+            return new BaseResult<>(12, "暂无合同内容");
+        }
+        JSONObject jo = new JSONObject();
+        jo.put("type", type);
+        jo.put("mid", mvo.getId());
+        jo.put("cid", contract.getId());
+        jo.put("tax", contract.getTax());
+        jo.put("owner", contract.getOwner());
+        jo.put("mobile", contract.getMobile());
+        jo.put("company", contract.getCompany());
+        JSONObject jo2 = cloudSignUtil.signPreview(jo);
+        return new BaseResult<>(jo2);
+    }
+
+    @Override
+    public BaseResult<?> merchantSignUrl(String flowId) {
+        String url = cloudSignUtil.signUrl(flowId);
+        return new BaseResult<>(url);
     }
 
 }
