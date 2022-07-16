@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
-import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
 import com.example.live.service.MerchantAuditService;
@@ -181,6 +180,29 @@ public class UserController {
     @PostMapping("/config/data/modify")
     public BaseResult<?> dataConfigModify(JSONObject jo) {
         return commonService.dataConfigModify(jo);
+    }
+
+    /**
+     * 全局统一月卡，季卡，年卡价格
+     * @param month
+     * @param quarter
+     * @param year
+     * @return
+     */
+    @PostMapping("/config/data/modify/prices")
+    public BaseResult<?> configModifyPrices(@RequestParam("month")Double month,
+                                            @RequestParam("quarter")Double quarter,
+                                            @RequestParam("year")Double year){
+        return commonService.configModifyPrices(month,quarter,year);
+    }
+
+    /**
+     * 展示价格
+     * @return
+     */
+    @GetMapping("/config/data/modify/showPrices")
+    public BaseResult<?> showPrices(){
+        return commonService.showPrices();
     }
 
     /**

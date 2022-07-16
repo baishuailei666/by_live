@@ -10,6 +10,7 @@ import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.DataConfigVO;
 import com.example.live.vo.MerchantVO;
+import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,28 +55,29 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public List<LevelRight> getLevelRight(int level) {
         List<LevelRight> list = getRightList();
-        return list.stream().filter(l -> l.getLevel()==level).collect(Collectors.toList());
+        return list.stream().filter(l -> l.getLevel() == level).collect(Collectors.toList());
     }
 
     @Override
     public Integer agentUser(Integer opeUser) {
-        if (opeUser==Constant.admin_id) {
+        if (opeUser == Constant.admin_id) {
             return opeUser;
         }
         Integer mid = relationUserMapper.getMainId(opeUser);
-        if (mid==null) {
+        if (mid == null) {
             // 当前用户就是管理员
             mid = opeUser;
         }
         return mid;
     }
+
     @Override
     public Integer merchantAgentUser(Integer opeUser) {
-        if (opeUser==null) {
+        if (opeUser == null) {
             return Constant.admin_id;
         }
         Integer mid = relationUserMapper.getMainId(opeUser);
-        if (mid==null) {
+        if (mid == null) {
             // 当前用户就是管理员
             mid = opeUser;
         }
@@ -84,7 +86,7 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public List<Integer> opeUserIds(Integer agentUser) {
-        if (agentUser==Constant.admin_id) {
+        if (agentUser == Constant.admin_id) {
             return null;
         }
         return relationUserMapper.relationIds(agentUser);
@@ -134,13 +136,13 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public BaseResult<?> kef() {
         MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo==null) {
+        if (mvo == null) {
             return new BaseResult<>();
         }
         Integer mid = commonService.agentUser(mvo.getOpeUser());
         String val = dataConfigMapper.getConfigStr(mid);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);
-        return new BaseResult<>(phone[0]+";"+phone[1]);
+        return new BaseResult<>(phone[0] + ";" + phone[1]);
     }
 
     @Override
@@ -148,13 +150,13 @@ public class CommonServiceImpl implements CommonService {
         Integer agentUser = null;
         if (StringUtils.isNotBlank(mobile)) {
             User user = userMapper.getUserMobile(mobile);
-            if (user!=null) {
+            if (user != null) {
                 agentUser = user.getId();
             }
         }
         List<DataConfig> data = dataConfigMapper.configList(agentUser);
         List<DataConfigVO> voList = Lists.newLinkedList();
-        data.forEach(c ->{
+        data.forEach(c -> {
             DataConfigVO vo = new DataConfigVO();
             vo.setCt(c.getCt());
             vo.setId(c.getId());
@@ -191,13 +193,13 @@ public class CommonServiceImpl implements CommonService {
         String seasonCard = jo.getString("seasonCard");
         String yearCard = jo.getString("yearCard");
         // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-        String content = emailSend+","+emailReceive+";"+kef1+","+kef2+";"+monthCard+","+seasonCard+","+yearCard;
-        if (id!=null) {
+        String content = emailSend + "," + emailReceive + ";" + kef1 + "," + kef2 + ";" + monthCard + "," + seasonCard + "," + yearCard;
+        if (id != null) {
             DataConfig dc = dataConfigMapper.getContent(id);
-            if (dc==null) {
+            if (dc == null) {
                 return new BaseResult<>(10, "无效id,数据不存在");
             }
-            if (dc.getAgentUser()!=agentUser) {
+            if (dc.getAgentUser() != agentUser) {
                 return new BaseResult<>(11, "参数错误,数据不匹配");
             }
             // 修改
@@ -218,11 +220,11 @@ public class CommonServiceImpl implements CommonService {
         Integer agentUser = null;
         if (StringUtils.isNotBlank(mobile)) {
             User user = userMapper.getUserMobile(mobile);
-            if (user!=null) {
+            if (user != null) {
                 agentUser = user.getId();
             }
         }
-        List<PayConfig> data =payConfigMapper.configList(agentUser);
+        List<PayConfig> data = payConfigMapper.configList(agentUser);
         return new BaseResult<>(data.size(), data);
     }
 
@@ -236,6 +238,45 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> payConfigDel(Integer id) {
         payConfigMapper.delConfig(id);
         return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> configModifyPrices(Double month, Double quarter, Double year) {
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(14, "登录已过期，请重新登录！");
+        }
+        if (user.getLevel() != 1) {
+            return new BaseResult<>(13, "您没有权限更改！");
+        }
+        List<DataConfig> dataConfigs = dataConfigMapper.getDataConfigs();
+        for (DataConfig dataConfig : dataConfigs) {
+            String[] split = dataConfig.getContent().split(";");
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(split[0]).append(";").append(split[1]).append(";").append(month).append(",").append(quarter).append(",").append(year);
+            dataConfigMapper.modifyConfig(dataConfig.getId(), dataConfig.getAgentUser(), buffer.toString());
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> showPrices() {
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(14, "登录已过期，请重新登录！");
+        }
+        if (user.getLevel() != 1) {
+            return new BaseResult<>(13, "您没有权限更改！");
+        }
+        Integer agentUser = user.getAgentUser();
+        String configStr = dataConfigMapper.getConfigStr(agentUser);
+        String[] split = configStr.split(";");
+        String[] s = split[2].split(",");
+        DataConfigVO dataConfigVO = new DataConfigVO();
+        dataConfigVO.setMonthCard(s[0]);
+        dataConfigVO.setSeasonCard(s[1]);
+        dataConfigVO.setYearCard(s[2]);
+        return new BaseResult<>(dataConfigVO);
     }
 
 }
