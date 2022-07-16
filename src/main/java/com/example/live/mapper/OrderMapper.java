@@ -16,8 +16,8 @@ import java.util.List;
 @Mapper
 public interface OrderMapper {
 
-    @Insert("insert into order(order_no, merchant_id, buy_type, money, ope_user, pay_type, ct, ut)" +
-            " values(#{orderNo}, #{merchantId}, #{buyType}, #{money}, #{opeUser}, #{payType}, now(), now())")
+    @Insert("insert into `order`(order_no, merchant_id, buy_type, money, ope_user, pay_type, status, ct, ut)" +
+            " values(#{orderNo}, #{merchantId}, #{buyType}, #{money}, #{opeUser}, #{payType}, #{status}, now(), now())")
     void insOrder(Order order);
 
     @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType where `status`='TRADE_SUCCESS' and merchant_id=#{merchantId} order by ut desc limit 1")

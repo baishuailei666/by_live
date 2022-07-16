@@ -103,4 +103,21 @@ public class Constant {
         signStatusMap.put(0, "未签署");
         signStatusMap.put(1, "已签署");
     }
+    // 未开-0、已开-1、驳回-2
+    public static Map<Integer, String> invoiceStatusMap;
+    static {
+        invoiceStatusMap = new HashMap<>();
+        invoiceStatusMap.put(0, "未开");
+        invoiceStatusMap.put(1, "已开");
+        invoiceStatusMap.put(2, "驳回");
+    }
+    // 意向程度：未联系-0、跟进中-1、已处理-2、已拒绝-3
+    public static Map<Integer, String> intentionMap;
+    static {
+        intentionMap = new HashMap<>();
+        intentionMap.put(0, "未联系");
+        intentionMap.put(1, "跟进中");
+        intentionMap.put(2, "已处理");
+        intentionMap.put(3, "已拒绝");
+    }
 }

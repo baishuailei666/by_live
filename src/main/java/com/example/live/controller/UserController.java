@@ -109,12 +109,12 @@ public class UserController {
 
     /**
      * 新增订单（针对线下交易）
-     * @param order
+     * @param jo
      * @return
      */
     @PostMapping("/order/ins")
-    public BaseResult<?> orderIns(Order order) {
-        return userService.orderIns(order);
+    public BaseResult<?> orderIns(@RequestBody JSONObject jo) {
+        return userService.orderIns(jo);
     }
 
     /**

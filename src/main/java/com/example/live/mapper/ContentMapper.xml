@@ -19,8 +19,10 @@
     <select id="contentList2" resultType="com.example.live.entity.Content">
         select id, oid, rid, note,ts
         from content
-        where oid=#{oid}
-        and `type`=#{type}
+        where `type`=#{type}
+        <if test="oid!=null and oid!=''">
+            and oid=#{oid}
+        </if>
         and rid in
         <foreach collection="rids" item="item" open="(" separator="," close=")">
             #{item}

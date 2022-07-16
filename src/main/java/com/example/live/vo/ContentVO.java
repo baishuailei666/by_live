@@ -10,5 +10,4 @@ import lombok.Data;
 public class ContentVO {
     private String note;
     private String ts;
-    private Integer oid;
 }

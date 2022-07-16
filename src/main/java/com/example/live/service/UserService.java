@@ -32,7 +32,7 @@ public interface UserService {
 
     BaseResult<?> orderList(OrderQuery query);
 
-    BaseResult<?> orderIns(Order order);
+    BaseResult<?> orderIns(JSONObject jo);
 
     BaseResult<?> opeUserMerchantOrderList(OrderQuery orderQuery);
 

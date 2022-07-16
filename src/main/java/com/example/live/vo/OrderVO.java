@@ -15,7 +15,7 @@ public class OrderVO {
     private String tradeNo;
     // 商品店铺id
     private int merchantId;
-    private String merchant;
+    private String mobile;
     private String shop;
     // 权益类型：月卡-1、季卡-2、年卡-3
     private String buyType1;
@@ -25,6 +25,8 @@ public class OrderVO {
     private Integer opeUser;
     // 支付类型：支付宝-1、微信-2、对公-3
     private String payType1;
+    // 支付状态
+    private String payStatus;
     // 支付下单时间
     private String ct;
     // 支付成功时间

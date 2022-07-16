@@ -44,11 +44,11 @@ public final class GeneralUtil {
         return sb.toString();
     }
 
-    // 获取6位随机数
-    public static String get6Random() {
+    // 获取4位随机数
+    public static String get4Random() {
         Random random = new Random();
-        DecimalFormat df6 = new DecimalFormat("000000");
-        return df6.format(random.nextInt(1000000));
+        DecimalFormat df = new DecimalFormat("0000");
+        return df.format(random.nextInt(10000));
     }
 
     // 默认密码
@@ -60,13 +60,6 @@ public final class GeneralUtil {
     public static int indexPage(int page) {
         page = page ==0 ? 1 : page;
         return (page -1) * 10;
-    }
-
-    // 自定义:page=1、size=10
-    public static int indexPage(int page,int size) {
-        size = size == 0 ? 10 : size;
-        page = page == 0 ? 1 : page;
-        return (page -1) * size;
     }
 
     // 服务天数

@@ -62,6 +62,8 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Override
     public BaseResult<?> merchantAudit(JSONObject jo) {
+        UserVO uvo = UserUtil.getUser();
+
         String merchantId = jo.getString("merchantId");
         int status = jo.getIntValue("status");
         String reason = jo.getString("reason");
@@ -72,7 +74,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
             return new BaseResult<>(14, "请求参数有误");
         }
         // 更新merchant_audit表
-        merchantAuditMapper.updateMerchantAudit(merchantId, status, reason);
+        merchantAuditMapper.updateMerchantAudit(merchantId, uvo.getId(), status, reason);
         if (status==1) {
             // 更新merchant表
             merchantMapper.updateMerchantCheck(merchantId);

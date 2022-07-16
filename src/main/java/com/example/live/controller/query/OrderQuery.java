@@ -21,4 +21,5 @@ public class OrderQuery {
     private Integer buyType;
     // 支付状态：0-未支付、1-已支付
     private Integer payStatus;
+
 }

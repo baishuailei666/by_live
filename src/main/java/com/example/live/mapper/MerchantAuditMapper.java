@@ -22,7 +22,8 @@ public interface MerchantAuditMapper {
                                @Param("mobile") String mobile, @Param("shop") String shop);
 
 
-    void updateMerchantAudit(@Param("merchantId") String merchantId, @Param("status") Integer status, @Param("reason") String reason);
+    void updateMerchantAudit(@Param("merchantId") String merchantId, @Param("opeUser") Integer opeUser
+            , @Param("status") Integer status, @Param("reason") String reason);
 
     @Insert("insert into(merchant_id, ope_user, ct, ut)" +
             "values(#{merchantId}, #{opeUser}, now(), now())")

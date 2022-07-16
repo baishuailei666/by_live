@@ -1,10 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.MobileCode;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -12,6 +9,9 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface MobileCodeMapper {
+
+    @Insert("insert into mobile_code(mobile, code) values(#{mobile}, #{code})")
+    void insCode(@Param("mobile") String mobile, @Param("code") String code);
 
     @Select("SELECT `code` FROM mobile_code WHERE mobile=#{mobile} ORDER BY ts desc limit 1")
     String getCode(@Param("mobile") String mobile);

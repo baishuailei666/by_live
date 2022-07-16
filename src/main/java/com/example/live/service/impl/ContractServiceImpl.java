@@ -8,6 +8,7 @@ import com.example.live.entity.Merchant;
 import com.example.live.mapper.ContractMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.service.ContractService;
+import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.ContractVO;
 import com.example.live.vo.UserVO;
@@ -40,6 +41,7 @@ public class ContractServiceImpl implements ContractService {
         if (count==0) {
             return new BaseResult<>();
         }
+        query.setPage(GeneralUtil.indexPage(query.getPage()));
         List<Contract> data = contractMapper.contractList(query);
         List<Integer> mids = Lists.newArrayList();
         data.forEach(c -> mids.add(c.getMerchantId()));

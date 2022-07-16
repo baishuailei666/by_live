@@ -19,9 +19,9 @@ public interface InvoiceMapper {
     void insInvoice(Invoice invoice);
 
 
-    List<InvoiceVO> invoiceList(@Param("query") InvoiceQuery query, @Param("ids") List<Integer> ids);
+    List<InvoiceVO> invoiceList(InvoiceQuery query);
 
-    int invoiceListCount(@Param("query") InvoiceQuery query, @Param("ids") List<Integer> ids);
+    int invoiceListCount(InvoiceQuery query);
 
     @Update("update invoice set status=#{status},remark=#{remark},ut=now()  where id=#{id} ")
     void invoiceUpdate(@Param("id")Integer id,@Param("status")Integer status,@Param("remark")String remark);

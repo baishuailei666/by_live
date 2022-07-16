@@ -8,10 +8,7 @@ import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
-import com.example.live.util.DateUtil;
-import com.example.live.util.GeneralUtil;
-import com.example.live.util.MD5Util;
-import com.example.live.util.UserUtil;
+import com.example.live.util.*;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.OrderVO;
 import com.example.live.vo.UserVO;
@@ -25,6 +22,7 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private RelationUserMapper relationUserMapper;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private CloudSmsUtil cloudSmsUtil;
 
 
 
@@ -169,12 +169,14 @@ public class UserServiceImpl implements UserService {
         if (mobileCode!=null) {
             boolean com = DateUtil.comTsVal(mobileCode.getTs(), 5);
             if (!com) {
-                return new BaseResult<>(10, "请勿重复发送验证码");
+                return new BaseResult<>(10, "请勿重复发送验证码,验证码有效期为5分钟");
             }
         }
-        // TODO 发送验证码
-        String context = GeneralUtil.get6Random();
-
+        String context = GeneralUtil.get4Random();
+        List<String> str = Lists.newArrayList();
+        str.add(mobile);
+        cloudSmsUtil.sendSms(str, context);
+        mobileCodeMapper.insCode(mobile, context);
         return new BaseResult<>();
     }
 
@@ -277,9 +279,10 @@ public class UserServiceImpl implements UserService {
             BeanUtils.copyProperties(o, ovo);
             Merchant merchant = merchantMap.get(o.getMerchantId());
             if (merchant!=null) {
-                ovo.setMerchant(merchant.getMobile());
+                ovo.setMobile(merchant.getMobile());
                 ovo.setShop(merchant.getShop());
             }
+            ovo.setPayStatus(Constant.pay_success.equals(o.getStatus())?"已支付":"未支付");
             ovo.setBuyType1(Constant.buyTypeMap.get(o.getBuyType()));
             ovo.setPayType1(Constant.payTypeMap.get(o.getPayType()));
             voList.add(ovo);
@@ -288,10 +291,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResult<?> orderIns(Order order) {
+    public BaseResult<?> orderIns(JSONObject jo) {
         UserVO uvo = UserUtil.getUser();
+        int merchantId = jo.getIntValue("merchantId");
+        int buyType = jo.getIntValue("buyType");
+        double money = jo.getDoubleValue("money");
+        int payType = jo.getIntValue("payType");
 
-        String orderNo = GeneralUtil.getOrderNo(order.getBuyType());
+        Order order = new Order();
+        order.setMerchantId(merchantId);
+        order.setMoney(money);
+        order.setPayType(payType);
+        order.setBuyType(buyType);
+        String orderNo = GeneralUtil.getOrderNo(buyType);
         order.setOrderNo(orderNo);
         order.setOpeUser(uvo.getId());
         order.setStatus(Constant.pay_success);

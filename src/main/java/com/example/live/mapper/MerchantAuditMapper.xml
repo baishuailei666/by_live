@@ -38,10 +38,10 @@
     <update id="updateMerchantAudit">
         update `merchant_audit`
         set status = #{status}, ut = now()
-        <if test="status == 2">
+        <if test="status==2">
             , remark = #{reason}
         </if>
-        where merchant_id=#{merchantId}
+        where merchant_id=#{merchantId} and ope_user=#{opeUser}
     </update>
 
 

@@ -2,10 +2,12 @@ package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.controller.query.InvoiceQuery;
 import com.example.live.mapper.InvoiceMapper;
 import com.example.live.service.CommonService;
 import com.example.live.service.InvoiceService;
+import com.example.live.util.GeneralUtil;
 import com.example.live.util.MailUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.InvoiceVO;
@@ -45,12 +47,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         } else {
             opeUserIds.add(user.getId());
         }
+        invoiceQuery.setIds(opeUserIds);
+        invoiceQuery.setPage(GeneralUtil.indexPage(invoiceQuery.getPage()));
 
-        int i = invoiceMapper.invoiceListCount(invoiceQuery, opeUserIds);
+        int i = invoiceMapper.invoiceListCount(invoiceQuery);
         if (i == 0) {
             return new BaseResult<>();
         }
-        List<InvoiceVO> invoices = invoiceMapper.invoiceList(invoiceQuery, opeUserIds);
+        List<InvoiceVO> invoices = invoiceMapper.invoiceList(invoiceQuery);
+        invoices.forEach(vo -> vo.setStatus(Constant.invoiceStatusMap.get(Integer.valueOf(vo.getStatus()))));
         return new BaseResult<>(i, invoices);
     }
 

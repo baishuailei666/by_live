@@ -37,6 +37,8 @@ public class CommonServiceImpl implements CommonService {
     private PayConfigMapper payConfigMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CommonService commonService;
 
 
     private static List<LevelRight> rightList;
@@ -135,7 +137,7 @@ public class CommonServiceImpl implements CommonService {
         if (mvo==null) {
             return new BaseResult<>();
         }
-        Integer mid = relationUserMapper.getMainId(mvo.getOpeUser());
+        Integer mid = commonService.agentUser(mvo.getOpeUser());
         String val = dataConfigMapper.getConfigStr(mid);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);
         return new BaseResult<>(phone[0]+";"+phone[1]);

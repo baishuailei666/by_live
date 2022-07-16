@@ -2,6 +2,7 @@ package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.entity.Content;
 import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.ContentMapper;
@@ -58,31 +59,24 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
         List<Integer> ids = Lists.newArrayList();
         data.forEach(rm -> ids.add(rm.getId()));
 
-        // 业务员
-        if (userVO.getLevel()==3) {
-            // 备注信息
-            List<Content> conList = contentMapper.contentList2(loginUser, ids, 2);
-            Map<Integer, List<Content>> conMap = conList.stream().collect(Collectors.groupingBy(Content::getRid));
-            data.forEach(rm ->{
-                List<Content> list = conMap.getOrDefault(rm.getId(), new ArrayList<>());
-                list.sort(Comparator.comparing(Content::getTs));
-                Collections.reverse(list);
+        // 备注信息
+        List<Content> conList = contentMapper.contentList2(loginUser, ids, 2);
+        Map<Integer, List<Content>> conMap = conList.stream().collect(Collectors.groupingBy(Content::getRid));
+        data.forEach(rm ->{
+            List<Content> list = conMap.getOrDefault(rm.getId(), new ArrayList<>());
+            list.sort(Comparator.comparing(Content::getTs));
+            Collections.reverse(list);
 
-                ResourceMerchantVO vo = new ResourceMerchantVO();
-                BeanUtils.copyProperties(rm, vo);
-                vo.setContentTotal(list.size());
-                if (list.size()!=0) {
-                    vo.setContent(list.get(0).getNote());
-                }
-                voList.add(vo);
-            });
-        } else {
-            data.forEach(rm ->{
-                ResourceMerchantVO vo = new ResourceMerchantVO();
-                BeanUtils.copyProperties(rm, vo);
-                voList.add(vo);
-            });
-        }
+            ResourceMerchantVO vo = new ResourceMerchantVO();
+            BeanUtils.copyProperties(rm, vo);
+            vo.setContentTotal(list.size());
+            // 意向程度：未联系-0、跟进中-1、已处理-2、已拒绝-3
+            vo.setIntention(Constant.intentionMap.get(rm.getIntention()));
+            if (list.size()!=0) {
+                vo.setContent(list.get(0).getNote());
+            }
+            voList.add(vo);
+        });
         return new BaseResult<>(count, voList);
     }
 

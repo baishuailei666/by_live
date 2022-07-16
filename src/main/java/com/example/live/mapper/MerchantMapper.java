@@ -49,8 +49,8 @@ public interface MerchantMapper {
     @Update("update merchant set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
-    @Update("update merchant set shop_status = '已认证' where shop_id = #{shopId}")
-    void updateMerchantCheck(@Param("shopId")String shopId);
+    @Update("update merchant set shop_status = '已认证' where id=#{merchantId}")
+    void updateMerchantCheck(@Param("merchantId") String merchantId);
 
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选

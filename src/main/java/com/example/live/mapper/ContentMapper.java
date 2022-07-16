@@ -26,13 +26,10 @@ public interface ContentMapper {
     @Select("select note, ts from `content` where rid=#{rid} limit #{page}, 10")
     List<Content> contentList(@Param("rid") int rid, @Param("page") int page);
 
-    @Select("select note, ts, oid from `content` where oid=#{oid} and rid=#{rid} and type=#{type}")
+    @Select("select note, ts from `content` where oid=#{oid} and rid=#{rid} and type=#{type}")
     List<ContentVO> contentListParam(@Param("oid") int oid, @Param("rid") int rid, @Param("type") int type);
 
     // 查询备注、跟进记录等
     List<Content> contentList2(@Param("oid") Integer oid, @Param("rids") List<Integer> rids, @Param("type") int type);
-
-    @Insert("insert into `content`(oid, note, type) values(#{oid}, #{rid}, #{note}, #{type})")
-    void insertByOid(@Param("oid") int oid, @Param("note") String note, @Param("type") int type);
 
 }
