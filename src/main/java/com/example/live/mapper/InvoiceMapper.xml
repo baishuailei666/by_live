@@ -4,7 +4,8 @@
 
     <select id="invoiceList" parameterType="com.example.live.controller.query.InvoiceQuery"
             resultType="com.example.live.vo.InvoiceVO">
-        select n.id,m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.remark,n.ct,n.ut
+        select n.id as id,m.mobile as mobile,n.company as company,n.tax as tax,n.ope_user as opeUser,
+               n.money as money,n.status as status,n.email as email,n.remark as remark,n.ct as ct,n.ut as ut
         from invoice n left join merchant m on n.merchant_id=m.shop_id
         where n.ope_user in
         <foreach collection="ids" index="item" open="(" separator="," close=")">
@@ -14,10 +15,10 @@
             and m.mobile = #{query.mobile}
         </if>
         <if test="query.shop != null and query.shop != ''">
-            and m.company like concat('%',#{query.shop},'%')
+            and n.company like concat('%',#{query.shop},'%')
         </if>
         <if test="query.status != null">
-            and m.status = #{query.status}
+            and n.status = #{query.status}
         </if>
         order by ct DESC
         limit #{query.index}, #{query.size}
@@ -26,7 +27,7 @@
 
     <select id="invoiceListCount" parameterType="com.example.live.controller.query.InvoiceQuery"
             resultType="int">
-        select m.mobile,n.company,n.tax,n.ope_user,n.money,n.status,n.email,n.ct,n.ut
+        select count(1)
         from invoice n left join merchant m on n.merchant_id=m.shop_id
         where n.ope_user in
         <foreach collection="ids" index="item" open="(" separator="," close=")">
@@ -36,10 +37,10 @@
             and m.mobile = #{query.mobile}
         </if>
         <if test="query.shop != null and query.shop != ''">
-            and m.company like concat('%',#{query.shop},'%')
+            and n.company like concat('%',#{query.shop},'%')
         </if>
         <if test="query.status != null">
-            and m.status = #{query.status}
+            and n.status = #{query.status}
         </if>
     </select>
 

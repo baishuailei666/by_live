@@ -5,6 +5,7 @@ import com.example.live.common.BaseResult;
 import com.example.live.service.impl.InvoiceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class InvoiceController {
      * @return
      */
     @PostMapping("/list")
-    public BaseResult<?> invoiceList(JSONObject jo) {
+    public BaseResult<?> invoiceList(@RequestBody JSONObject jo) {
         return invoiceService.invoiceList(jo);
     }
 
@@ -37,7 +38,7 @@ public class InvoiceController {
      * @return
      */
     @PostMapping("/check")
-    public BaseResult<?> invoiceCheck(JSONObject jo){
+    public BaseResult<?> invoiceCheck(@RequestBody JSONObject jo){
         return invoiceService.invoiceCheck(jo);
     }
 
