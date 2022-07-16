@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
-import com.example.live.entity.Merchant;
-import com.example.live.entity.MobileCode;
-import com.example.live.entity.Order;
-import com.example.live.entity.User;
+import com.example.live.entity.*;
 import com.example.live.mapper.*;
+import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import com.example.live.util.DateUtil;
 import com.example.live.util.GeneralUtil;
@@ -50,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private OrderMapper orderMapper;
     @Autowired
     private RelationUserMapper relationUserMapper;
+    @Autowired
+    private CommonService commonService;
 
 
 
@@ -84,6 +84,9 @@ public class UserServiceImpl implements UserService {
                 // 超级管理员、管理员使用自己的id
                 vo.setAgentUser(user.getId());
             }
+            vo.setTs(user.getUt());
+            List<LevelRight> rightList = commonService.getLevelRight(user.getLevel());
+            vo.setRights(rightList);
             session.setAttribute(Constant.session_user, vo);
             return new BaseResult<>(vo);
         }
@@ -135,6 +138,8 @@ public class UserServiceImpl implements UserService {
                 mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
                 mvo.setVipType(order.getBuyType());
             }
+            List<LevelRight> rightList = commonService.getLevelRight(0);
+            mvo.setRights(rightList);
             // 更新登录时间、登录次数
             merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount()+1);
             session.setAttribute(Constant.session_user, mvo);

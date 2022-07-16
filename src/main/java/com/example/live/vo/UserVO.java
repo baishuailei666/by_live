@@ -20,5 +20,6 @@ public class UserVO {
     private String wx;
     private String ts;
     private Integer agentUser;
+    // 权限
     private List<LevelRight> rights;
 }

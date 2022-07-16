@@ -52,16 +52,15 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
         int opeUserId = UserUtil.getUser().getId();
-        String mobile = jo.getString("mobile");
         String shop = jo.getString("shop");
+        Integer page = jo.getInteger("page");
+        String mobile = jo.getString("mobile");
         String shopStatus = jo.getString("shopStatus");
-        int page = jo.getInteger("page");
-        int size = jo.getInteger("size");
         int count = merchantMapper.getMerchantListByParamsCount(opeUserId, mobile, shop, shopStatus);
         if (count == 0) {
             return new BaseResult<>();
         } else {
-            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page, size), size == 0 ? 10 : size);
+            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
             return new BaseResult<>(count, merchantListByParams);
         }
     }

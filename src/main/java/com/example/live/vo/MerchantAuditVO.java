@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class MerchantAuditVO {
+    private int id;
     private Integer merchantId;
     private String mobile;
     private String shop;

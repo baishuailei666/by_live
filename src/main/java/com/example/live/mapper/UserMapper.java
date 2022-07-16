@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where mobile=#{mobile} and pwd=#{pwd}")
+    @Select("SELECT id,remark,mobile,level,wx,ct,ut FROM `user` where mobile=#{mobile} and pwd=#{pwd}")
     User getUser1(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
     @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where id=#{id}")

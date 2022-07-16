@@ -200,6 +200,8 @@ public class PayController {
                 order.setUt(DateUtil.getTime());
                 order.setStatus(Constant.pay_success);
                 orderMapper.updateSuccess(order);
+
+                // todo 修改merchant shop_status、days
             }
             out.println("success");
         } else {

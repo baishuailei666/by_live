@@ -27,6 +27,13 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> list = new ArrayList<>();
         list.add("/user/**");
+        list.add("/config/**");
+        list.add("/anchor/**");
+        list.add("/common/**");
+        list.add("/contract/**");
+        list.add("/invoice/**");
+        list.add("/merchant/**");
+        list.add("/resource/**");
 
         // 添加新的拦截器
         registry.addInterceptor(new SysUserInterceptor(userService))

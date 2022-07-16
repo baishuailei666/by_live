@@ -11,10 +11,10 @@ import lombok.Data;
 @Data
 public class LevelRight {
     private int id;
-    // 等级：超级管理员-1、管理员（代理）-2、业务员-3
+    // 等级：超级管理员-1、管理员（代理）-2、业务员-3、商户端登录商户-0
     private int level;
     // 服务接口
     private String api;
-    // 页面路由
-    private String path;
+    // 说明
+    private String note;
 }

@@ -36,9 +36,5 @@ public class Merchant {
     // 创建时间
     private String ct;
 
-    // 店铺状态
-    private String status;
-    // 备注
-    private String remark;
 
 }

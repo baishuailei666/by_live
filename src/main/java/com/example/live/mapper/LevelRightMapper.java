@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface LevelRightMapper {
 
-    @Select("select id, level, api, path from level_right")
+    @Select("select id, level, api, note from level_right")
     List<LevelRight> levelRightList();
 
 }

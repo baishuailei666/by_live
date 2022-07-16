@@ -32,7 +32,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Override
     public BaseResult<?> audits(JSONObject jo) {
-        // 1-审核通过、2-审核拒绝
+        // 0-待审核、1-审核通过、2-审核拒绝
         Integer status = jo.getInteger("status");
         String mobile = jo.getString("mobile");
         String shop = jo.getString("shop");

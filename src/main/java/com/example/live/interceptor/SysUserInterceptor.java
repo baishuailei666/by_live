@@ -6,11 +6,13 @@ import com.example.live.service.UserService;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 
 /**
@@ -28,14 +30,32 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         this.userService = userService;
     }
 
+
+    // 免拦截接口
+    private static final List<String> apis_none = Lists.newArrayList();
+    static {
+        apis_none.add("/index");
+        apis_none.add("/login");
+        apis_none.add("/logout");
+        apis_none.add("/pay/**");
+        apis_none.add("/common/code");
+        apis_none.add("/common/kef");
+        apis_none.add("/common/msg/**");
+        apis_none.add("/common/pwd/modify");
+    }
+
     // 如果设置为false，被请求时，拦截器执行到此处将不会继续操作；
     // 如果设置为true，请求将继续执行后面的操作
     @Override
     public final boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
-//        String path = request.getServletPath();
-//        String from = request.getParameter("from");
-//        System.out.println("path:" + path + ",from:"+from);
+        String path = request.getServletPath();
+        String from = request.getHeader("from");
+        System.out.println("path:" + path + ",from:"+from);
+        if (apis_none.contains(path)) {
+            return true;
+        }
+
 //        if (Constant.source_back.equals(from)) {
 //            return handleUser(path, request, response);
 //        } else if (Constant.source_merchant.equals(from)) {

@@ -1,6 +1,9 @@
 package com.example.live.vo;
 
+import com.example.live.entity.LevelRight;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 商户端系统：
@@ -20,6 +23,7 @@ public class MerchantVO {
     private String opeUserWx;
     private String buyType;
     private int vipType;
+    private List<LevelRight> rights;
     // 剩余天数
     private Integer days;
     private String ct;

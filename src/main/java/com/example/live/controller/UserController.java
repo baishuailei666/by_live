@@ -8,6 +8,7 @@ import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
 import com.example.live.service.MerchantAuditService;
+import com.example.live.service.MerchantService;
 import com.example.live.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private MerchantService merchantService;
     @Autowired
     private MerchantAuditService merchantAuditService;
 
@@ -114,6 +117,16 @@ public class UserController {
         return userService.orderIns(order);
     }
 
+    /**
+     * 业务员-查询商户列表，包含手机、店铺名、状态条件筛选
+     *
+     * @param jo
+     * @return
+     */
+    @PostMapping("/user/merchant/list")
+    public BaseResult<?> merchants(@RequestBody JSONObject jo) {
+        return merchantService.getMerchantListByParams(jo);
+    }
 
     /**
      * 业务员-商户订单列表
@@ -122,7 +135,7 @@ public class UserController {
      *                   、shop-商户店铺、orderNo-订单号、buyType-购买类型 1-月卡、2-季卡、3-年卡
      * @return
      */
-    @PostMapping("/merchant/order")
+    @PostMapping("/user/merchant/order")
     public BaseResult<?> opeUserMerchantOrderList(@RequestBody OrderQuery orderQuery) {
         return userService.opeUserMerchantOrderList(orderQuery);
     }
@@ -132,7 +145,7 @@ public class UserController {
      *
      * @return
      */
-    @PostMapping("/merchant/auditList")
+    @PostMapping("/user/merchant/audit/list")
     public BaseResult<?> auditList(@RequestBody JSONObject jo) {
         return merchantAuditService.audits(jo);
     }
@@ -143,7 +156,7 @@ public class UserController {
      * @param jo
      * @return
      */
-    @PostMapping("/merchant/audit")
+    @PostMapping("/user/merchant/audit")
     public BaseResult<?> merchantAudit(@RequestBody JSONObject jo) {
         return merchantAuditService.merchantAudit(jo);
     }
