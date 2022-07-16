@@ -6,7 +6,7 @@
         select count(1) from `order`
         where 1=1
         <if test="mobile!=null and mobile!=''">
-            and merchant_id = select m.id from merchant m where m.mobile=#{mobile}
+            and merchant_id = (select m.id from merchant m where m.mobile=#{mobile})
         </if>
         <if test="shop!=null and shop!=''">
             and merchant_id in (select m.id from merchant m where m.shop LIKE CONCAT('%', #{shop}, '%'))
@@ -42,7 +42,7 @@
         from `order`
         where 1=1
         <if test="mobile!=null and mobile!=''">
-            and merchant_id = select m.id from merchant m where m.mobile=#{mobile}
+            and merchant_id = (select m.id from merchant m where m.mobile=#{mobile})
         </if>
         <if test="shop!=null and shop!=''">
             and merchant_id in (select m.id from merchant m where m.shop LIKE CONCAT('%', #{shop}, '%'))

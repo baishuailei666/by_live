@@ -26,12 +26,12 @@ public interface ContractMapper {
 
     List<Contract> contractList(ContractQuery query);
 
-    @Select("select id, merchant_id as merchantId, ope_user as opeUser, buy_type as buyType" +
+    @Select("select id, merchant_id as merchantId, ope_user as opeUser, buy_type as buyType," +
             " ct, ut, remark, sign_status as signStatus, sign_type as signType, company, tax, owner, mobile" +
             " from contract where id=#{id}")
     Contract getContract(@Param("id") Integer id);
 
-    @Select("select id, merchant_id as merchantId, ope_user as opeUser, buy_type as buyType" +
+    @Select("select id, merchant_id as merchantId, ope_user as opeUser, buy_type as buyType," +
             " ct, ut, remark, sign_status as signStatus, sign_type as signType, company, tax, owner, mobile" +
             " from contract where merchant_id=#{mid}")
     Contract getContract2(@Param("mid") Integer mid);

@@ -10,15 +10,15 @@
         where 1=1
         <if test="ids!=null and ids.size()!=0">
             and n.ope_user in
-            <foreach collection="ids" index="item" open="(" separator="," close=")">
+            <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
         <if test="mobile != null and mobile != ''">
-            and m.mobile = #{query.mobile}
+            and m.mobile = #{mobile}
         </if>
-        <if test="shop != null and shop != ''">
-            and m.shop like concat('%',#{shop},'%')
+        <if test="company != null and company != ''">
+            and n.company like concat('%',#{company},'%')
         </if>
         <if test="status != null">
             and n.status = #{status}
@@ -35,16 +35,16 @@
         left join merchant m on n.merchant_id=m.id
         where 1=1
         <if test="ids!=null and ids.size()!=0">
-            n.ope_user in
-            <foreach collection="ids" index="item" open="(" separator="," close=")">
+            and n.ope_user in
+            <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
         <if test="mobile != null and mobile != ''">
             and m.mobile = #{mobile}
         </if>
-        <if test="shop != null and shop != ''">
-            and m.shop like concat('%',#{shop},'%')
+        <if test="company != null and company != ''">
+            and n.company like concat('%',#{company},'%')
         </if>
         <if test="status != null">
             and n.status = #{status}

@@ -15,7 +15,7 @@ public class InvoiceQuery {
     private String mobile;
     private Integer status;
     private Integer page;
-    private String shop;
+    private String company;
     // ope_user
     private List<Integer> ids;
 
