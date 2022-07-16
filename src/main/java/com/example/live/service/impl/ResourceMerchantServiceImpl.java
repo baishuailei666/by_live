@@ -88,11 +88,14 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
 
     @Override
     public BaseResult<?> editResource(JSONObject jo) {
-        UserVO uvo = UserUtil.getUser();
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(14, "登录已过期请重新登录");
+        }
         // 意向程度：跟进中-1、已处理-2、已拒绝-3
         Integer intention = jo.getInteger("intention");
         Integer id = jo.getInteger("id");
-        resourceMerchantMapper.updateResourceMerchant(intention, id, uvo.getId());
+        resourceMerchantMapper.updateResourceMerchant(intention, id);
         return new BaseResult<>();
     }
 

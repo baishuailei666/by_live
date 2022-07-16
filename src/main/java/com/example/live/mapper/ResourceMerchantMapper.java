@@ -39,8 +39,8 @@ public interface ResourceMerchantMapper {
     void needClearList();
 
     //更新意向
-    @Update("update resource_merchant set intention=#{intention},ut=now() where id=#{id} and ope_user=#{opeUser} ")
-    void updateResourceMerchant(@Param("intention") Integer intention, @Param("id") Integer id, @Param("opeUser") Integer opeUser);
+    @Update("update resource_merchant set intention=#{intention},ut=now() where id=#{id}")
+    void updateResourceMerchant(@Param("intention") Integer intention, @Param("id") Integer id);
 
 
 }
