@@ -11,7 +11,7 @@
     </select>
 
     <select id="configList" resultType="com.example.live.entity.PayConfig">
-        select pc.id, pc.agent_user as agentUser, pc.ali_app_id as aliAppId, pc.ali_private_key as aliPrivateKey, pc.ali_public_key as aliPublicKey
+        select pc.id as id, pc.agent_user as agentUser, pc.ali_app_id as aliAppId, pc.ali_private_key as aliPrivateKey, pc.ali_public_key as aliPublicKey
             , pc.wx_app_id as wxAppId, pc.wx_mch_id as wxMchId, pc.wx_mch_key as wxMchKey, pc.wx_key_path as wxKeyPath, pc.contrary
             , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount, pc.ct, pc.ut, pc.remark, u.mobile, u.remark as agentRemark
         from pay_config pc

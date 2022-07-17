@@ -189,10 +189,10 @@ public class UserServiceImpl implements UserService {
 
         String val = mobileCodeMapper.getCode(mobile);
         if (StringUtils.isBlank(val)) {
-            return new BaseResult<>(10, "验证码无效");
+            return new BaseResult<>(13, "验证码无效");
         }
         if (!val.equals(code)) {
-            return new BaseResult<>(10, "验证码不正确");
+            return new BaseResult<>(14, "验证码不正确");
         }
         String encode = MD5Util.encode(pwd);
         if ("back".equals(source)) {
