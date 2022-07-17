@@ -246,16 +246,17 @@ public class CommonServiceImpl implements CommonService {
         if (user == null) {
             return new BaseResult<>(14, "登录已过期，请重新登录！");
         }
-        if (user.getLevel() != 1) {
-            return new BaseResult<>(13, "您没有权限更改！");
+        if (user.getLevel() != 1 && user.getId()!=Constant.admin_id) {
+            return new BaseResult<>(13, "您没有权限操作！");
         }
-        List<DataConfig> dataConfigs = dataConfigMapper.getDataConfigs();
-        for (DataConfig dataConfig : dataConfigs) {
-            String[] split = dataConfig.getContent().split(";");
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(split[0]).append(";").append(split[1]).append(";").append(month).append(",").append(quarter).append(",").append(year);
-            dataConfigMapper.modifyConfig(dataConfig.getId(), dataConfig.getAgentUser(), buffer.toString());
-        }
+        DataConfig data = dataConfigMapper.getContent2(user.getId());
+        String[] split = data.getContent().split(Constant.split2);
+        String sbd = split[0] +
+                Constant.split2 +
+                split[1] +
+                Constant.split2 +
+                month + Constant.split + quarter + Constant.split + year;
+        dataConfigMapper.modifyConfig(data.getId(), data.getAgentUser(), sbd);
         return new BaseResult<>();
     }
 
@@ -265,11 +266,7 @@ public class CommonServiceImpl implements CommonService {
         if (user == null) {
             return new BaseResult<>(14, "登录已过期，请重新登录！");
         }
-        if (user.getLevel() != 1) {
-            return new BaseResult<>(13, "您没有权限更改！");
-        }
-        Integer agentUser = user.getAgentUser();
-        String configStr = dataConfigMapper.getConfigStr(agentUser);
+        String configStr = dataConfigMapper.getConfigStr(user.getId());
         String[] split = configStr.split(";");
         String[] s = split[2].split(",");
         DataConfigVO dataConfigVO = new DataConfigVO();

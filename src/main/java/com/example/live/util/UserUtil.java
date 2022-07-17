@@ -8,6 +8,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Objects;
 
+/**
+ * 管理端登录返回user
+ * 商户端登录返回merchant
+ */
 public class UserUtil {
 
     /**
@@ -19,11 +23,7 @@ public class UserUtil {
         Object obj = Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
                 .getAttribute(Constant.session_user, 1);
         if (obj == null) {
-            // todo
-            UserVO user1 = new UserVO();
-            user1.setId(11);
-            user1.setLevel(1);
-            return user1;
+            return null;
         }
         UserVO user1 = new UserVO();
         BeanUtils.copyProperties(obj, user1);
@@ -34,7 +34,7 @@ public class UserUtil {
         if (getUser() != null) {
             return getUser().getId();
         } else {
-            return 11;
+            return null;
         }
     }
 
@@ -43,10 +43,7 @@ public class UserUtil {
         Object obj = Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
                 .getAttribute(Constant.session_user, 1);
         if (obj == null) {
-            MerchantVO mvo = new MerchantVO();
-            mvo.setId(1);
-            mvo.setOpeUser(11);
-            return mvo;
+            return null;
         }
         MerchantVO mvo = new MerchantVO();
         BeanUtils.copyProperties(obj, mvo);
@@ -57,7 +54,7 @@ public class UserUtil {
         if (getMerchant() != null) {
             return getMerchant().getId();
         } else {
-            return 1;
+            return null;
         }
     }
 

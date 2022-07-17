@@ -43,6 +43,17 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         apis_none.add("/common/msg/**");
         apis_none.add("/common/pwd/modify");
     }
+    // 超级管理员独有权限
+    private static final List<String> apis_admin11 = Lists.newArrayList();
+    static {
+        apis_admin11.add("/common/upload/video");
+        apis_admin11.add("/common/upload/excel");
+        apis_admin11.add("/common/upload/cert");
+        apis_admin11.add("/common/pwd/reset");
+        apis_admin11.add("/config/data/**");
+        apis_admin11.add("/config/price/**");
+        apis_admin11.add("/config/pay/**");
+    }
 
     // 如果设置为false，被请求时，拦截器执行到此处将不会继续操作；
     // 如果设置为true，请求将继续执行后面的操作
@@ -52,33 +63,45 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         String path = request.getServletPath();
         String from = request.getHeader("from");
         System.out.println("path:" + path + ",from:"+from);
+
+        // 免拦截接口直接请求返回
         if (apis_none.contains(path)) {
             return true;
         }
 
-//        if (Constant.source_back.equals(from)) {
-//            return handleUser(path, request, response);
-//        } else if (Constant.source_merchant.equals(from)) {
-//            return handleMerchant(path, request, response);
-//        } else {
-//            handleResponse(request, response, 18, "无效请求");
-//            return false;
-//        }
-        return true;
+
+        if (Constant.source_back.equals(from)) {
+            // 后台管理端
+            return handleUser(path, request, response);
+        } else if (Constant.source_merchant.equals(from)) {
+            // 商家客户端
+            return handleMerchant(path, request, response);
+        } else {
+            // 未知请求
+            handleResponse(request, response, 18, "无效请求");
+            return false;
+        }
     }
-    // 未登录处理
-    private boolean handleNoLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        handleResponse(request, response, 19, "登录失效");
-        return false;
-    }
+
     // 后台管理端逻辑处理
-    private boolean handleUser(String path, HttpServletRequest request, HttpServletResponse response) {
+    private boolean handleUser(String path, HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserVO user = UserUtil.getUser();
+        if (user==null) {
+            return handleNoLogin(request, response);
+        }
+        // 超级管理员独有权限
+        if (apis_admin11.contains(path) && user.getLevel()!=1) {
+            handleResponse(request, response, 21, "没有操作权限");
+            return false;
+        }
         return true;
     }
     // 商户端逻辑处理
     private boolean handleMerchant(String path, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo==null) {
+            return handleNoLogin(request, response);
+        }
         if (path.contains("/anchor/info")) {
             // 主播详情
             if (mvo.getVipType()<1) {
@@ -87,6 +110,11 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
             }
         }
         return true;
+    }
+    // 未登录处理
+    private boolean handleNoLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        handleResponse(request, response, 10, "登录已过期,请重新登录");
+        return false;
     }
 
     // 返回response

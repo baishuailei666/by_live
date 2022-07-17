@@ -183,13 +183,13 @@ public class UserController {
     }
 
     /**
-     * 全局统一月卡，季卡，年卡价格
+     * 单独月卡，季卡，年卡价格修改
      * @param month
      * @param quarter
      * @param year
      * @return
      */
-    @PostMapping("/config/data/modify/prices")
+    @PostMapping("/config/price/modify")
     public BaseResult<?> configModifyPrices(@RequestParam("month")Double month,
                                             @RequestParam("quarter")Double quarter,
                                             @RequestParam("year")Double year){
@@ -200,7 +200,7 @@ public class UserController {
      * 展示价格
      * @return
      */
-    @GetMapping("/config/data/modify/showPrices")
+    @GetMapping("/config/price")
     public BaseResult<?> showPrices(){
         return commonService.showPrices();
     }
