@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
             return new BaseResult<>(10, "登录已过期，请重新登录");
         }
         if (user.getId() == id || id == Constant.admin_id) {
-            return new BaseResult<>(14, "抱歉，无法删除此用户");
+            return new BaseResult<>(14, "请求无效,请联系管理员");
         }
         userMapper.delUser(id);
         return new BaseResult<>();

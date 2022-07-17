@@ -164,15 +164,11 @@ public class CommonServiceImpl implements CommonService {
             // 0-邮箱地址、1-客服电话、2-服务价格
             String[] email = GeneralUtil.getAgentConfig(val, 0);
             String[] kef = GeneralUtil.getAgentConfig(val, 1);
-//            String[] price = GeneralUtil.getAgentConfig(val, 2);
             // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
             vo.setEmailSend(email[0]);
             vo.setEmailReceive(email[1]);
             vo.setKef1(kef[0]);
             vo.setKef2(kef[1]);
-//            vo.setMonthCard(price[0]);
-//            vo.setSeasonCard(price[1]);
-//            vo.setYearCard(price[2]);
             vo.setAgentUser(c.getAgentUser());
             vo.setAgentRemark(c.getAgentRemark());
             vo.setMobile(c.getMobile());
@@ -189,10 +185,6 @@ public class CommonServiceImpl implements CommonService {
         String emailReceive = jo.getString("emailReceive");
         String kef1 = jo.getString("kef1");
         String kef2 = jo.getString("kef2");
-//        String monthCard = jo.getString("monthCard");
-//        String seasonCard = jo.getString("seasonCard");
-//        String yearCard = jo.getString("yearCard");
-//        String content = emailSend + "," + emailReceive + ";" + kef1 + "," + kef2 + ";" + monthCard + "," + seasonCard + "," + yearCard;
         // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
         String content = emailSend + Constant.split + emailReceive + Constant.split2 + kef1 ;
         if (StringUtils.isNotEmpty(kef2)) {
