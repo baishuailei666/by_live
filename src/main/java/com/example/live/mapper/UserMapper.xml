@@ -9,7 +9,7 @@
             in (select child_user_id from relation_user where main_user_id=#{agentUser})
         </if>
         <if test="agentUser==null">
-             is not null
+             is not null and id != 11
         </if>
 
         <if test="keyword!=null and keyword!=''">
@@ -26,7 +26,7 @@
             in (select child_user_id from relation_user where main_user_id=#{agentUser})
         </if>
         <if test="agentUser==null">
-            is not null
+            is not null and id != 11
         </if>
 
         <if test="keyword!=null and keyword!=''">

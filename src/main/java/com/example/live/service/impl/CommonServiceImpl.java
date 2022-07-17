@@ -164,15 +164,15 @@ public class CommonServiceImpl implements CommonService {
             // 0-邮箱地址、1-客服电话、2-服务价格
             String[] email = GeneralUtil.getAgentConfig(val, 0);
             String[] kef = GeneralUtil.getAgentConfig(val, 1);
-            String[] price = GeneralUtil.getAgentConfig(val, 2);
+//            String[] price = GeneralUtil.getAgentConfig(val, 2);
             // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
             vo.setEmailSend(email[0]);
             vo.setEmailReceive(email[1]);
             vo.setKef1(kef[0]);
             vo.setKef2(kef[1]);
-            vo.setMonthCard(price[0]);
-            vo.setSeasonCard(price[1]);
-            vo.setYearCard(price[2]);
+//            vo.setMonthCard(price[0]);
+//            vo.setSeasonCard(price[1]);
+//            vo.setYearCard(price[2]);
             vo.setAgentUser(c.getAgentUser());
             vo.setAgentRemark(c.getAgentRemark());
             vo.setMobile(c.getMobile());
@@ -189,11 +189,15 @@ public class CommonServiceImpl implements CommonService {
         String emailReceive = jo.getString("emailReceive");
         String kef1 = jo.getString("kef1");
         String kef2 = jo.getString("kef2");
-        String monthCard = jo.getString("monthCard");
-        String seasonCard = jo.getString("seasonCard");
-        String yearCard = jo.getString("yearCard");
+//        String monthCard = jo.getString("monthCard");
+//        String seasonCard = jo.getString("seasonCard");
+//        String yearCard = jo.getString("yearCard");
+//        String content = emailSend + "," + emailReceive + ";" + kef1 + "," + kef2 + ";" + monthCard + "," + seasonCard + "," + yearCard;
         // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-        String content = emailSend + "," + emailReceive + ";" + kef1 + "," + kef2 + ";" + monthCard + "," + seasonCard + "," + yearCard;
+        String content = emailSend + Constant.split + emailReceive + Constant.split2 + kef1 ;
+        if (StringUtils.isNotEmpty(kef2)) {
+            content += Constant.split + kef2;
+        }
         if (id != null) {
             DataConfig dc = dataConfigMapper.getContent(id);
             if (dc == null) {
@@ -241,15 +245,19 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> configModifyPrices(Double month, Double quarter, Double year) {
+    public BaseResult<?> configModifyPrices(JSONObject jo) {
+//        Double month, Double quarter, Double year
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(14, "登录已过期，请重新登录！");
+            return new BaseResult<>(10, "登录已过期，请重新登录！");
         }
-        if (user.getLevel() != 1 && user.getId()!=Constant.admin_id) {
+        if (user.getId()!=Constant.admin_id) {
             return new BaseResult<>(13, "您没有权限操作！");
         }
-        DataConfig data = dataConfigMapper.getContent2(user.getId());
+        double month = jo.getDoubleValue("month");
+        double quarter = jo.getDoubleValue("quarter");
+        double year = jo.getDoubleValue("year");
+        DataConfig data = dataConfigMapper.getContent2(Constant.admin_id);
         String[] split = data.getContent().split(Constant.split2);
         String sbd = split[0] +
                 Constant.split2 +
@@ -264,9 +272,10 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> showPrices() {
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(14, "登录已过期，请重新登录！");
+            return new BaseResult<>(10, "登录已过期，请重新登录！");
         }
-        String configStr = dataConfigMapper.getConfigStr(user.getId());
+        //展示价格，只有超管账号下才有月季年卡价格信息
+        String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] split = configStr.split(";");
         String[] s = split[2].split(",");
         DataConfigVO dataConfigVO = new DataConfigVO();

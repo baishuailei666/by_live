@@ -41,7 +41,7 @@ public interface CommonService {
 
     BaseResult<?> payConfigDel(Integer id);
 
-    BaseResult<?> configModifyPrices(Double month, Double quarter, Double year);
+    BaseResult<?> configModifyPrices(JSONObject jsonObject);
 
     BaseResult<?> showPrices();
 }

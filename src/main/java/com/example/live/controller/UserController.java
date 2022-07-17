@@ -178,22 +178,17 @@ public class UserController {
      * @return
      */
     @PostMapping("/config/data/modify")
-    public BaseResult<?> dataConfigModify(JSONObject jo) {
+    public BaseResult<?> dataConfigModify(@RequestBody JSONObject jo) {
         return commonService.dataConfigModify(jo);
     }
 
     /**
      * 单独月卡，季卡，年卡价格修改
-     * @param month
-     * @param quarter
-     * @param year
      * @return
      */
     @PostMapping("/config/price/modify")
-    public BaseResult<?> configModifyPrices(@RequestParam("month")Double month,
-                                            @RequestParam("quarter")Double quarter,
-                                            @RequestParam("year")Double year){
-        return commonService.configModifyPrices(month,quarter,year);
+    public BaseResult<?> configModifyPrices(@RequestBody JSONObject jo){
+        return commonService.configModifyPrices(jo);
     }
 
     /**

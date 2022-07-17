@@ -22,7 +22,6 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -255,6 +254,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResult<?> userDel(Integer id) {
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(10, "登录已过期，请重新登录");
+        }
+        if (user.getId() == id || id == Constant.admin_id) {
+            return new BaseResult<>(14, "抱歉，无法删除此用户");
+        }
         userMapper.delUser(id);
         return new BaseResult<>();
     }
