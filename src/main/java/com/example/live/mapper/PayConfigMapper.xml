@@ -5,7 +5,9 @@
     <select id="getConfig" resultType="com.example.live.entity.PayConfig">
         select pc.id, pc.agent_user as agentUser, pc.ali_app_id as aliAppId, pc.ali_private_key as aliPrivateKey, pc.ali_public_key as aliPublicKey
              , pc.wx_app_id as wxAppId, pc.wx_mch_id as wxMchId, pc.wx_mch_key as wxMchKey, pc.wx_key_path as wxKeyPath, pc.contrary
-             , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount, pc.ct, pc.ut, pc.remark
+             , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount
+             , pc.sign_secret_id as signSecretId, pc.sign_secret_key as signSecretKey, pc.sign_template_id as signTemplateId
+             , pc.ct, pc.ut, pc.remark
         from pay_config pc
         where pc.agent_user=#{userId}
     </select>
@@ -13,7 +15,9 @@
     <select id="configList" resultType="com.example.live.entity.PayConfig">
         select pc.id as id, pc.agent_user as agentUser, pc.ali_app_id as aliAppId, pc.ali_private_key as aliPrivateKey, pc.ali_public_key as aliPublicKey
             , pc.wx_app_id as wxAppId, pc.wx_mch_id as wxMchId, pc.wx_mch_key as wxMchKey, pc.wx_key_path as wxKeyPath, pc.contrary
-            , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount, pc.ct, pc.ut, pc.remark, u.mobile, u.remark as agentRemark
+            , pc.contrary_bank as contraryBank, pc.contrary_account as contraryAccount, pc.ct
+            , pc.sign_secret_id as signSecretId, pc.sign_secret_key as signSecretKey, pc.sign_template_id as signTemplateId
+            , pc.ct, pc.ut, pc.remark, u.mobile, u.remark as agentRemark
         from pay_config pc
         left join `user` u on pc.agent_user=u.id
         <where>
@@ -24,10 +28,12 @@
     </select>
 
     <insert id="insConfig" parameterType="com.example.live.entity.PayConfig">
-        insert into pay_config(agent_user, ali_app_id, ali_private_key, ali_public_key, wx_app_id, wx_mch_id,
-                               wx_mch_key,wx_key_path, contrary, contrary_bank, contrary_account, ct, remark)
+        insert into pay_config(agent_user, ali_app_id, ali_private_key, ali_public_key, wx_app_id, wx_mch_id
+                               , wx_mch_key,wx_key_path, contrary, contrary_bank, contrary_account
+                               , ct, remark, sign_secret_id, sign_secret_key, sign_template_id)
         values (#{agentUser}, #{aliAppId}, #{aliPrivateKey}, #{aliPublicKey}, #{wxAppId}, #{wxMchId}, #{wxMchKey},
-                #{wxKeyPath}, #{contrary}, #{contraryBank}, #{contraryAccount}, now(), #{remark})
+                #{wxKeyPath}, #{contrary}, #{contraryBank}, #{contraryAccount}, now(), #{remark},
+                #{signSecretId}, #{signSecretKey}, #{signTemplateId})
     </insert>
 
 

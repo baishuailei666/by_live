@@ -33,10 +33,18 @@ public class PayConfig {
     private String contraryBank;
     // 对公账户
     private String contraryAccount;
+    // 电子签SecretId
+    private String signSecretId;
+    // 电子签SecretKey
+    private String signSecretKey;
+    // 电子签模板Id
+    private String signTemplateId;
+
     // 创建时间
     private String ct;
     // 更新时间
     private String ut;
+    // 支付凭证备注信息
     private String remark;
 
     // 管理员（代理商）手机、备注等

@@ -1,16 +1,22 @@
 package com.example.live.service.impl;
 
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.ContractQuery;
 import com.example.live.entity.Contract;
 import com.example.live.entity.Merchant;
+import com.example.live.entity.PayConfig;
 import com.example.live.mapper.ContractMapper;
 import com.example.live.mapper.MerchantMapper;
+import com.example.live.mapper.PayConfigMapper;
+import com.example.live.service.CommonService;
 import com.example.live.service.ContractService;
+import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.ContractVO;
+import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +38,12 @@ public class ContractServiceImpl implements ContractService {
     private ContractMapper contractMapper;
     @Autowired
     private MerchantMapper merchantMapper;
+    @Autowired
+    private CloudSignUtil cloudSignUtil;
+    @Autowired
+    private CommonService commonService;
+    @Autowired
+    private PayConfigMapper payConfigMapper;
 
     @Override
     public BaseResult<?> contractList(ContractQuery query) {
@@ -74,20 +86,31 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public BaseResult<?> contractInfo(Integer id) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         Contract contract = contractMapper.getContract(id);
         if (contract==null) {
             return new BaseResult<>(18, "数据不存在");
         }
+        // todo 考虑下如何查看详情
         return new BaseResult<>(contract);
     }
 
     @Override
     public BaseResult<?> contractDown(Integer id) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         Contract contract = contractMapper.getContract(id);
         if (contract==null) {
             return new BaseResult<>(18, "数据不存在");
         }
-
-        return new BaseResult<>();
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
+        String url = cloudSignUtil.singFileDown(payConfig.getSignSecretId(), payConfig.getSignSecretKey());
+        return new BaseResult<>(url);
     }
 }

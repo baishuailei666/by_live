@@ -22,6 +22,10 @@ public interface MerchantMapper {
             " where m.id=#{id}")
     Merchant getMerchant2(@Param("id") int id);
 
+    @Select("select m.id,m.mobile,m.shop,m.introduce,m.shop_status as shopStatus,m.days from merchant m" +
+            " where m.id=#{id}")
+    Merchant getMerchant3(@Param("id") int id);
+
     @Select("select count(1) from merchant where shop_id=#{shopId}")
     int existShop(@Param("shopId") String shopId);
 
@@ -51,6 +55,10 @@ public interface MerchantMapper {
 
     @Update("update merchant set shop_status = '已认证' where id=#{merchantId}")
     void updateMerchantCheck(@Param("merchantId") String merchantId);
+
+    // 支付成功修改操作
+    @Update("update merchant set shop_status=#{shopStatus} and days=#{days} where id=#{merchantId}")
+    void updateMerchantDays(@Param("merchantId") Integer merchantId, @Param("shopStatus") String shopStatus, @Param("days") Integer days);
 
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选

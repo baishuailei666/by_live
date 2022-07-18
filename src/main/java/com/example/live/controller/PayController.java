@@ -7,11 +7,14 @@ import com.alipay.api.AlipayConstants;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
+import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
 import com.example.live.entity.PayConfig;
 import com.example.live.mapper.DataConfigMapper;
+import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
 import com.example.live.mapper.PayConfigMapper;
 import com.example.live.service.CommonService;
@@ -61,6 +64,8 @@ public class PayController {
     private CommonService commonService;
     @Autowired
     private DataConfigMapper dataConfigMapper;
+    @Autowired
+    private MerchantMapper merchantMapper;
 
 
     // 获取代理商支付配置信息
@@ -70,6 +75,16 @@ public class PayController {
             config = payConfigMapper.getConfig(Constant.admin_id);
         }
         return config;
+    }
+    // 更新merchant的shop_status、days
+    public void successHandler(Order order) {
+        int mid = order.getMerchantId();
+        Merchant merchant = merchantMapper.getMerchant3(mid);
+        if (merchant!=null) {
+            String buy = Constant.buyTypeMap.get(order.getBuyType());
+            int days = GeneralUtil.typeDays(order.getBuyType());
+            merchantMapper.updateMerchantDays(mid, buy, merchant.getDays()+days);
+        }
     }
 
     /**
@@ -81,10 +96,10 @@ public class PayController {
         if (mvo ==null) {
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 11);
-            jsonObject.put("status", 200);
             jsonObject.put("data", null);
-            jsonObject.put("msg", "用户登录状态已过期");
+            jsonObject.put("status", 200);
+            jsonObject.put("msg", BaseEnum.No_Login.getMsg());
+            jsonObject.put("code", BaseEnum.No_Login.getCode());
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
             httpResponse.getWriter().close();
@@ -175,24 +190,32 @@ public class PayController {
             //乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
             //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
         }
-
-        // TODO 支付宝回调
         PrintWriter out = response.getWriter();
-        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, Constant.alipay_public_key, Constant.charset, Constant.sign_type); // 调用SDK验证签名
+
+        String order_no = request.getParameter("out_trade_no"); // 获取订单号
+        Order order = orderMapper.getOrderByNo(order_no);
+        if (order==null) {
+            out.println("交易失败,订单号不存在order_no:"+order_no);
+            return;
+        }
+        Integer agentUser = commonService.agentUser(order.getOpeUser());
+        PayConfig payConfig = getPayConfig(agentUser);
+        if (payConfig==null) {
+            out.println("交易异常,没有支付凭证agentUser:"+agentUser+",opeUser:"+order.getOpeUser());
+            return;
+        }
+        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, payConfig.getAliPublicKey(), Constant.charset, Constant.sign_type); // 调用SDK验证签名
 
         String sessionId = request.getSession().getId();
         String trade_no = request.getParameter("trade_no"); // 支付宝交易号
-        String order_no = request.getParameter("out_trade_no"); // 获取订单号
         String total_fee = request.getParameter("total_amount"); // 用户支付金额
         String buyer_email = request.getParameter("buyer_email"); // 买家支付宝账号
         String buyerLogonId =request.getParameter("buyer_logon_id");//买家支付宝账号
         String trade_status = request.getParameter("trade_status"); // 交易状态
         String passback_params = request.getParameter("passback_params"); // 交易状态
 
-
         if (signVerified) {
             if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
-                Order order = orderMapper.getOrderByNo(order_no);
                 if (StringUtils.isNotBlank(order.getTradeNo())) {
                     out.println("success");
                 }
@@ -201,7 +224,7 @@ public class PayController {
                 order.setStatus(Constant.pay_success);
                 orderMapper.updateSuccess(order);
 
-                // todo 修改merchant shop_status、days
+                successHandler(order);
             }
             out.println("success");
         } else {
@@ -258,10 +281,10 @@ public class PayController {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo ==null) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 11);
             jsonObject.put("data", null);
             jsonObject.put("status", 200);
-            jsonObject.put("msg", "用户登录状态已过期");
+            jsonObject.put("msg", BaseEnum.No_Login.getMsg());
+            jsonObject.put("code", BaseEnum.No_Login.getCode());
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
             httpResponse.getWriter().write(jsonObject.toJSONString());
             httpResponse.getWriter().flush();
@@ -290,7 +313,7 @@ public class PayController {
         } else {
             // 无效的请求参数
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 10);
+            jsonObject.put("code", 11);
             jsonObject.put("data", null);
             jsonObject.put("status", 200);
             jsonObject.put("msg", "无效的请求参数");
@@ -318,7 +341,8 @@ public class PayController {
         request.setDetail(subject);
         request.setProductId("1");
         request.setOutTradeNo(outTradeNo);
-        request.setSpbillCreateIp("122.234.60.79");
+        // 终端ip：Native支付填写调用微信支付API的机器ip
+        request.setSpbillCreateIp("");
 //        // 设置支付过期时间：30分钟
 //        request.setTimeExpire(getOrderExpireTime(30*sec));
         // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的
@@ -359,6 +383,8 @@ public class PayController {
         order.setUt(DateUtil.getTime());
         order.setStatus(Constant.pay_success);
         orderMapper.updateSuccess(order);
+
+        successHandler(order);
         return WxPayNotifyResponse.success("支付成功");
     }
 

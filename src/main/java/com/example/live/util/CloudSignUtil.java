@@ -20,25 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CloudSignUtil {
 
-    private static final String sign_secretId = "";
-    private static final String sign_secretKey = "";
-    private static final String sign_sdkAppId = "";
-    private static final String sign_templateId = "";
-
-
-    private static final EssClient essClient = getEssClient();
-
-    private static EssClient getEssClient() {
-        if (essClient != null) {
-            return essClient;
-        }
-        return essClientInit();
-    }
-
-    private static EssClient essClientInit() {
+    // 构建client
+    private EssClient getEssClient(String secretId, String secretKey) {
         // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密
         // 密钥可前往https://console.cloud.tencent.com/cam/capi网站进行获取
-        Credential cred = new Credential(sign_secretId, sign_secretKey);
+        Credential cred = new Credential(secretId, secretKey);
         // 实例化一个http选项，可选的，没有特殊需求可以跳过
         HttpProfile httpProfile = new HttpProfile();
         httpProfile.setEndpoint("ess.tencentcloudapi.com");
@@ -52,18 +38,29 @@ public class CloudSignUtil {
     // 先获取签署预览
     public JSONObject signPreview(JSONObject jo) {
         Integer cid = jo.getInteger("cid");
+        Integer mid = jo.getInteger("mid");
+        //
+        String secretId = jo.getString("signSecretId");
+        String secretKey = jo.getString("signSecretKey");
+        String templateId = jo.getString("signTemplateId");
         String filename = "直播带货服务合作签署合同"+cid;
         jo.put("filename", filename);
 
         String flowId = signProcess1(jo);
-        JSONObject jo2 = signProcess2(flowId, filename);
+        JSONObject jo2 = signProcess2(flowId, filename, secretId, secretKey, templateId);
+        jo2.put("cid", cid);
+        jo2.put("mid", mid);
         jo2.put("flowId", flowId);
         jo2.put("filename", filename);
         return jo2;
     }
     // 获取签署链接
-    public String signUrl(String flowId) {
-        return signProcess3(flowId);
+    public String signAgree(String flowId, String secretId, String secretKey) {
+        return signProcess3(flowId, secretId, secretKey);
+    }
+    // 获取签署链接
+    public String signUrl(String secretId, String secretKey) {
+        return signProcess4(secretId, secretKey);
     }
 
 
@@ -79,6 +76,9 @@ public class CloudSignUtil {
         String company = jo.getString("company");
         String filename = jo.getString("filename");
 
+        String secretId = jo.getString("signSecretId");
+        String secretKey = jo.getString("signSecretKey");
+        EssClient essClient = getEssClient(secretId, secretKey);
         try {
             // 实例化一个请求对象,每个接口都会对应一个request对象
             CreateFlowRequest req = new CreateFlowRequest();
@@ -129,15 +129,16 @@ public class CloudSignUtil {
     // DocumentId:签署流程电子文档ID、PreviewFileUrl:签署流程文件的预览地址，5分钟有效
     // 仅当NeedPreview为true时返回，注意：此字段可能为空，表示取不到有效值
     // RequestId:唯一请求id，每次请求都会返回，定位问题时需要提供该次请求的id
-    public JSONObject signProcess2(String flowId, String filename) {
+    public JSONObject signProcess2(String flowId, String filename, String secretId, String secretKey, String templateId) {
         JSONObject jo = new JSONObject();
+        EssClient essClient = getEssClient(secretId, secretKey);
         try {
             // 实例化一个请求对象,每个接口都会对应一个request对象
             CreateDocumentRequest req = new CreateDocumentRequest();
             // 签署流程编号，由CreateFlow接口返回
             req.setFlowId(flowId);
             // 用户上传的模板ID
-            req.setTemplateId(sign_templateId);
+            req.setTemplateId(templateId);
 
             String[] fileNames1 = {filename};
             // 文件名列表
@@ -160,7 +161,8 @@ public class CloudSignUtil {
     // 返回：
     // Status:返回描述，START-发起成功， REVIEW-提交审核成功，EXECUTING-已提交发起任务
     // RequestId
-    public String signProcess3(String flowId) {
+    public String signProcess3(String flowId, String secretId, String secretKey) {
+        EssClient essClient = getEssClient(secretId, secretKey);
         try {
             // 实例化一个请求对象,每个接口都会对应一个request对象
             StartFlowRequest req = new StartFlowRequest();
@@ -183,7 +185,8 @@ public class CloudSignUtil {
     // 返回：
     // SchemeUrl:小程序链接地址
     // RequestId
-    public String signProcess4() {
+    public String signProcess4(String secretId, String secretKey) {
+        EssClient essClient = getEssClient(secretId, secretKey);
         try {
             // 实例化一个请求对象,每个接口都会对应一个request对象
             CreateSchemeUrlRequest req = new CreateSchemeUrlRequest();
@@ -201,7 +204,8 @@ public class CloudSignUtil {
     }
 
     // 文件下载
-    public void singFileDown() {
+    public String singFileDown(String secretId, String secretKey) {
+        EssClient essClient = getEssClient(secretId, secretKey);
         try{
             // 实例化一个请求对象,每个接口都会对应一个request对象
             DescribeFileUrlsRequest req = new DescribeFileUrlsRequest();
@@ -215,9 +219,11 @@ public class CloudSignUtil {
             DescribeFileUrlsResponse resp = essClient.DescribeFileUrls(req);
             // 输出json格式的字符串回包
             System.out.println("#signFileDown:"+DescribeFileUrlsResponse.toJsonString(resp));
+            return resp.getFileUrls()[0].getUrl();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     // 用户信息

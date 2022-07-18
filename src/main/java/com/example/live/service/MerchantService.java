@@ -40,7 +40,9 @@ public interface MerchantService {
 
     BaseResult<?> paySuccessCheck(String orderNo);
 
-    BaseResult<?> merchantSign(Integer type);
+    BaseResult<?> merchantSignCreate(Integer type);
+
+    BaseResult<?> merchantSignAgree(String flowId);
 
     BaseResult<?> merchantSignUrl(String flowId);
 

@@ -11,7 +11,7 @@
  Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 15/07/2022 10:08:37
+ Date: 18/07/2022 14:37:15
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,8 @@ CREATE TABLE `anchor`  (
   `avg_gmv` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '场均销售额：1k-5k',
   `price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主推价格区间：0-50',
   `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '带货口碑：4.09',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `id`(`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -57,7 +58,7 @@ CREATE TABLE `content`  (
   `type` tinyint(2) NULL DEFAULT NULL COMMENT '跟进记录-1、备注-2、消息通知-3',
   `ts` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for contract
@@ -79,7 +80,7 @@ CREATE TABLE `contract`  (
   `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '法定代表人/签署人身份证号',
   `mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '签署人手机号',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for data_config
@@ -91,7 +92,7 @@ CREATE TABLE `data_config`  (
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡',
   `ct` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for invoice
@@ -110,7 +111,7 @@ CREATE TABLE `invoice`  (
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '申请时间',
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for level_right
@@ -118,11 +119,11 @@ CREATE TABLE `invoice`  (
 DROP TABLE IF EXISTS `level_right`;
 CREATE TABLE `level_right`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `level` tinyint(2) NULL DEFAULT NULL COMMENT '等级：超级管理员-1、管理员（代理）-2、业务员-3',
+  `level` tinyint(2) NULL DEFAULT NULL COMMENT '等级：超级管理员-1、管理员（代理）-2、业务员-3\r\n0-商户端商户用户',
   `api` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务接口',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '前端路由',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 104 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 135 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for merchant
@@ -143,7 +144,7 @@ CREATE TABLE `merchant`  (
   `lt` timestamp(0) NULL DEFAULT NULL COMMENT '登录时间',
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '注册时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for merchant_anchor
@@ -171,7 +172,7 @@ CREATE TABLE `merchant_audit`  (
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '操作时间',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注：驳回原因',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mobile_code
@@ -183,7 +184,7 @@ CREATE TABLE `mobile_code`  (
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ts` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for order
@@ -201,8 +202,9 @@ CREATE TABLE `order`  (
   `pay_type` tinyint(2) NULL DEFAULT NULL COMMENT '支付类型：支付宝-1、微信-2、对公-3',
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '支付订单时间',
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '支付成功时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `id`(`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pay_config
@@ -221,11 +223,14 @@ CREATE TABLE `pay_config`  (
   `contrary` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '对公公司',
   `contrary_bank` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '对公银行',
   `contrary_account` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '对公账户',
+  `sign_secret_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '电子签id',
+  `sign_secret_key` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '电子签key',
+  `sign_template_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '电子签合同模板id',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
   `ut` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for relation_user
@@ -251,7 +256,8 @@ CREATE TABLE `resource_merchant`  (
   `ope_user` int(11) NULL DEFAULT NULL COMMENT '业务员',
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
   `ut` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `id`(`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 108 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

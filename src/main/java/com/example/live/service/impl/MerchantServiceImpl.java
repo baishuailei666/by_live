@@ -11,6 +11,7 @@ import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
+import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
@@ -43,11 +44,15 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private ContractMapper contractMapper;
     @Autowired
+    private PayConfigMapper payConfigMapper;
+    @Autowired
     private InvoiceMapper invoiceMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
+    @Autowired
+    private CommonService commonService;
 
 
     @Override
@@ -222,7 +227,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantSign(Integer type) {
+    public BaseResult<?> merchantSignCreate(Integer type) {
         MerchantVO mvo = UserUtil.getMerchant();
         // type 0-企业、1-个人
         if (type == null) {
@@ -244,14 +249,39 @@ public class MerchantServiceImpl implements MerchantService {
         jo.put("owner", contract.getOwner());
         jo.put("mobile", contract.getMobile());
         jo.put("company", contract.getCompany());
+
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
+        jo.put("signSecretId", payConfig.getSignSecretId());
+        jo.put("signSecretKey", payConfig.getSignSecretKey());
+        jo.put("signTemplateId", payConfig.getSignTemplateId());
+
         // flowId、filename、documentId、previewFileUrl
         JSONObject jo2 = cloudSignUtil.signPreview(jo);
         return new BaseResult<>(jo2);
     }
 
     @Override
+    public BaseResult<?> merchantSignAgree(String flowId) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
+        String url = cloudSignUtil.signAgree(flowId, payConfig.getSignSecretId(), payConfig.getSignSecretKey());
+        return new BaseResult<>(url);
+    }
+
+    @Override
     public BaseResult<?> merchantSignUrl(String flowId) {
-        String url = cloudSignUtil.signUrl(flowId);
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
+        String url = cloudSignUtil.signUrl(payConfig.getSignSecretId(), payConfig.getSignSecretKey());
         return new BaseResult<>(url);
     }
 

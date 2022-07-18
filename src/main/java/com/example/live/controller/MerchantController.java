@@ -152,8 +152,18 @@ public class MerchantController {
      * @return
      */
     @GetMapping("/sign/create")
-    public BaseResult<?> merchantSign(@RequestParam("type") Integer type) {
-        return merchantService.merchantSign(type);
+    public BaseResult<?> merchantSignCreate(@RequestParam("type") Integer type) {
+        return merchantService.merchantSignCreate(type);
+    }
+
+    /**
+     * 商户电子签-同意
+     * @param flowId
+     * @return
+     */
+    @GetMapping("/sign/agree")
+    public BaseResult<?> merchantSignAgree(@RequestParam("flowId") String flowId) {
+        return merchantService.merchantSignAgree(flowId);
     }
 
     /**

@@ -102,6 +102,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         if (mvo==null) {
             return handleNoLogin(request, response);
         }
+        if (apis_admin11.contains(path)) {
+            handleResponse(request, response, 21, "没有操作权限");
+            return false;
+        }
         if (path.contains("/anchor/info")) {
             // 主播详情
             if (mvo.getVipType()<1) {
