@@ -7,6 +7,7 @@ import com.example.live.common.Constant;
 import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.service.CommonService;
+import com.example.live.util.CloudCosUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.DataConfigVO;
@@ -16,7 +17,10 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +45,10 @@ public class CommonServiceImpl implements CommonService {
     private UserMapper userMapper;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private CloudCosUtil cloudCosUtil;
+    @Autowired
+    private VideoMapper videoMapper;
 
 
     private static List<LevelRight> rightList;
@@ -187,7 +195,7 @@ public class CommonServiceImpl implements CommonService {
         String kef1 = jo.getString("kef1");
         String kef2 = jo.getString("kef2");
         // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-        String content = emailSend + Constant.split + emailReceive + Constant.split2 + kef1 ;
+        String content = emailSend + Constant.split + emailReceive + Constant.split2 + kef1;
         if (StringUtils.isNotEmpty(kef2)) {
             content += Constant.split + kef2;
         }
@@ -244,7 +252,7 @@ public class CommonServiceImpl implements CommonService {
         if (user == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        if (user.getId()!=Constant.admin_id) {
+        if (user.getId() != Constant.admin_id) {
             return new BaseResult<>(13, "您没有权限操作！");
         }
         double month = jo.getDoubleValue("month");
@@ -276,6 +284,45 @@ public class CommonServiceImpl implements CommonService {
         dataConfigVO.setSeasonCard(s[1]);
         dataConfigVO.setYearCard(s[2]);
         return new BaseResult<>(dataConfigVO);
+    }
+
+    @Override
+    public BaseResult<?> uploadVideo(MultipartFile file, JSONObject jo) {
+        String title = jo.getString("title");
+        Integer level = jo.getInteger("level");
+        if (StringUtils.isBlank(title) || level==null) {
+            return new BaseResult<>(11, "参数不能为空");
+        }
+        String fn = file.getOriginalFilename();
+        System.out.println("fn:" + fn);
+        String url = cloudCosUtil.uploadVideo(fn);
+        if (StringUtils.isNotBlank(url)) {
+            videoMapper.insVideo(title, level, url);
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
+    public BaseResult<?> uploadCert(MultipartFile file, Integer agentUser) {
+        String fn = file.getOriginalFilename();
+        System.out.println("fn:" + fn);
+        System.out.println("agentUser:" + agentUser);
+
+        // 路径
+        String filePath = Constant.cert_path + agentUser;
+        System.out.println("filePath:" + filePath);
+
+        try {
+            String certPath = filePath + fn;
+            // 转存文件
+            file.transferTo(new File(certPath));
+            // certPath 绝对路径
+            payConfigMapper.updateCert(certPath, agentUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new BaseResult<>(19, "文件上传失败");
+        }
+        return new BaseResult<>();
     }
 
 }

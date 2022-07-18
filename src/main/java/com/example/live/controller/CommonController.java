@@ -2,6 +2,7 @@ package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import com.example.live.util.ExcelUtil;
@@ -103,43 +104,26 @@ public class CommonController {
     /**
      * 视频上传
      *
-     * @param file
-     * @param request
-     * @param response
+     * @param file 视频文件
+     * @param jo title、level
      * @return
      */
     @PostMapping("/upload/video")
-    public BaseResult<?> uploadVideo(@RequestBody MultipartFile file
-            , HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String fn = file.getOriginalFilename();
-        System.out.println("fn:" + fn);
-        // 路径
-        String filePath = "C:\\Users\\baide0328\\Desktop\\";
-        File f = new File(filePath);
-        // 转存文件
-        file.transferTo(new File(filePath + fn));
-        return new BaseResult<>();
+    public BaseResult<?> uploadVideo(@RequestBody MultipartFile file, @RequestBody JSONObject jo) {
+        return commonService.uploadVideo(file, jo);
     }
 
     /**
      * 证书上传
      *
-     * @param file
-     * @param request
-     * @param response
+     * @param file .p12证书文件
+     * @param agentUser 证书对应代理用户id
      * @return
      */
     @PostMapping("/upload/cert")
     public BaseResult<?> uploadCert(@RequestBody MultipartFile file
-            , HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String fn = file.getOriginalFilename();
-        System.out.println("fn:" + fn);
-        // 路径
-        String filePath = "C:\\Users\\baide0328\\Desktop\\";
-        File f = new File(filePath);
-        // 转存文件
-        file.transferTo(new File(filePath + fn));
-        return new BaseResult<>();
+            , @RequestParam("agentUser") Integer agentUser) {
+        return commonService.uploadCert(file, agentUser);
     }
 
     /**

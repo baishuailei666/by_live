@@ -188,8 +188,20 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public BaseResult<?> videoPlay(Integer id) {
-        String path = videoMapper.video1(id);
-        return new BaseResult<>();
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+
+        Video video = videoMapper.getVideo(id);
+        if (video==null) {
+            return new BaseResult<>(12, "暂无数据");
+        }
+        if (video.getLevel() != mvo.getVipType()) {
+            return new BaseResult<>(13, "暂无权限");
+        }
+        String val = Constant.cloud_url+video.getPath();
+        return new BaseResult<>(val);
     }
 
     @Override

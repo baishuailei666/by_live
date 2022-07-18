@@ -1,10 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.PayConfig;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -24,6 +21,7 @@ public interface PayConfigMapper {
     @Delete("delete from pay_config where id=#{id}")
     void delConfig(@Param("id") Integer id);
 
-
+    @Update("update pay_config set wx_key_path=#{certPath} where agent_user=#{agentUser}")
+    void updateCert(@Param("certPath") String certPath, @Param("agentUser") Integer agentUser);
 
 }

@@ -1,6 +1,7 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.Video;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -16,6 +17,9 @@ public interface VideoMapper {
 
     List<Video> videoList(@Param("type") Integer type);
 
-    @Select("select path from video where id=#{id}")
-    String video1(@Param("id") Integer id);
+    @Select("select path,level from video where id=#{id}")
+    Video getVideo(@Param("id") Integer id);
+
+    @Insert("insert into video(title, level, path) values(#{path}, #{level}, #{path})")
+    void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path);
 }

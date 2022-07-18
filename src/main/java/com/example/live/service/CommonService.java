@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.LevelRight;
 import com.example.live.entity.PayConfig;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,4 +46,8 @@ public interface CommonService {
     BaseResult<?> configModifyPrices(JSONObject jsonObject);
 
     BaseResult<?> showPrices();
+
+    BaseResult<?> uploadVideo(MultipartFile file, JSONObject jo);
+
+    BaseResult<?> uploadCert(MultipartFile file, Integer agentUser);
 }

@@ -21,16 +21,24 @@ public class Constant {
     public static final String source_back = "back";
     public static final String source_merchant = "merchant";
 
+    // 微信支付证书路径：cert/agentUser/.p12文件
+    public static final String cert_path = "/cert/agent-";
+
     // 购买服务说明
     public static final String buy_subject = "直播推广服务";
 
     // 订单支付成功
     public static final String pay_success = "TRADE_SUCCESS";
 
+    // 定义分隔符
     public static final String split = ",";
     public static final String split2 = ";";
     // 发送邮件主题
     public static final String email_subject = "开票信息";
+
+    // 存储链接
+    public static final String cloud_url = "";
+
 
     // 商品链接：3545396053325007934
     public static final String goods_url = "https://haohuo.jinritemai.com/views/product/detail?id=";
