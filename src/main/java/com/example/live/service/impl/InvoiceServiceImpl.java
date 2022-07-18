@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.InvoiceQuery;
@@ -38,7 +39,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         UserVO user = UserUtil.getUser();
         InvoiceQuery invoiceQuery = jo.toJavaObject(InvoiceQuery.class);
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，请重新登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         List<Integer> opeUserIds = Lists.newArrayList();
         if (user.getLevel()!=3) {
@@ -66,10 +67,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         String remark = jo.getString("remark");
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，请重新登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         if (user.getLevel() == 3) {
-            return new BaseResult<>(14, "您没有权限！");
+            return new BaseResult<>(14, "暂无操作权限");
         }
         if (id == null || status == null) {
             return new BaseResult<>(11, "参数不能为空");

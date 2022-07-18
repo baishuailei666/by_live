@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Content;
@@ -84,7 +85,7 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
     public BaseResult<?> editResource(JSONObject jo) {
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期,请重新登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         // 意向程度：跟进中-1、已处理-2、已拒绝-3
         Integer intention = jo.getInteger("intention");

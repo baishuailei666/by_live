@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.*;
@@ -193,7 +194,7 @@ public class CommonServiceImpl implements CommonService {
         if (id != null) {
             DataConfig dc = dataConfigMapper.getContent(id);
             if (dc == null) {
-                return new BaseResult<>(10, "无效id,数据不存在");
+                return new BaseResult<>(BaseEnum.No_Login);
             }
             if (dc.getAgentUser() != agentUser) {
                 return new BaseResult<>(11, "参数错误,数据不匹配");
@@ -241,7 +242,7 @@ public class CommonServiceImpl implements CommonService {
 //        Double month, Double quarter, Double year
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，请重新登录！");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         if (user.getId()!=Constant.admin_id) {
             return new BaseResult<>(13, "您没有权限操作！");
@@ -264,7 +265,7 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> showPrices() {
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，请重新登录！");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         //展示价格，只有超管账号下才有月季年卡价格信息
         String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);

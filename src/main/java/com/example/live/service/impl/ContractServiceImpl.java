@@ -76,7 +76,7 @@ public class ContractServiceImpl implements ContractService {
     public BaseResult<?> contractInfo(Integer id) {
         Contract contract = contractMapper.getContract(id);
         if (contract==null) {
-            return new BaseResult<>(10, "数据不存在");
+            return new BaseResult<>(18, "数据不存在");
         }
         return new BaseResult<>(contract);
     }
@@ -85,7 +85,7 @@ public class ContractServiceImpl implements ContractService {
     public BaseResult<?> contractDown(Integer id) {
         Contract contract = contractMapper.getContract(id);
         if (contract==null) {
-            return new BaseResult<>(10, "数据不存在");
+            return new BaseResult<>(18, "数据不存在");
         }
 
         return new BaseResult<>();

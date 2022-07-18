@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.User;
 import com.example.live.mapper.MerchantAuditMapper;
@@ -39,7 +40,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         int page = jo.getInteger("page");
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，重新登录！");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         Integer userId = user.getId();
         int i = merchantAuditMapper.merchantAuditWaitCount(userId, status, mobile, shop);

@@ -1,6 +1,5 @@
 package com.example.live.util;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
 import com.example.live.entity.Invoice;
 import com.example.live.mapper.DataConfigMapper;
@@ -104,7 +103,6 @@ public class MailUtil {
             "        <style type=\"text/css\">" +
             "            \n" +
             "            table {" +
-//			"                width: 300px;" +
             "                /*居中*/" +
             "                margin: 0 auto;" +
             "                border-spacing: px;" +

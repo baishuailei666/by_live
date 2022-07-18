@@ -28,6 +28,11 @@ public class BaseResult<T> implements Serializable {
         this.code = code;
         this.msg = msg;
     }
+    // baseEnum
+    public BaseResult(BaseEnum baseEnum) {
+        this.code = baseEnum.code;
+        this.msg = baseEnum.msg;
+    }
     // success
     public BaseResult(T data) {
         this.data = data;

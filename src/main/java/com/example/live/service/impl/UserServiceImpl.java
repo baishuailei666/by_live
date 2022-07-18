@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
         String code = jo.getString("code");
         String pwd = jo.getString("pwd");
         if (StringUtils.isBlank(mobile)) {
-            return new BaseResult<>(10, "手机号不能未空");
+            return new BaseResult<>(11, "手机号不能未空");
         }
         if ("back".equals(source)) {
             // 后台管理系统
@@ -168,7 +169,7 @@ public class UserServiceImpl implements UserService {
         if (mobileCode!=null) {
             boolean com = DateUtil.comTsVal(mobileCode.getTs(), 5);
             if (!com) {
-                return new BaseResult<>(10, "请勿重复发送验证码,验证码有效期为5分钟");
+                return new BaseResult<>(18, "请勿重复发送验证码,验证码有效期为5分钟");
             }
         }
         String context = GeneralUtil.get4Random();
@@ -222,7 +223,7 @@ public class UserServiceImpl implements UserService {
             userMapper.updateImg(img, id);
         } catch (IOException e) {
             e.printStackTrace();
-            return new BaseResult<>(10, "上传失败");
+            return new BaseResult<>(19, "上传失败");
         }
         return new BaseResult<>();
     }
@@ -235,7 +236,7 @@ public class UserServiceImpl implements UserService {
 
         // 超级管理员-1、管理员（代理）-2、业务员-3
         if (level>3 || level<1) {
-            return new BaseResult<>(10, "参数错误");
+            return new BaseResult<>(16, "参数错误");
         }
         User user = userMapper.getUserMobile(mobile);
         if (user!=null) {
@@ -256,7 +257,7 @@ public class UserServiceImpl implements UserService {
     public BaseResult<?> userDel(Integer id) {
         UserVO user = UserUtil.getUser();
         if (user == null) {
-            return new BaseResult<>(10, "登录已过期，请重新登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         if (user.getId() == id || id == Constant.admin_id) {
             return new BaseResult<>(14, "请求无效,请联系管理员");

@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
@@ -86,7 +87,7 @@ public class MerchantServiceImpl implements MerchantService {
     public BaseResult<?> merchantShopBind(JSONObject jo) {
         MerchantVO loginMvo = UserUtil.getMerchant();
         if (loginMvo == null) {
-            return new BaseResult<>(1, "未登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         String shop = jo.getString("shop");
         String goods = jo.getString("goods");
@@ -94,21 +95,21 @@ public class MerchantServiceImpl implements MerchantService {
         String introduce = jo.getString("introduce");
 
         if (StringUtils.isBlank(shopId)) {
-            return new BaseResult<>(10, "店铺ID不能为空");
+            return new BaseResult<>(11, "店铺ID不能为空");
         }
         if (StringUtils.isBlank(goods)) {
-            return new BaseResult<>(11, "商品链接不能为空");
+            return new BaseResult<>(12, "商品链接不能为空");
         }
         if (StringUtils.isBlank(introduce)) {
-            return new BaseResult<>(12, "商家介绍不能为空");
+            return new BaseResult<>(13, "商家介绍不能为空");
         }
         if (introduce.length() > 140) {
-            return new BaseResult<>(13, "商家介绍最多140字");
+            return new BaseResult<>(14, "商家介绍最多140字");
         }
 
         int ex = merchantMapper.existShop(shopId);
         if (ex != 0) {
-            return new BaseResult<>(14, "店铺已被认证");
+            return new BaseResult<>(15, "店铺已被认证");
         }
         // 店铺绑定
         merchantMapper.bindShop(loginMvo.getId(), shopId, shop, goods, introduce);
@@ -130,7 +131,7 @@ public class MerchantServiceImpl implements MerchantService {
     public BaseResult<?> merchantShopModify(JSONObject jo) {
         MerchantVO loginMvo = UserUtil.getMerchant();
         if (loginMvo == null) {
-            return new BaseResult<>(1, "未登录");
+            return new BaseResult<>(BaseEnum.No_Login);
         }
         String shop = jo.getString("shop");
         String goods = jo.getString("goods");
@@ -138,7 +139,7 @@ public class MerchantServiceImpl implements MerchantService {
         String introduce = jo.getString("introduce");
 
         if (StringUtils.isBlank(shopId)) {
-            return new BaseResult<>(10, "店铺ID不能为空");
+            return new BaseResult<>(15, "店铺ID不能为空");
         }
         if (StringUtils.isBlank(goods)) {
             return new BaseResult<>(11, "商品链接不能为空");
@@ -168,7 +169,7 @@ public class MerchantServiceImpl implements MerchantService {
         int merchantId = UserUtil.getMerchantId();
         int shop_merchant_id = merchantMapper.shopMerchant(shopId);
         if (merchantId != shop_merchant_id) {
-            return new BaseResult<>(10, "删除失败,店铺ID不是当前商户");
+            return new BaseResult<>(16, "删除失败,店铺ID不是当前商户");
         }
         merchantMapper.modifyShop(merchantId, null, null, null, null);
         return new BaseResult<>();
@@ -217,7 +218,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (order != null && Constant.pay_success.equals(order.getStatus())) {
             return new BaseResult<>("支付成功");
         }
-        return new BaseResult<>(10, "支付验证");
+        return new BaseResult<>(12, "支付验证");
     }
 
     @Override
@@ -225,10 +226,10 @@ public class MerchantServiceImpl implements MerchantService {
         MerchantVO mvo = UserUtil.getMerchant();
         // type 0-企业、1-个人
         if (type == null) {
-            return new BaseResult<>(10, "参数无效");
+            return new BaseResult<>(13, "参数无效");
         }
         if (type != 1 && type != 0) {
-            return new BaseResult<>(11, "参数错误");
+            return new BaseResult<>(14, "参数错误");
         }
 
         Contract contract = contractMapper.getContract2(mvo.getId());
