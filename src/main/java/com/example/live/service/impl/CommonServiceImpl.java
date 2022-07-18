@@ -235,6 +235,12 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public BaseResult<?> payConfigIns(PayConfig payConfig) {
+        //如果改管理员已有配置，那么就删除重新添加
+        Integer agentUser = payConfig.getAgentUser();
+        PayConfig configByAgentUser = payConfigMapper.getConfigByAgentUser(agentUser);
+        if (configByAgentUser==null) {
+            payConfigMapper.delConfig(configByAgentUser.getId());
+        }
         payConfigMapper.insConfig(payConfig);
         return new BaseResult<>();
     }

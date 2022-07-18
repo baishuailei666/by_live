@@ -217,8 +217,8 @@ public class UserController {
      * @param payConfig
      * @return
      */
-    @GetMapping("/config/pay/ins")
-    public BaseResult<?> payConfigIns(PayConfig payConfig) {
+    @PostMapping("/config/pay/ins")
+    public BaseResult<?> payConfigIns(@RequestBody PayConfig payConfig) {
         return commonService.payConfigIns(payConfig);
     }
 

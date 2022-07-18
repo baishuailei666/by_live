@@ -14,6 +14,9 @@ public interface PayConfigMapper {
 
     PayConfig getConfig(@Param("userId") int userId);
 
+    @Select("select id from pay_config where agent_user=#{agentUser}")
+    PayConfig getConfigByAgentUser(@Param("agentUser") int agentUser);
+
     List<PayConfig> configList(@Param("agentUser") Integer agentUser);
 
     void insConfig(PayConfig payConfig);
