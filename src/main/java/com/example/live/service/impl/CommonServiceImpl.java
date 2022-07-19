@@ -141,6 +141,20 @@ public class CommonServiceImpl implements CommonService {
         joList.add(j3);
         return new BaseResult<>(joList);
     }
+    @Override
+    public BaseResult<?> payConfigType() {
+        MerchantVO mvo = UserUtil.getMerchant();
+        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
+        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
+        if (payConfig==null) {
+            return new BaseResult<>(14, "接口异常");
+        }
+        JSONObject jo = new JSONObject();
+        jo.put("ali", StringUtils.isNotBlank(payConfig.getAliAppId()));
+        jo.put("wx", StringUtils.isNotBlank(payConfig.getWxAppId()));
+        jo.put("contrary", StringUtils.isNotBlank(payConfig.getContrary()));
+        return new BaseResult<>(jo);
+    }
 
     @Override
     public BaseResult<?> kef() {
@@ -237,9 +251,9 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> payConfigIns(PayConfig payConfig) {
         //如果改管理员已有配置，那么就删除重新添加
         Integer agentUser = payConfig.getAgentUser();
-        PayConfig configByAgentUser = payConfigMapper.getConfigByAgentUser(agentUser);
-        if (configByAgentUser==null) {
-            payConfigMapper.delConfig(configByAgentUser.getId());
+        int exist = payConfigMapper.exist(agentUser);
+        if (exist!=0) {
+            return new BaseResult<>(12, "不能重复添加");
         }
         payConfigMapper.insConfig(payConfig);
         return new BaseResult<>();

@@ -31,6 +31,8 @@ public interface CommonService {
 
     BaseResult<?> payConfigInfo();
 
+    BaseResult<?> payConfigType();
+
     BaseResult<?> kef();
 
     BaseResult<?> dataConfig(String mobile);

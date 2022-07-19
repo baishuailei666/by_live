@@ -48,12 +48,6 @@ public class Constant {
     /**
      * 支付宝支付
      */
-    // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public static final String notify_url = "";
-
-    // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public static final String return_url = "";
-
     // 签名方式
     public static final String sign_type = "RSA2";
 
@@ -65,12 +59,18 @@ public class Constant {
     // 支付宝网关
     public static String gatewayUrl = "https://openapi.alipay.com/gateway.do";
 
+    // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+    public static final String notify_url = "/pay/notify/ali";
+
+    // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+    public static final String return_url = "";
+
 
     /**
      * 微信支付
      */
-    // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public static final String notify_url2 = "";
+    // 通知URL必须为直接可访问的URL，不允许携带查询串，要求必须为https地址
+    public static final String notify_url2 = "/pay/notify/wx";
 
 
     // 购买类型数据转换

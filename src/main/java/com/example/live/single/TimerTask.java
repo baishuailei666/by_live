@@ -66,7 +66,9 @@ public class TimerTask {
                     // 计算商户资源、业务员的分配系数
                     int coe = list2.size() / list1.size();
                     if (coe<5) {
-                        System.out.println("#数据过少不参与计算分配");
+                        list2.forEach(rm -> rm.setOpeUser(list1.get(0).getChildUserId()));
+                        resourceMerchantMapper.taskDistribution(list2);
+                        System.out.println("#数据过少默认分配给第一个业务员");
                         return;
                     }
                     List<ResourceMerchant> list4 = Lists.newArrayList();

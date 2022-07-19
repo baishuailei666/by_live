@@ -166,4 +166,13 @@ public class CommonController {
         return commonService.payConfigInfo();
     }
 
+    /**
+     * 支付类型：支付宝、微信、对公
+     * @return
+     */
+    @GetMapping("/pay/type")
+    public BaseResult<?> payConfigType() {
+        return commonService.payConfigType();
+    }
+
 }
