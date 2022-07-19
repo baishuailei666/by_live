@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
             vo.setId(user.getId());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
+            vo.setWx(user.getWx());
             if (user.getLevel()==3) {
                 // 上级id
                 Integer mid = relationUserMapper.getMainId(user.getId());
@@ -218,14 +219,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> uploadImg(MultipartFile file, Integer id) {
         BASE64Encoder b64 = new BASE64Encoder();
+        String huiXian = "";//用于二维码回显
         try {
             String img = "data:" + file.getContentType()+";base64," + b64.encode(file.getBytes());
             userMapper.updateImg(img, id);
+            huiXian = img;
         } catch (IOException e) {
             e.printStackTrace();
             return new BaseResult<>(19, "上传失败");
         }
-        return new BaseResult<>();
+        return new BaseResult<>(huiXian);
     }
 
     @Override

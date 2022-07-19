@@ -2,18 +2,12 @@ package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
-import com.example.live.common.Constant;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import com.example.live.util.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * 通用接口：
@@ -85,14 +79,12 @@ public class CommonController {
      *
      * @param file
      * @param type  主播-anchor、商户资源-resource
-     * @param param clear-清空数据上传
      * @return
      */
     @PostMapping(value = "/upload/excel")
-    public BaseResult<?> uploadExcel(@RequestBody MultipartFile file
-            , @RequestParam("type") String type, @RequestParam("param") String param) {
+    public BaseResult<?> uploadExcel(@RequestBody MultipartFile file, @RequestParam("type") String type) {
         // 默认清空数据进行上传
-        param = "clear";
+        String param = "clear";
         if ("anchor".equals(type)) {
             excelUtil.excelAnchorHandler(file, param);
         } else if ("resource".equals(type)) {
@@ -117,13 +109,11 @@ public class CommonController {
      * 证书上传
      *
      * @param file .p12证书文件
-     * @param agentUser 证书对应代理用户id
      * @return
      */
     @PostMapping("/upload/cert")
-    public BaseResult<?> uploadCert(@RequestBody MultipartFile file
-            , @RequestParam("agentUser") Integer agentUser) {
-        return commonService.uploadCert(file, agentUser);
+    public BaseResult<?> uploadCert(@RequestBody MultipartFile file) {
+        return commonService.uploadCert(file);
     }
 
     /**

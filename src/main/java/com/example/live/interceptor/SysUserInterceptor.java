@@ -42,6 +42,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         apis_none.add("/common/kef");
         apis_none.add("/common/msg/**");
         apis_none.add("/common/pwd/modify");
+        apis_none.add("/common/upload/img");
+        apis_none.add("/common/upload/cert");
+        apis_none.add("/common/upload/excel");
+        apis_none.add("/common/upload/video");
     }
     // 超级管理员独有权限
     private static final List<String> apis_admin11 = Lists.newArrayList();

@@ -6,7 +6,6 @@ import com.example.live.entity.LevelRight;
 import com.example.live.entity.PayConfig;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -51,5 +50,5 @@ public interface CommonService {
 
     BaseResult<?> uploadVideo(MultipartFile file, JSONObject jo);
 
-    BaseResult<?> uploadCert(MultipartFile file, Integer agentUser);
+    BaseResult<?> uploadCert(MultipartFile file);
 }

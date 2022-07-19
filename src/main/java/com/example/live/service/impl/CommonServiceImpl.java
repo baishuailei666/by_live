@@ -141,12 +141,13 @@ public class CommonServiceImpl implements CommonService {
         joList.add(j3);
         return new BaseResult<>(joList);
     }
+
     @Override
     public BaseResult<?> payConfigType() {
         MerchantVO mvo = UserUtil.getMerchant();
         Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
         PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        if (payConfig==null) {
+        if (payConfig == null) {
             return new BaseResult<>(14, "接口异常");
         }
         JSONObject jo = new JSONObject();
@@ -252,7 +253,7 @@ public class CommonServiceImpl implements CommonService {
         //如果改管理员已有配置，那么就删除重新添加
         Integer agentUser = payConfig.getAgentUser();
         int exist = payConfigMapper.exist(agentUser);
-        if (exist!=0) {
+        if (exist != 0) {
             return new BaseResult<>(12, "不能重复添加");
         }
         payConfigMapper.insConfig(payConfig);
@@ -310,7 +311,7 @@ public class CommonServiceImpl implements CommonService {
     public BaseResult<?> uploadVideo(MultipartFile file, JSONObject jo) {
         String title = jo.getString("title");
         Integer level = jo.getInteger("level");
-        if (StringUtils.isBlank(title) || level==null) {
+        if (StringUtils.isBlank(title) || level == null) {
             return new BaseResult<>(11, "参数不能为空");
         }
         String fn = file.getOriginalFilename();
@@ -323,26 +324,39 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> uploadCert(MultipartFile file, Integer agentUser) {
+    public BaseResult<?> uploadCert(MultipartFile file) {
         String fn = file.getOriginalFilename();
-        System.out.println("fn:" + fn);
-        System.out.println("agentUser:" + agentUser);
+//        System.out.println("fn:" + fn);
+//        System.out.println("agentUser:" + agentUser);
+        long l = System.currentTimeMillis();
 
-        // 路径
-        String filePath = Constant.cert_path + agentUser;
-        System.out.println("filePath:" + filePath);
-
+//        // 路径
+//        String filePath = Constant.cert_path + agentUser;
+//        System.out.println("filePath:" + filePath);
+//
+//        try {
+//            String certPath = filePath + fn;
+//            // 转存文件
+//            file.transferTo(new File(certPath));
+//            // certPath 绝对路径
+//            payConfigMapper.updateCert(certPath, agentUser);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return new BaseResult<>(19, "文件上传失败");
+//        }
+//        return new BaseResult<>();
+        //TODO 证书传过来我们存好返回一个地址
+        String filePath = Constant.cert_path + l;
         try {
             String certPath = filePath + fn;
             // 转存文件
             file.transferTo(new File(certPath));
             // certPath 绝对路径
-            payConfigMapper.updateCert(certPath, agentUser);
+            return new BaseResult<>(certPath);
         } catch (IOException e) {
             e.printStackTrace();
             return new BaseResult<>(19, "文件上传失败");
         }
-        return new BaseResult<>();
     }
 
 }
