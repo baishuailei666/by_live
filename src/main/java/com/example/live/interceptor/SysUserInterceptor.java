@@ -45,7 +45,6 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
 
         // 不能解决from传参的问题
         apis_none.add("/common/upload/img");
-        apis_none.add("/common/upload/cert");
         apis_none.add("/common/upload/excel");
         apis_none.add("/common/upload/video");
     }

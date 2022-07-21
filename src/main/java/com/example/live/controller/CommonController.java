@@ -2,9 +2,12 @@ package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
 import com.example.live.util.ExcelUtil;
+import com.example.live.util.UserUtil;
+import com.example.live.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,12 +86,17 @@ public class CommonController {
      */
     @PostMapping(value = "/upload/excel")
     public BaseResult<?> uploadExcel(@RequestBody MultipartFile file, @RequestParam("type") String type) {
-        // 默认清空数据进行上传
-        String param = "clear";
-        if ("anchor".equals(type)) {
-            excelUtil.excelAnchorHandler(file, param);
-        } else if ("resource".equals(type)) {
-            excelUtil.excelResourceHandler(file, param);
+        UserVO u = UserUtil.getUser();
+        if (u!=null&&u.getId()== Constant.admin_id) {
+            // 默认清空数据进行上传
+            String param = "clear";
+            if ("anchor".equals(type)) {
+                excelUtil.excelAnchorHandler(file, param);
+            } else if ("resource".equals(type)) {
+                excelUtil.excelResourceHandler(file, param);
+            }
+        } else {
+            return new BaseResult<>(17, "接口请求失败");
         }
         return new BaseResult<>();
     }
@@ -102,7 +110,12 @@ public class CommonController {
      */
     @PostMapping("/upload/video")
     public BaseResult<?> uploadVideo(@RequestBody MultipartFile file, @RequestBody JSONObject jo) {
-        return commonService.uploadVideo(file, jo);
+        UserVO u = UserUtil.getUser();
+        if (u!=null&&u.getId()==Constant.admin_id) {
+            return commonService.uploadVideo(file, jo);
+        } else {
+            return new BaseResult<>(17, "接口请求失败");
+        }
     }
 
     /**
