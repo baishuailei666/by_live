@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.controller.query.OrderQuery;
-import com.example.live.entity.PayConfig;
 import com.example.live.service.CommonService;
 import com.example.live.service.MerchantAuditService;
 import com.example.live.service.MerchantService;
@@ -163,16 +162,15 @@ public class UserController {
     /**
      * 配置列表
      *
-     * @param mobile 手机号
      * @return
      */
     @GetMapping("/config/data")
-    public BaseResult<?> dataConfig(@RequestParam("mobile") String mobile) {
-        return commonService.dataConfig(mobile);
+    public BaseResult<?> dataConfig() {
+        return commonService.dataConfig();
     }
 
     /**
-     * 配置新增、修改
+     * 配置修改
      *
      * @param jo
      * @return
@@ -192,46 +190,12 @@ public class UserController {
     }
 
     /**
-     * 展示价格
+     * 月卡，季卡，年卡价格
      * @return
      */
     @GetMapping("/config/price")
     public BaseResult<?> showPrices(){
         return commonService.showPrices();
     }
-
-    /**
-     * 支付配置列表
-     *
-     * @param mobile 手机号
-     * @return
-     */
-    @GetMapping("/config/pay")
-    public BaseResult<?> payConfig(@RequestParam("mobile") String mobile) {
-        return commonService.payConfig(mobile);
-    }
-
-    /**
-     * 支付配置新增
-     *
-     * @param payConfig
-     * @return
-     */
-    @PostMapping("/config/pay/ins")
-    public BaseResult<?> payConfigIns(@RequestBody PayConfig payConfig) {
-        return commonService.payConfigIns(payConfig);
-    }
-
-    /**
-     * 支付配置删除
-     *
-     * @param id id
-     * @return
-     */
-    @GetMapping("/config/pay/del")
-    public BaseResult<?> payConfigDel(@RequestParam("id") Integer id) {
-        return commonService.payConfigDel(id);
-    }
-
 
 }

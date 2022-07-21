@@ -6,11 +6,8 @@ import com.example.live.common.Constant;
 import com.example.live.controller.query.ContractQuery;
 import com.example.live.entity.Contract;
 import com.example.live.entity.Merchant;
-import com.example.live.entity.PayConfig;
 import com.example.live.mapper.ContractMapper;
 import com.example.live.mapper.MerchantMapper;
-import com.example.live.mapper.PayConfigMapper;
-import com.example.live.service.CommonService;
 import com.example.live.service.ContractService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
@@ -40,15 +37,9 @@ public class ContractServiceImpl implements ContractService {
     private MerchantMapper merchantMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
-    @Autowired
-    private CommonService commonService;
-    @Autowired
-    private PayConfigMapper payConfigMapper;
 
     @Override
     public BaseResult<?> contractList(ContractQuery query) {
-        UserVO uvo = UserUtil.getUser();
-
         int count = contractMapper.contractCount(query);
         if (count==0) {
             return new BaseResult<>();
@@ -108,9 +99,7 @@ public class ContractServiceImpl implements ContractService {
         if (contract==null) {
             return new BaseResult<>(18, "数据不存在");
         }
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        String url = cloudSignUtil.singFileDown(payConfig.getSignSecretId(), payConfig.getSignSecretKey());
+        String url = cloudSignUtil.singFileDown();
         return new BaseResult<>(url);
     }
 }

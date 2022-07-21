@@ -12,12 +12,9 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Merchant;
 import com.example.live.entity.Order;
-import com.example.live.entity.PayConfig;
 import com.example.live.mapper.DataConfigMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
-import com.example.live.mapper.PayConfigMapper;
-import com.example.live.service.CommonService;
 import com.example.live.util.DateUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -25,16 +22,13 @@ import com.example.live.vo.MerchantVO;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
-import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
-import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -47,7 +41,7 @@ import java.util.*;
 
 /**
  * 支付购买
- * 支付宝、微信
+ *      支付宝、微信
  */
 @Slf4j
 @RestController
@@ -57,25 +51,13 @@ public class PayController {
     @Resource
     private WxPayService wxService;
     @Autowired
-    private PayConfigMapper payConfigMapper;
-    @Autowired
     private OrderMapper orderMapper;
-    @Autowired
-    private CommonService commonService;
     @Autowired
     private DataConfigMapper dataConfigMapper;
     @Autowired
     private MerchantMapper merchantMapper;
 
 
-    // 获取代理商支付配置信息
-    public PayConfig getPayConfig(Integer agentUser) {
-        PayConfig config = payConfigMapper.getConfig(agentUser);
-        if (config==null) {
-            config = payConfigMapper.getConfig(Constant.admin_id);
-        }
-        return config;
-    }
     // 更新merchant的shop_status、days
     public void successHandler(Order order) {
         int mid = order.getMerchantId();
@@ -115,8 +97,7 @@ public class PayController {
         String outTradeNo = GeneralUtil.getOrderNo(type);
         String sessionId = httpRequest.getSession().getId();
 
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        String data = dataConfigMapper.getConfigStr(agentUser);
+        String data = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] prices = GeneralUtil.getAgentConfig(data, 2);
         if (type==1) {
             totalAmount = prices[0];
@@ -148,11 +129,9 @@ public class PayController {
         orderMapper.insOrder(order);
         System.out.println("#pay ali:"+order);
 
-        PayConfig payConfig = getPayConfig(agentUser);
-
         //获得初始化的AlipayClient 向支付宝发送支付请求
-        AlipayClient alipayClient = new DefaultAlipayClient(Constant.gatewayUrl, payConfig.getAliAppId(),
-                payConfig.getAliPrivateKey(), AlipayConstants.FORMAT_JSON, Constant.charset, payConfig.getAliPublicKey(), Constant.sign_type);
+        AlipayClient alipayClient = new DefaultAlipayClient(Constant.gatewayUrl, Constant.alipay_app_id,
+                Constant.alipay_private_key, AlipayConstants.FORMAT_JSON, Constant.charset, Constant.alipay_public_key, Constant.sign_type);
         try {
             // 网页端
             // 创建API对应的request
@@ -190,22 +169,9 @@ public class PayController {
             //乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
             //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
         }
-        PrintWriter out = response.getWriter();
+        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, Constant.alipay_public_key, Constant.charset, Constant.sign_type); // 调用SDK验证签名
 
         String order_no = request.getParameter("out_trade_no"); // 获取订单号
-        Order order = orderMapper.getOrderByNo(order_no);
-        if (order==null) {
-            out.println("交易失败,订单号不存在order_no:"+order_no);
-            return;
-        }
-        Integer agentUser = commonService.agentUser(order.getOpeUser());
-        PayConfig payConfig = getPayConfig(agentUser);
-        if (payConfig==null) {
-            out.println("交易异常,没有支付凭证agentUser:"+agentUser+",opeUser:"+order.getOpeUser());
-            return;
-        }
-        boolean signVerified = AlipaySignature.rsaCheckV1(paramsMap, payConfig.getAliPublicKey(), Constant.charset, Constant.sign_type); // 调用SDK验证签名
-
         String sessionId = request.getSession().getId();
         String trade_no = request.getParameter("trade_no"); // 支付宝交易号
         String total_fee = request.getParameter("total_amount"); // 用户支付金额
@@ -214,8 +180,14 @@ public class PayController {
         String trade_status = request.getParameter("trade_status"); // 交易状态
         String passback_params = request.getParameter("passback_params"); // 交易状态
 
+        PrintWriter out = response.getWriter();
         if (signVerified) {
             if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
+                Order order = orderMapper.getOrderByNo(order_no);
+                if (order==null) {
+                    out.println("交易失败,订单号不存在order_no:"+order_no);
+                    return;
+                }
                 if (StringUtils.isNotBlank(order.getTradeNo())) {
                     out.println("success");
                 }
@@ -298,8 +270,7 @@ public class PayController {
         String outTradeNo = GeneralUtil.getOrderNo(type);
         String sessionId = httpRequest.getSession().getId();
 
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        String data = dataConfigMapper.getConfigStr(agentUser);
+        String data = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] prices = GeneralUtil.getAgentConfig(data, 2);
         if (type==1) {
             totalAmount = prices[0];
@@ -352,7 +323,6 @@ public class PayController {
         request.setAttach(sessionId);//附加数据sessionId
         request.setTradeType("NATIVE"); //网页支付
 
-        this.wxService.setConfig(wxPayConfig(agentUser));
         Object codeUrl = this.wxService.createOrder(request);
         Map<String, Object> map = Maps.newHashMap();
         map.put("codeUrl", codeUrl);
@@ -365,9 +335,6 @@ public class PayController {
      */
     @PostMapping("/notify/wx")
     public String wxNotifyPay(@RequestBody String xmlData) throws WxPayException {
-        // TODO 微信支付回调
-        this.wxService.setConfig(wxPayConfig(null));
-
         final WxPayOrderNotifyResult notifyResult = this.wxService.parseOrderNotifyResult(xmlData);
 
         String trade_no = notifyResult.getTransactionId(); // 交易号
@@ -387,29 +354,5 @@ public class PayController {
         successHandler(order);
         return WxPayNotifyResponse.success("支付成功");
     }
-
-    @Bean
-    public WxPayService wxPayService() {
-        return new WxPayServiceImpl();
-    }
-
-    // 自定义构造支付参数
-    public WxPayConfig wxPayConfig(Integer agentUser) {
-        PayConfig payConfig = getPayConfig(agentUser);
-        if (payConfig==null) {
-            // 支付参数无效
-            return null;
-        }
-        WxPayConfig config = new WxPayConfig();
-        config.setAppId(StringUtils.trimToNull(payConfig.getWxAppId()));
-        config.setMchId(StringUtils.trimToNull(payConfig.getWxMchId()));
-        config.setMchKey(StringUtils.trimToNull(payConfig.getWxMchKey()));
-        // 支付证书（考虑下如何存储和读取）
-        config.setKeyPath(StringUtils.trimToNull(payConfig.getWxKeyPath()));
-        // 可以指定是否使用沙箱环境
-        config.setUseSandboxEnv(false);
-        return config;
-    }
-
 
 }

@@ -11,9 +11,6 @@ import lombok.Data;
 @Data
 public class DataConfigVO {
     private Integer id;
-    private Integer agentUser;
-    private String mobile;
-    private String agentRemark;
     private String ct;
     // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
     private String emailReceive;

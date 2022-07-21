@@ -18,9 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +36,6 @@ public class CommonServiceImpl implements CommonService {
     private ContentMapper contentMapper;
     @Autowired
     private DataConfigMapper dataConfigMapper;
-    @Autowired
-    private PayConfigMapper payConfigMapper;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -122,42 +117,6 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> payConfigInfo() {
-        // 逗号分隔：发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-        String val = dataConfigMapper.getConfigStr(Constant.admin_id);
-        String[] price = GeneralUtil.getAgentConfig(val, 2);
-        List<JSONObject> joList = Lists.newLinkedList();
-        JSONObject j1 = new JSONObject();
-        j1.put("type", 1);
-        j1.put("price", price[0]);
-        joList.add(j1);
-        JSONObject j2 = new JSONObject();
-        j2.put("type", 2);
-        j2.put("price", price[1]);
-        joList.add(j2);
-        JSONObject j3 = new JSONObject();
-        j3.put("type", 3);
-        j3.put("price", price[2]);
-        joList.add(j3);
-        return new BaseResult<>(joList);
-    }
-
-    @Override
-    public BaseResult<?> payConfigType() {
-        MerchantVO mvo = UserUtil.getMerchant();
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        if (payConfig == null) {
-            return new BaseResult<>(14, "接口异常");
-        }
-        JSONObject jo = new JSONObject();
-        jo.put("ali", StringUtils.isNotBlank(payConfig.getAliAppId()));
-        jo.put("wx", StringUtils.isNotBlank(payConfig.getWxAppId()));
-        jo.put("contrary", StringUtils.isNotBlank(payConfig.getContrary()));
-        return new BaseResult<>(jo);
-    }
-
-    @Override
     public BaseResult<?> kef() {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo == null) {
@@ -170,40 +129,33 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> dataConfig(String mobile) {
-        Integer agentUser = null;
-        if (StringUtils.isNotBlank(mobile)) {
-            User user = userMapper.getUserMobile(mobile);
-            if (user != null) {
-                agentUser = user.getId();
-            }
-        }
-        List<DataConfig> data = dataConfigMapper.configList(agentUser);
+    public BaseResult<?> dataConfig() {
+        DataConfig c = dataConfigMapper.getContent2(Constant.admin_id);
         List<DataConfigVO> voList = Lists.newLinkedList();
-        data.forEach(c -> {
-            DataConfigVO vo = new DataConfigVO();
-            vo.setCt(c.getCt());
-            vo.setId(c.getId());
-            String val = c.getContent();
-            // 0-邮箱地址、1-客服电话、2-服务价格
-            String[] email = GeneralUtil.getAgentConfig(val, 0);
-            String[] kef = GeneralUtil.getAgentConfig(val, 1);
-            // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-            vo.setEmailSend(email[0]);
-            vo.setEmailReceive(email[1]);
-            vo.setKef1(kef[0]);
-            vo.setKef2(kef[1]);
-            vo.setAgentUser(c.getAgentUser());
-            vo.setAgentRemark(c.getAgentRemark());
-            vo.setMobile(c.getMobile());
-            voList.add(vo);
-        });
+        DataConfigVO vo = new DataConfigVO();
+        vo.setCt(c.getCt());
+        vo.setId(c.getId());
+        String val = c.getContent();
+        // 0-邮箱地址、1-客服电话、2-服务价格
+        String[] email = GeneralUtil.getAgentConfig(val, 0);
+        String[] kef = GeneralUtil.getAgentConfig(val, 1);
+        String[] price = GeneralUtil.getAgentConfig(val, 2);
+        // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
+        vo.setEmailSend(email[0]);
+        vo.setEmailReceive(email[1]);
+        vo.setKef1(kef[0]);
+        vo.setKef2(kef[1]);
+        vo.setMonthCard(price[0]);
+        vo.setSeasonCard(price[1]);
+        vo.setYearCard(price[2]);
+        voList.add(vo);
         return new BaseResult<>(voList.size(), voList);
     }
 
     @Override
     public BaseResult<?> dataConfigModify(JSONObject jo) {
         Integer id = jo.getInteger("id");
+
         Integer agentUser = jo.getInteger("agentUser");
         String emailSend = jo.getString("emailSend");
         String emailReceive = jo.getString("emailReceive");
@@ -224,51 +176,12 @@ public class CommonServiceImpl implements CommonService {
             }
             // 修改
             dataConfigMapper.modifyConfig(id, agentUser, content);
-        } else {
-            String val = dataConfigMapper.getConfigStr(agentUser);
-            if (StringUtils.isNotBlank(val)) {
-                return new BaseResult<>(12, "不能重复添加");
-            }
-            // 添加
-            dataConfigMapper.insConfig(agentUser, content);
         }
-        return new BaseResult<>();
-    }
-
-    @Override
-    public BaseResult<?> payConfig(String mobile) {
-        Integer agentUser = null;
-        if (StringUtils.isNotBlank(mobile)) {
-            User user = userMapper.getUserMobile(mobile);
-            if (user != null) {
-                agentUser = user.getId();
-            }
-        }
-        List<PayConfig> data = payConfigMapper.configList(agentUser);
-        return new BaseResult<>(data.size(), data);
-    }
-
-    @Override
-    public BaseResult<?> payConfigIns(PayConfig payConfig) {
-        //如果改管理员已有配置，那么就删除重新添加
-        Integer agentUser = payConfig.getAgentUser();
-        int exist = payConfigMapper.exist(agentUser);
-        if (exist != 0) {
-            return new BaseResult<>(12, "不能重复添加");
-        }
-        payConfigMapper.insConfig(payConfig);
-        return new BaseResult<>();
-    }
-
-    @Override
-    public BaseResult<?> payConfigDel(Integer id) {
-        payConfigMapper.delConfig(id);
         return new BaseResult<>();
     }
 
     @Override
     public BaseResult<?> configModifyPrices(JSONObject jo) {
-//        Double month, Double quarter, Double year
         UserVO user = UserUtil.getUser();
         if (user == null) {
             return new BaseResult<>(BaseEnum.No_Login);
@@ -321,42 +234,6 @@ public class CommonServiceImpl implements CommonService {
             videoMapper.insVideo(title, level, url);
         }
         return new BaseResult<>();
-    }
-
-    @Override
-    public BaseResult<?> uploadCert(MultipartFile file) {
-        String fn = file.getOriginalFilename();
-//        System.out.println("fn:" + fn);
-//        System.out.println("agentUser:" + agentUser);
-        long l = System.currentTimeMillis();
-
-//        // 路径
-//        String filePath = Constant.cert_path + agentUser;
-//        System.out.println("filePath:" + filePath);
-//
-//        try {
-//            String certPath = filePath + fn;
-//            // 转存文件
-//            file.transferTo(new File(certPath));
-//            // certPath 绝对路径
-//            payConfigMapper.updateCert(certPath, agentUser);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return new BaseResult<>(19, "文件上传失败");
-//        }
-//        return new BaseResult<>();
-        //TODO 证书传过来我们存好返回一个地址
-        String filePath = Constant.cert_path + l;
-        try {
-            String certPath = filePath + fn;
-            // 转存文件
-            file.transferTo(new File(certPath));
-            // certPath 绝对路径
-            return new BaseResult<>(certPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new BaseResult<>(19, "文件上传失败");
-        }
     }
 
 }

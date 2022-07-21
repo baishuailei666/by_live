@@ -17,12 +17,10 @@ public class Constant {
     public static final String session_user = "user";
     // 默认密码
     public static final String defaultPwd = "123456";
+
     // source：back-管理端、merchant-商户端
     public static final String source_back = "back";
     public static final String source_merchant = "merchant";
-
-    // 微信支付证书路径：cert/agentUser/.p12文件
-    public static final String cert_path = "/cert/agent-";
 
     // 购买服务说明
     public static final String buy_subject = "直播推广服务";
@@ -34,7 +32,7 @@ public class Constant {
     public static final String split = ",";
     public static final String split2 = ";";
     // 发送邮件主题
-    public static final String email_subject = "开票信息";
+    public static final String email_subject = buy_subject+"-开票信息";
 
     // 存储链接
     public static final String cloud_url = "";
@@ -53,6 +51,10 @@ public class Constant {
 
     // 字符编码格式
     public static final String charset = "utf-8";
+
+    public static final String alipay_app_id = "";
+
+    public static final String alipay_private_key = "";
 
     public static final String alipay_public_key = "";
 
@@ -128,4 +130,5 @@ public class Constant {
         intentionMap.put(2, "已处理");
         intentionMap.put(3, "已拒绝");
     }
+
 }

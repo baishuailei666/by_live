@@ -106,17 +106,6 @@ public class CommonController {
     }
 
     /**
-     * 证书上传
-     *
-     * @param file .p12证书文件
-     * @return
-     */
-    @PostMapping("/upload/cert")
-    public BaseResult<?> uploadCert(@RequestBody MultipartFile file) {
-        return commonService.uploadCert(file);
-    }
-
-    /**
      * 通知中心
      *
      * @return
@@ -145,24 +134,6 @@ public class CommonController {
     @GetMapping("/kef")
     public BaseResult<?> kef() {
         return commonService.kef();
-    }
-
-    /**
-     * 支付配置信息
-     * @return
-     */
-    @GetMapping("/pay")
-    public BaseResult<?> payConfigInfo() {
-        return commonService.payConfigInfo();
-    }
-
-    /**
-     * 支付类型：支付宝、微信、对公
-     * @return
-     */
-    @GetMapping("/pay/type")
-    public BaseResult<?> payConfigType() {
-        return commonService.payConfigType();
     }
 
 }

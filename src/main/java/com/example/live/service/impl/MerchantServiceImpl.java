@@ -4,21 +4,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.controller.query.OrderQuery;
 import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
-import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantOrderVO;
 import com.example.live.vo.MerchantVO;
-import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,15 +41,11 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private ContractMapper contractMapper;
     @Autowired
-    private PayConfigMapper payConfigMapper;
-    @Autowired
     private InvoiceMapper invoiceMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
-    @Autowired
-    private CommonService commonService;
 
 
     @Override
@@ -262,12 +255,6 @@ public class MerchantServiceImpl implements MerchantService {
         jo.put("mobile", contract.getMobile());
         jo.put("company", contract.getCompany());
 
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        jo.put("signSecretId", payConfig.getSignSecretId());
-        jo.put("signSecretKey", payConfig.getSignSecretKey());
-        jo.put("signTemplateId", payConfig.getSignTemplateId());
-
         // flowId、filename、documentId、previewFileUrl
         JSONObject jo2 = cloudSignUtil.signPreview(jo);
         return new BaseResult<>(jo2);
@@ -279,9 +266,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        String url = cloudSignUtil.signAgree(flowId, payConfig.getSignSecretId(), payConfig.getSignSecretKey());
+        String url = cloudSignUtil.signAgree(flowId);
         return new BaseResult<>(url);
     }
 
@@ -291,9 +276,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        Integer agentUser = commonService.merchantAgentUser(mvo.getOpeUser());
-        PayConfig payConfig = payConfigMapper.getConfig(agentUser);
-        String url = cloudSignUtil.signUrl(payConfig.getSignSecretId(), payConfig.getSignSecretKey());
+        String url = cloudSignUtil.signUrl();
         return new BaseResult<>(url);
     }
 

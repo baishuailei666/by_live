@@ -4,6 +4,14 @@ server:
     session:
       timeout: 60m
 
+# 微信支付
+wx:
+  pay:
+    app-id:
+    mch-id:
+    mch-key:
+    keyPath: classpath:apiclient_cert.p12
+
 mybatis:
   # 定义别名包
   type-aliases-package: com.example.live.entity
