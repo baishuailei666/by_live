@@ -20,7 +20,7 @@ public interface DataConfigMapper {
     @Select("SELECT id, content, agent_user as agentUser FROM data_config WHERE id=#{id}")
     DataConfig getContent(@Param("id") Integer id);
 
-    @Select("SELECT id, `content`, agent_user as agentUser ct FROM data_config WHERE agent_user=#{agentUser} limit 1")
+    @Select("SELECT id, `content`, agent_user as agentUser, ct FROM data_config WHERE agent_user=#{agentUser} limit 1")
     DataConfig getContent2(@Param("agentUser") Integer agentUser);
 
 

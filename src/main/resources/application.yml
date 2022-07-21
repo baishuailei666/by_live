@@ -33,7 +33,7 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.101.116.2:3308/by_live?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false&&allowMultiQueries=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.101.116.2:3308/by_live?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false&allowMultiQueries=true&serverTimezone=GMT%2B8
     username: root
     password: 123456
     dbcp2:
