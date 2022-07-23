@@ -47,10 +47,17 @@ spring:
       soft-min-evictable-idle-time-millis: 1800000
 
   mail:
-    host: smtp.exmail.qq.com
+    host: smtp.163.com
     username: taibowenhua@163.com
-    password: Yll861012
+    password: WPILDQNGPOYVVCBX
     default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 logging:
   level:

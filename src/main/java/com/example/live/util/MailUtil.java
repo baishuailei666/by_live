@@ -88,7 +88,9 @@ public class MailUtil {
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setSubject(Constant.email_subject);
             // 抄送人
-            mimeMessageHelper.setCc(cc);
+            if (StringUtils.isNotEmpty(cc)) {
+                mimeMessageHelper.setCc(cc);
+            }
             // 编辑邮件内容
             mimeMessageHelper.setText(html, true);
             mailSender.send(mimeMessage);
