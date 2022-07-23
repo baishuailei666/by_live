@@ -16,6 +16,11 @@ public class Constant {
     // 超级管理员user_id=11
     public static final int admin_id = 11;
 
+    //管理端session最大过期时间
+    public static final int back_MaxInactiveInterval = 3600;
+    //商户端session最大过期时间
+    public static final int merchant_MaxInactiveInterval = 3600;
+
     public static final String session_user = "user";
     // 默认密码
     public static final String defaultPwd = "123456";

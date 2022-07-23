@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
             List<LevelRight> rightList = commonService.getLevelRight(user.getLevel());
             vo.setRights(rightList);
             session.setAttribute(Constant.session_user, vo);
+            session.setMaxInactiveInterval(Constant.back_MaxInactiveInterval);
             return new BaseResult<>(vo);
         }
 
@@ -111,6 +112,7 @@ public class UserServiceImpl implements UserService {
                     mvo.setCt(ts);
                     mvo.setLt(ts);
                     session.setAttribute(Constant.session_user, mvo);
+                    session.setMaxInactiveInterval(Constant.merchant_MaxInactiveInterval);
                     return new BaseResult<>(mvo);
                 }
             }
