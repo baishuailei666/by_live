@@ -65,7 +65,7 @@ public class PayController {
         if (merchant!=null) {
             String buy = Constant.buyTypeMap.get(order.getBuyType());
             int days = GeneralUtil.typeDays(order.getBuyType());
-            merchantMapper.updateMerchantDays(mid, buy, merchant.getDays()+days);
+            merchantMapper.updateMerchantDays(mid, buy, GeneralUtil.parseInt(merchant.getDays())+days);
         }
     }
 
@@ -78,7 +78,7 @@ public class PayController {
         if (mvo ==null) {
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("data", null);
+            jsonObject.put("data", "null2");
             jsonObject.put("status", 200);
             jsonObject.put("msg", BaseEnum.No_Login.getMsg());
             jsonObject.put("code", BaseEnum.No_Login.getCode());
@@ -89,8 +89,8 @@ public class PayController {
         }
 
         // 请求
+        String body;
         String form = "";
-        String body = null;
         String totalAmount;
         String platform = "";
         String subject = Constant.buy_subject;
@@ -101,10 +101,13 @@ public class PayController {
         String[] prices = GeneralUtil.getAgentConfig(data, 2);
         if (type==1) {
             totalAmount = prices[0];
+            body = Constant.buyTypeMap.get(1);
         } else if (type==2) {
             totalAmount = prices[1];
+            body = Constant.buyTypeMap.get(2);
         } else if (type==3) {
             totalAmount = prices[2];
+            body = Constant.buyTypeMap.get(3);
         } else {
             // 无效的请求参数
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
@@ -118,6 +121,7 @@ public class PayController {
             httpResponse.getWriter().close();
             return;
         }
+//        totalAmount = "0.01";
 
         Order order = new Order();
         order.setPayType(1);
@@ -265,7 +269,6 @@ public class PayController {
         }
 
         String totalAmount;
-        String body = Constant.buy_subject;
         String subject = Constant.buy_subject;
         String outTradeNo = GeneralUtil.getOrderNo(type);
         String sessionId = httpRequest.getSession().getId();
@@ -308,12 +311,12 @@ public class PayController {
 
         // 调用微信支付接口
         WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
-        request.setBody(body);
+        request.setBody(subject);
         request.setDetail(subject);
         request.setProductId("1");
         request.setOutTradeNo(outTradeNo);
         // 终端ip：Native支付填写调用微信支付API的机器ip
-        request.setSpbillCreateIp("");
+        request.setSpbillCreateIp("43.142.141.181");
 //        // 设置支付过期时间：30分钟
 //        request.setTimeExpire(getOrderExpireTime(30*sec));
         // 微信支付的金额是不能带小数点的，乘以100提交，因为里面设置参数的时候是以"分"为单位的

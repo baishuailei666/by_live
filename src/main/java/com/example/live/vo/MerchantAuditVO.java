@@ -15,7 +15,8 @@ public class MerchantAuditVO {
     private String shop;
     private String shopLink;
     private String goodsLink;
-    private Integer opeUser;
+    private String opeUser;
+    private String opeUserRemark;
     // 状态：待审核-0、审核通过-1、已拒绝-2
     private String status;
     private String introduce;

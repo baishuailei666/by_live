@@ -23,7 +23,7 @@ public interface OrderMapper {
     @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType where `status`='TRADE_SUCCESS' and merchant_id=#{merchantId} order by ut desc limit 1")
     Order getOrder1(@Param("id") int merchantId);
 
-    @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType where order_no=#{orderNo} order by ut desc limit 1")
+    @Select("select id, merchant_id as merchantId, order_no as orderNo, trade_no as tradeNo, buy_type as buyType from `order` where order_no=#{orderNo} order by ut desc limit 1")
     Order getOrderByNo(@Param("orderNo") String orderNo);
 
     void updateSuccess(Order order);

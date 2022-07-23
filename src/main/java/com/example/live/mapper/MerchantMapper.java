@@ -57,7 +57,7 @@ public interface MerchantMapper {
     void updateMerchantCheck(@Param("merchantId") String merchantId);
 
     // 支付成功修改操作
-    @Update("update merchant set shop_status=#{shopStatus} and days=#{days} where id=#{merchantId}")
+    @Update("update merchant set shop_status=#{shopStatus}, days=#{days} where id=#{merchantId}")
     void updateMerchantDays(@Param("merchantId") Integer merchantId, @Param("shopStatus") String shopStatus, @Param("days") Integer days);
 
     /**

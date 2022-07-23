@@ -61,6 +61,21 @@ public final class GeneralUtil {
         page = page ==0 ? 1 : page;
         return (page -1) * 10;
     }
+    public static int parseInt(Object num) {
+        if (num ==null) {
+            return 0;
+        }
+        if (num.equals("")) {
+            return 0;
+        }
+        try {
+            String result = num.toString().split("\\.")[0];
+
+            return Integer.parseInt(result);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
     // 服务天数
     public static int typeDays(int type) {

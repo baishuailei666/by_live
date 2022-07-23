@@ -57,7 +57,6 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         apis_admin11.add("/common/pwd/reset");
         apis_admin11.add("/config/data/**");
         apis_admin11.add("/config/price/**");
-        apis_admin11.add("/config/pay/**");
     }
 
     // 如果设置为false，被请求时，拦截器执行到此处将不会继续操作；
