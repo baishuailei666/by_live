@@ -105,14 +105,15 @@ public class CommonController {
      * 视频上传
      *
      * @param file 视频文件
-     * @param jo title、level
+     * @param title、level
      * @return
      */
     @PostMapping("/upload/video")
-    public BaseResult<?> uploadVideo(@RequestBody MultipartFile file, @RequestBody JSONObject jo) {
+    public BaseResult<?> uploadVideo(@RequestBody MultipartFile file
+            , @RequestParam("title") String title, @RequestParam("level") Integer level) {
         UserVO u = UserUtil.getUser();
         if (u!=null&&u.getId()==Constant.admin_id) {
-            return commonService.uploadVideo(file, jo);
+            return commonService.uploadVideo(file, title, level);
         } else {
             return new BaseResult<>(17, "接口请求失败");
         }

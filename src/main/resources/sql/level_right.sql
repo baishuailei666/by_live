@@ -45,7 +45,6 @@ INSERT INTO `level_right` VALUES (111, 1, '/contract/**', '合同列表');
 INSERT INTO `level_right` VALUES (112, 1, '/config/**', '配置列表');
 INSERT INTO `level_right` VALUES (113, 1, '/user/**', '用户管理');
 INSERT INTO `level_right` VALUES (114, 1, '/common/**', '素材管理');
-INSERT INTO `level_right` VALUES (115, 1, '/config/pay', '支付凭证');
 INSERT INTO `level_right` VALUES (120, 2, '/merchant/list', '商户列表');
 INSERT INTO `level_right` VALUES (121, 2, '/user/merchant/list', '商户列表');
 INSERT INTO `level_right` VALUES (122, 2, '/user/merchant/audit/**', '店铺审核列表');

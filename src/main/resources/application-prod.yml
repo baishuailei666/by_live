@@ -1,0 +1,58 @@
+server:
+  port: 8081
+  servlet:
+    session:
+      timeout: 60m
+
+# 微信支付
+wx:
+  pay:
+    app-id:
+    mch-id:
+    mch-key:
+    keyPath: classpath:apiclient_cert.p12
+
+mybatis:
+  # 定义别名包
+  type-aliases-package: com.example.live.entity
+  # 导入映射文件
+  mapper-locations: classpath*:mapper/*.xml
+  check-config-location: true
+  # 开启驼峰映射
+  configuration:
+    map-underscore-to-camel-case: true
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5GB
+      max-request-size: 5GB
+  main:
+    # 解决spring boot 2.6后，因循环引用导致启动时报错问题
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 10.0.4.12:3306 taibo-commerce root Ttaibo861012
+    url: jdbc:mysql://10.0.4.12:3306/taibo-commerce?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: root
+    password: Ttaibo861012
+    dbcp2:
+      #验证连接的有效性
+      test-while-idle: true
+      #验证语句
+      validation-query: SELECT 1
+      #空闲连接回收的时间间隔，与test-while-idle一起使用，设置5分钟
+      time-between-eviction-runs-millis: 300000
+      #连接池空闲连接的有效时间 ，设置30分钟
+      soft-min-evictable-idle-time-millis: 1800000
+
+  mail:
+    host: smtp.exmail.qq.com
+    username: taibowenhua@163.com
+    password: Yll61012
+    default-encoding: UTF-8
+
+logging:
+  level:
+    com.example.live.mapper: debug

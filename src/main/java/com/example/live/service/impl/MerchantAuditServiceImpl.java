@@ -3,6 +3,7 @@ package com.example.live.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
+import com.example.live.common.Constant;
 import com.example.live.entity.User;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
@@ -42,23 +43,15 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         if (user == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
+
         Integer userId = user.getId();
         int i = merchantAuditMapper.merchantAuditWaitCount(userId, status, mobile, shop);
         if (i!=0) {
             List<MerchantAuditVO> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page));
-            merchantAudits.forEach(v ->{
-                if ("1".equals(v.getStatus())) {
-                    v.setStatus("已通过");
-                } else if ("2".equals(v.getStatus())) {
-                    v.setStatus("已拒绝");
-                } else {
-                    v.setStatus("待审核");
-                }
-            });
+            merchantAudits.forEach(v -> v.setStatus(Constant.auditStatusMap.get(Integer.valueOf(v.getStatus()))));
             return new BaseResult<>(i, merchantAudits);
-        } else {
-            return new BaseResult<>();
         }
+        return new BaseResult<>();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Anchor extends BaseRowModel {
     @ExcelProperty(value = "性别(男-1、女-2)",index = 4)
     private Integer gender;
     // 账号等级：1、2、3、4、5
-    @ExcelProperty(value = "账号等级(1、2、3、4、5)",index = 5)
+    @ExcelProperty(value = "账号等级(1、2、3、4、5、6)",index = 5)
     private Integer level;
     // 粉丝
     @ExcelProperty(value = "粉丝",index = 6)
@@ -40,8 +40,8 @@ public class Anchor extends BaseRowModel {
     // 主页链接
     @ExcelProperty(value = "主页链接",index = 7)
     private String url;
-    // 推广类目（类目=数量;类目=数量）
-    @ExcelProperty(value = "推广类目(类目:数量,类目:数量)",index = 8)
+    // 推广类目（类目=数量-类目=数量）
+    @ExcelProperty(value = "推广类目(类目=数量-类目=数量)",index = 8)
     private String category;
     // 类目
     private List<JSONObject> cateList;

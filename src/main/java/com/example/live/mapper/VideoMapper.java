@@ -20,6 +20,6 @@ public interface VideoMapper {
     @Select("select path,level from video where id=#{id}")
     Video getVideo(@Param("id") Integer id);
 
-    @Insert("insert into video(title, level, path) values(#{path}, #{level}, #{path})")
+    @Insert("insert into video(title, level, path) values(#{title}, #{level}, #{path})")
     void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path);
 }

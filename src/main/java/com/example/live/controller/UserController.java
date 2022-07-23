@@ -61,6 +61,16 @@ public class UserController {
     }
 
     /**
+     * 个人中心
+     *
+     * @return
+     */
+    @GetMapping("/user/info")
+    public BaseResult<?> userInfo() {
+        return userService.userInfo();
+    }
+
+    /**
      * 用户列表
      *
      * @param keyword 手机号筛选

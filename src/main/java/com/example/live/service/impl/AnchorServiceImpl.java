@@ -36,8 +36,8 @@ public class AnchorServiceImpl implements AnchorService {
             return null;
         }
         List<JSONObject> joList = Lists.newArrayList();
-        if (category.contains(Constant.split2)) {
-            String[] s1 = category.split(Constant.split2);
+        if (category.contains(Constant.split3)) {
+            String[] s1 = category.split(Constant.split3);
             for (String s:s1) {
                 if (s.contains("=")) {
                     String[] s2 = s.split("=");

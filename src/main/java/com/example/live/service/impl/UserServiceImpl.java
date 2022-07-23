@@ -12,6 +12,7 @@ import com.example.live.service.UserService;
 import com.example.live.util.*;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.OrderVO;
+import com.example.live.vo.UserListVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +77,6 @@ public class UserServiceImpl implements UserService {
             vo.setId(user.getId());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
-            vo.setWx(user.getWx());
             if (user.getLevel()==3) {
                 // 上级id
                 Integer mid = relationUserMapper.getMainId(user.getId());
@@ -150,6 +150,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public BaseResult<?> userInfo() {
+        UserVO vo = UserUtil.getUser();
+        if (vo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        User user = userMapper.getUser2(vo.getId());
+        vo.setWx(user.getWx());
+        vo.setRemark(user.getRemark());
+        return new BaseResult<>(vo);
+    }
+
+    @Override
     public BaseResult<?> userList(String keyword, Integer page) {
         Integer agentUser = UserUtil.getUserId();
         // 超级管理员查看所有
@@ -161,7 +173,14 @@ public class UserServiceImpl implements UserService {
             return new BaseResult<>();
         }
         List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page));
-        return new BaseResult<>(count, list);
+        List<UserListVO> voList = Lists.newLinkedList();
+        list.forEach(u ->{
+            UserListVO vo = new UserListVO();
+            BeanUtils.copyProperties(u, vo);
+            vo.setLevel(Constant.levelTypeMap.get(u.getLevel()));
+            voList.add(vo);
+        });
+        return new BaseResult<>(count, voList);
     }
 
     @Override
@@ -173,11 +192,11 @@ public class UserServiceImpl implements UserService {
                 return new BaseResult<>(18, "请勿重复发送验证码,验证码有效期为5分钟");
             }
         }
-        String context = GeneralUtil.get4Random();
+        String code = GeneralUtil.get4Random();
         List<String> str = Lists.newArrayList();
         str.add(mobile);
-        cloudSmsUtil.sendSms(str, context);
-        mobileCodeMapper.insCode(mobile, context);
+        cloudSmsUtil.sendSms(str, code);
+        mobileCodeMapper.insCode(mobile, code);
         return new BaseResult<>();
     }
 

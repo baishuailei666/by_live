@@ -37,6 +37,6 @@ public interface CommonService {
 
     BaseResult<?> showPrices();
 
-    BaseResult<?> uploadVideo(MultipartFile file, JSONObject jo);
+    BaseResult<?> uploadVideo(MultipartFile file, String title, Integer level);
 
 }

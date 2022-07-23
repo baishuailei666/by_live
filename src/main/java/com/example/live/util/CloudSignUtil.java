@@ -20,8 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CloudSignUtil {
 
-    private static final String secretId = "";
-    private static final String secretKey = "";
+    private static final String secretId = "AKIDLWTBdqDMGvKYWHm35sPiogIfoiMlvqVu";
+    private static final String secretKey = "DBtMaaLq55sRlqfFZt52kDRQAetteARS";
     private static final String templateId = "";
 
     private static final EssClient essClient = getEssClient();

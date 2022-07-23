@@ -18,6 +18,7 @@ public class UserVO {
     // 等级：超级管理员-1、管理员（代理）-2、业务员-3
     private Integer level;
     private String wx;
+    private String remark;
     private String ts;
     private Integer agentUser;
     // 权限

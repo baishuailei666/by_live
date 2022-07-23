@@ -16,6 +16,8 @@ public interface UserService {
 
     BaseResult<?> userLogin(HttpSession session, JSONObject jo);
 
+    BaseResult<?> userInfo();
+
     BaseResult<?> userList(String keyword, Integer page);
 
     BaseResult<?> mobileCode(String mobile);

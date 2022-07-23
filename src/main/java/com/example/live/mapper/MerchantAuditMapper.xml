@@ -6,7 +6,10 @@
         select a.id, a.merchant_id as merchantId,m.mobile,m.shop,m.ope_user as opeUser,a.status,m.introduce,a.ct,a.ut,a.remark
         from `merchant_audit` a
         left join `merchant` m on a.merchant_id=m.id
-        where a.ope_user = #{opeUserId}
+        where 1=1
+        <if test="opeUserId!=11">
+            and a.ope_user = #{opeUserId}
+        </if>
         <if test="status !=null">
             and a.status = #{status}
         </if>
@@ -23,7 +26,10 @@
         select count(*)
         from `merchant_audit` a
         left join `merchant` m on a.merchant_id=m.shop_id
-        where a.ope_user = #{opeUserId}
+        where 1=1
+        <if test="opeUserId!=11">
+            and a.ope_user = #{opeUserId}
+        </if>
         <if test="status !=null">
             and a.status = #{status}
         </if>
