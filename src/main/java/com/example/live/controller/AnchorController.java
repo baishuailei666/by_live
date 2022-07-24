@@ -38,8 +38,8 @@ public class AnchorController {
      * @return
      */
     @GetMapping("/list")
-    public BaseResult<?> anchorMerchantList(String category, Integer page) {
-        return anchorService.anchorList();
+    public BaseResult<?> anchorMerchantList(String category, @RequestParam("page") Integer page) {
+        return anchorService.anchorList(category,page);
     }
 
     /**

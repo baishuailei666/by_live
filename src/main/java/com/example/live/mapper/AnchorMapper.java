@@ -23,7 +23,9 @@ public interface AnchorMapper {
     Anchor anchorInfo(@Param("id") Integer id);
 
 
-    List<Anchor> anchorList();
+    List<Anchor> anchorList(@Param("category")String category,@Param("index")Integer index);
+
+    int anchorListCount(@Param("category") String category);
 
     // 已查看主播
     List<Anchor> anchorCollect(@Param("merchantId") Integer merchantId);

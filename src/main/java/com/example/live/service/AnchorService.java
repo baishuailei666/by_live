@@ -10,7 +10,7 @@ public interface AnchorService {
 
     BaseResult<?> anchorInfo(Integer id);
 
-    BaseResult<?> anchorList();
+    BaseResult<?> anchorList(String category,Integer page);
 
     BaseResult<?> anchorCollect();
 

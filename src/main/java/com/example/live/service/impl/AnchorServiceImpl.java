@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Anchor;
-import com.example.live.entity.Content;
 import com.example.live.mapper.AnchorMapper;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.service.AnchorService;
+import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.AnchorVO;
 import com.example.live.vo.ContentVO;
@@ -98,8 +98,12 @@ public class AnchorServiceImpl implements AnchorService {
     }
 
     @Override
-    public BaseResult<?> anchorList() {
-        List<Anchor> data = anchorMapper.anchorList();
+    public BaseResult<?> anchorList(String category,Integer page) {
+        int i = anchorMapper.anchorListCount(category);
+        if (i == 0) {
+            return new BaseResult<>(0, null);
+        }
+        List<Anchor> data = anchorMapper.anchorList(category, GeneralUtil.getIndexPage(page));
         List<AnchorVO> voList = Lists.newLinkedList();
         data.forEach(a -> {
             AnchorVO avo = new AnchorVO();

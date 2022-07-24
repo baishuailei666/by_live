@@ -29,6 +29,24 @@
              , goods
              , sales
         from anchor
+        where 1=1
+        <if test="category!=null and category!=''">
+             and category like CONCAT('%',#{category},'%')
+        </if>
+        limit #{index},10
+    </select>
+
+    <select id="anchorListCount" resultType="int">
+        --         select id, nickname, img, author_id as authorId, genderi, level, fans, url
+        --              , category, goods, sales, introduce, live, live_day as liveDay, view, avg_dur as avgDur
+        --              , rate, price, score
+        --         from anchor
+        select count(1)
+        from anchor
+        where 1=1
+        <if test="category!=null and category!=''">
+            and category like CONCAT('%',#{category},'%')
+        </if>
     </select>
 
     <select id="anchorCollect" resultType="com.example.live.entity.Anchor">
