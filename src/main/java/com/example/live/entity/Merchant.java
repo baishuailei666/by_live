@@ -28,9 +28,9 @@ public class Merchant {
     // 店铺状态：未认证、已认证、购买等级（月卡、季卡、年卡）
     private String shopStatus;
     // 会员剩余天数（<7天标红）
-    private Integer days;
+    private int days;
     // 登录次数
-    private Integer loginCount;
+    private int loginCount;
     // 登录时间
     private String lt;
     // 创建时间

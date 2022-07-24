@@ -45,6 +45,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public BaseResult<?> userLogin(HttpSession session, @RequestBody JSONObject jo) {
+        session.setMaxInactiveInterval(Constant.interval);
         return userService.userLogin(session, jo);
     }
 

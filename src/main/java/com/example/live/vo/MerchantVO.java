@@ -23,7 +23,6 @@ public class MerchantVO {
     private String opeUserWx;
     private String buyType;
     private int vipType;
-    private List<LevelRight> rights;
     // 剩余天数
     private Integer days;
     private String ct;

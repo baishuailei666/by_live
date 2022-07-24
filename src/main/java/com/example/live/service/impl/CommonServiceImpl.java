@@ -105,7 +105,6 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public BaseResult<?> notificationMsg(String source) {
         Integer val = null;
-        long a = System.currentTimeMillis();
         if (Constant.source_back.equals(source)) {
             // 后台接收消息
             val = contentMapper.getMsg3(UserUtil.getUserId());
@@ -114,9 +113,6 @@ public class CommonServiceImpl implements CommonService {
             // 商户端接收消息
             val = contentMapper.getMsg3(UserUtil.getMerchantId());
         }
-        long b = System.currentTimeMillis();
-        long c = b-a;
-        System.out.println("## ts:"+c/1000);
         return new BaseResult<>(val);
     }
 

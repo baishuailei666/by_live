@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.Contract;
 import com.example.live.entity.Invoice;
-import com.example.live.service.impl.MerchantAuditServiceImpl;
 import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +20,16 @@ public class MerchantController {
     @Autowired
     private MerchantServiceImpl merchantService;
 
-    @Autowired
-    private MerchantAuditServiceImpl merchantAuditService;
+
+    /**
+     * 商户端个人中心
+     *
+     * @return
+     */
+    @GetMapping("/info")
+    public BaseResult<?> merchantInfo() {
+        return merchantService.merchantInfo();
+    }
 
     /**
      * 商户订单记录

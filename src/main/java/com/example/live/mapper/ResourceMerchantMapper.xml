@@ -13,7 +13,7 @@
     </insert>
 
     <select id="resourceList" resultType="com.example.live.entity.ResourceMerchant">
-        select id, shop, mobile, intention from resource_merchant
+        select id, shop, mobile, intention ct, ut from resource_merchant
         where agent_user=#{agentUser}
         <if test="opeUser!=null">
             and ope_user = #{opeUser}

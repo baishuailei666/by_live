@@ -48,6 +48,30 @@ public class AnchorServiceImpl implements AnchorService {
                     joList.add(jo);
                 }
             }
+        } else if (category.contains(Constant.split2)) {
+            String[] s1 = category.split(Constant.split2);
+            for (String s:s1) {
+                if (s.contains("=")) {
+                    String[] s2 = s.split("=");
+
+                    JSONObject jo = new JSONObject();
+                    jo.put("key", s2[0]);
+                    jo.put("val", s2[1]);
+                    joList.add(jo);
+                }
+            }
+        } else if (category.contains("；")) {
+            String[] s1 = category.split("；");
+            for (String s:s1) {
+                if (s.contains("=")) {
+                    String[] s2 = s.split("=");
+
+                    JSONObject jo = new JSONObject();
+                    jo.put("key", s2[0]);
+                    jo.put("val", s2[1]);
+                    joList.add(jo);
+                }
+            }
         } else {
             if (category.contains("=")) {
                 String[] s2 = category.split("=");

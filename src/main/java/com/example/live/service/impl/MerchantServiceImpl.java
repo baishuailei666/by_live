@@ -10,6 +10,7 @@ import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
+import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
@@ -46,6 +47,8 @@ public class MerchantServiceImpl implements MerchantService {
     private OrderMapper orderMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
+    @Autowired
+    private CommonService commonService;
 
 
     @Override
@@ -62,6 +65,21 @@ public class MerchantServiceImpl implements MerchantService {
             List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
             return new BaseResult<>(count, merchantListByParams);
         }
+    }
+
+    @Override
+    public BaseResult<?> merchantInfo() {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        Order order = orderMapper.getOrder1(mvo.getId());
+        if (order!=null) {
+            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
+            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+            mvo.setVipType(order.getBuyType());
+        }
+        return new BaseResult<>(mvo);
     }
 
     @Override
