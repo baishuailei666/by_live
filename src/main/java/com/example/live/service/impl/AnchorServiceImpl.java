@@ -103,7 +103,7 @@ public class AnchorServiceImpl implements AnchorService {
         if (i == 0) {
             return new BaseResult<>(0, null);
         }
-        List<Anchor> data = anchorMapper.anchorList(category, GeneralUtil.getIndexPage(page));
+        List<Anchor> data = anchorMapper.anchorList(category, GeneralUtil.indexPage(page));
         List<AnchorVO> voList = Lists.newLinkedList();
         data.forEach(a -> {
             AnchorVO avo = new AnchorVO();

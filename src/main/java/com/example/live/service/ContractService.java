@@ -11,8 +11,8 @@ public interface ContractService {
 
     BaseResult<?> contractList(ContractQuery query);
 
-    BaseResult<?> contractInfo(Integer id);
+    BaseResult<?> contractInfo(String id);
 
-    BaseResult<?> contractDown(Integer id);
+    BaseResult<?> contractDown(String id);
 
 }

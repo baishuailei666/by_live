@@ -1,5 +1,6 @@
 package com.example.live.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.lang.management.ManagementFactory;
@@ -13,24 +14,9 @@ import java.util.Date;
  */
 public class DateUtil {
 
-    public static String YYYY = "yyyy";
-
-    public static String YYYY_MM = "yyyy-MM";
-
     public static String YYYY_MM_DD = "yyyy-MM-dd";
 
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
-    
-
-    /**
-     * 获取当前Date型日期
-     * 
-     * @return Date() 当前日期
-     */
-    public static Date getNowDate()
-    {
-        return new Date();
-    }
 
     /**
      * 获取当前日期, 默认格式为yyyy-MM-dd
@@ -45,6 +31,7 @@ public class DateUtil {
     public static String getTime() {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
     }
+
     public static String getTime2() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
         Date date = new Date();
@@ -72,11 +59,6 @@ public class DateUtil {
         return parseDateToStr(format, new Date());
     }
 
-    public static String dateTime(final Date date)
-    {
-        return parseDateToStr(YYYY_MM_DD, date);
-    }
-
     public static String parseDateToStr(final String format, final Date date) {
         return new SimpleDateFormat(format).format(date);
     }
@@ -90,29 +72,13 @@ public class DateUtil {
     }
 
     /**
-     * 日期路径 即年/月/日 如2018/08/08
-     */
-    public static String datePath() {
-        Date now = new Date();
-        return DateFormatUtils.format(now, "yyyy/MM/dd");
-    }
-
-    /**
-     * 日期路径 即年/月/日 如20180808
+     * 日期路径
      */
     public static String dateTime() {
         Date now = new Date();
-        return DateFormatUtils.format(now, "yyyyMMdd");
+        return DateFormatUtils.format(now, "yyyy年MM月dd日");
     }
 
-    
-    /**
-     * 获取服务器启动时间
-     */
-    public static Date getServerStartDate() {
-        long time = ManagementFactory.getRuntimeMXBean().getStartTime();
-        return new Date(time);
-    }
 
     // 2个时间差几天
     public static long daysOfTime_2(String date_pre, String date_after) {
@@ -128,25 +94,34 @@ public class DateUtil {
         }
     }
 
-    /**
-     * 计算两个时间差
-     */
-    public static String getDatePoor(Date endDate, Date nowDate) {
-        long nd = 1000 * 24 * 60 * 60;
-        long nh = 1000 * 60 * 60;
-        long nm = 1000 * 60;
-        // long ns = 1000;
-        // 获得两个时间的毫秒时间差异
-        long diff = endDate.getTime() - nowDate.getTime();
-        // 计算差多少天
-        long day = diff / nd;
-        // 计算差多少小时
-        long hour = diff % nd / nh;
-        // 计算差多少分钟
-        long min = diff % nd % nh / nm;
-        // 计算差多少秒//输出结果
-        // long sec = diff % nd % nh % nm / ns;
-        return day + "天" + hour + "小时" + min + "分钟";
+    // 当前时间加x天
+    public static String getDateDay(String date, int addDay, String format) {
+        Calendar calendar1 = Calendar.getInstance();
+        SimpleDateFormat sdf1 = new SimpleDateFormat(format);
+        try {
+            calendar1.setTime(sdf1.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calendar1.add(Calendar.DATE, addDay);
+        return sdf1.format(calendar1.getTime());
     }
+
+    public static long dateToStamp(String time, String tag) {
+        long stamp =0;
+        if (StringUtils.isBlank(time)) {
+            return stamp;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(tag);
+        Date date;
+        try {
+            date = simpleDateFormat.parse(time);
+            stamp =date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return stamp;
+    }
+
 }
 

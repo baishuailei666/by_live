@@ -43,7 +43,7 @@ public class TimerTask {
         List<ResourceMerchant> data = resourceMerchantMapper.taskResource();
         if (data.size()!=0) {
             // 管理员以上用户
-            List<Integer> ids = userMapper.levelUser();
+            List<Integer> ids = userMapper.level2User();
             if (ids.size()!=0) {
                 List<RelationUser> list = relationUserMapper.relationUserList(ids);
                 // 管理员所属的业务员

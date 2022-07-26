@@ -40,15 +40,15 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private VideoMapper videoMapper;
     @Autowired
-    private ContractMapper contractMapper;
-    @Autowired
     private InvoiceMapper invoiceMapper;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
     @Autowired
-    private CommonService commonService;
+    private ContractMapper contractMapper;
+    @Autowired
+    private MerchantSignMapper merchantSignMapper;
 
 
     @Override
@@ -216,18 +216,47 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantContractCreate(Contract contract) {
+    public BaseResult<?> merchantContractContent() {
         MerchantVO mvo = UserUtil.getMerchant();
-
-        contract.setMerchantId(mvo.getId());
-        contract.setOpeUser(mvo.getOpeUser());
-        contractMapper.insContract(contract);
-        return new BaseResult<>();
+        if (mvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        MerchantSign merchantSign = merchantSignMapper.getOne(mvo.getId());
+        if (merchantSign==null) {
+            return new BaseResult<>();
+        }
+        Merchant merchant = merchantMapper.getMerchant3(mvo.getId());
+        JSONObject jo = new JSONObject();
+        jo.put("id", merchantSign.getId());
+        jo.put("shop", merchant.getShop());
+        jo.put("subject", merchantSign.getSubject());
+        jo.put("person", merchantSign.getPerson());
+        jo.put("mobile", merchantSign.getMobile());
+        jo.put("tax", merchantSign.getTax());
+        return new BaseResult<>(jo);
     }
 
     @Override
-    public BaseResult<?> merchantContractModify(Contract contract) {
-        contractMapper.modifyContract(contract);
+    public BaseResult<?> merchantContractModify(JSONObject jo) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        String mobile = jo.getString("mobile");
+        String person = jo.getString("person");
+        String subject = jo.getString("subject");
+        String tax = jo.getString("tax");
+        Integer id = jo.getInteger("id");
+        MerchantSign sign = new MerchantSign();
+        sign.setMerchantId(mvo.getId());
+        sign.setSubject(subject);
+        sign.setMobile(mobile);
+        sign.setPerson(person);
+        sign.setTax(tax);
+
+        if (id!=null) {
+            sign.setId(id);
+            merchantSignMapper.modifyOne(sign);
+        } else {
+            merchantSignMapper.insOne(sign);
+        }
         return new BaseResult<>();
     }
 
@@ -250,7 +279,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantSignCreate(Integer type) {
+    public BaseResult<?> merchantSignCreate(Integer type, String fee, Integer buyType) {
         MerchantVO mvo = UserUtil.getMerchant();
         // type 0-企业、1-个人
         if (type == null) {
@@ -260,32 +289,30 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(14, "参数错误");
         }
 
-        Contract contract = contractMapper.getContract2(mvo.getId());
-        if (contract == null) {
-            return new BaseResult<>(12, "暂无合同内容");
-        }
+        MerchantSign sign = merchantSignMapper.getSignMerchant(mvo.getId());
         JSONObject jo = new JSONObject();
         jo.put("type", type);
         jo.put("mid", mvo.getId());
-        jo.put("cid", contract.getId());
-        jo.put("tax", contract.getTax());
-        jo.put("owner", contract.getOwner());
-        jo.put("mobile", contract.getMobile());
-        jo.put("company", contract.getCompany());
+        jo.put("tax", sign.getTax());
+        jo.put("person", sign.getPerson());
+        jo.put("mobile", sign.getMobile());
+        jo.put("subject", sign.getSubject());
+        jo.put("fee", fee);
+        jo.put("buyType", buyType);
+        jo.put("shop", sign.getShop());
+        jo.put("shopId", sign.getShopId());
 
         // flowId、filename、documentId、previewFileUrl
         JSONObject jo2 = cloudSignUtil.signPreview(jo);
-        return new BaseResult<>(jo2);
-    }
 
-    @Override
-    public BaseResult<?> merchantSignAgree(String flowId) {
-        MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo == null) {
-            return new BaseResult<>(BaseEnum.No_Login);
-        }
-        String url = cloudSignUtil.signAgree(flowId);
-        return new BaseResult<>(url);
+        Contract contract = new Contract();
+        contract.setMerchantId(mvo.getId());
+        contract.setOpeUser(mvo.getOpeUser());
+        contract.setBuyType(buyType);
+        contract.setSignType(type);
+        contract.setDocumentId(jo2.getString("documentId"));
+        contractMapper.insContract(contract);
+        return new BaseResult<>(jo2);
     }
 
     @Override
@@ -294,7 +321,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        String url = cloudSignUtil.signUrl();
+        String url = cloudSignUtil.signUrl(flowId);
         return new BaseResult<>(url);
     }
 

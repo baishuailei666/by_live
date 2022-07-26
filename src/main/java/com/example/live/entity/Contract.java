@@ -21,21 +21,25 @@ public class Contract {
     private String ct;
     // 操作时间
     private String ut;
-    // 备注
-    private String remark;
-    // 电子合同内容
-    private String content;
     // 签署状态：0-未签、1-已签
     private int signStatus;
-    // 签署类型：1-企业签署、2-个人签署
+    // 签署类型：0-企业签署、1-个人签署
     private int signType;
-    // 店铺公司名称
-    private String company;
-    // 统一社会信用代码/签署人姓名
-    private String tax;
-    // 法定代表人/签署人身份证号
-    private String owner;
-    // 签署人手机号
+    // 签署成功合同id，可用于下载查看等
+    private String documentId;
+
+
+    /**
+     * merchant_sign
+     */
+
+    // 小店主体名称
+    private String subject;
+    // 签署人
+    private String person;
+    // 手机号码
     private String mobile;
+    // 统一社会信用代码/身份证号码
+    private String tax;
 
 }

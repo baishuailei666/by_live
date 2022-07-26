@@ -119,9 +119,4 @@ public final class GeneralUtil {
         return DateUtil.getTime2() + random + "0" +type;
     }
 
-    //获取分页索引
-    public static int getIndexPage(int page){
-            return (page - 1) * 10;
-    }
-
 }

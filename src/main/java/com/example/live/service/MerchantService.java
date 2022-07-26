@@ -34,17 +34,15 @@ public interface MerchantService {
 
     BaseResult<?> videoPlay(Integer id);
 
-    BaseResult<?> merchantContractCreate(Contract contract);
+    BaseResult<?> merchantContractContent();
 
-    BaseResult<?> merchantContractModify(Contract contract);
+    BaseResult<?> merchantContractModify(JSONObject jo);
 
     BaseResult<?> merchantInvoiceCreate(Invoice invoice);
 
     BaseResult<?> paySuccessCheck(String orderNo);
 
-    BaseResult<?> merchantSignCreate(Integer type);
-
-    BaseResult<?> merchantSignAgree(String flowId);
+    BaseResult<?> merchantSignCreate(Integer type, String fee, Integer buyType);
 
     BaseResult<?> merchantSignUrl(String flowId);
 

@@ -12,6 +12,8 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
+    List<User> userList2(@Param("ids") List<Integer> ids);
+
     @Select("SELECT id,remark,mobile,level,wx,ct,ut FROM `user` where mobile=#{mobile} and pwd=#{pwd}")
     User getUser1(@Param("mobile") String mobile, @Param("pwd") String pwd);
 
@@ -40,9 +42,9 @@ public interface UserMapper {
     @Delete("delete from `user` where id=#{id}")
     void delUser(@Param("id") Integer id);
 
-    // 超级管理员-1、管理员（代理）-2
-    @Select("select id from `user` where level in (1, 2)")
-    List<Integer> levelUser();
+    // 管理员（代理）-2
+    @Select("select id from `user` where level=2")
+    List<Integer> level2User();
 
 
 }

@@ -12,7 +12,7 @@ public class ContractVO {
     private Integer merchantId;
     private String shop;
     // 业务员
-    private Integer opeUser;
+    private String opeUser;
     // 权益类型：月卡-1、季卡-2、年卡-3
     private String buyType;
     // 提交时间
@@ -21,6 +21,8 @@ public class ContractVO {
     private String ut;
     // 备注
     private String remark;
+    // 合同文档id
+    private String documentId;
     // 签署状态：0-未签、1-已签
     private String signStatus;
     // 签署类型：1-企业签署、2-个人签署

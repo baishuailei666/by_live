@@ -108,25 +108,24 @@ public class MerchantController {
     }
 
     /**
-     * 提交合同
+     * 用户签署合同填写信息
      *
-     * @param contract
      * @return
      */
-    @PostMapping("/contract/create")
-    public BaseResult<?> merchantContractCreate(@RequestBody Contract contract) {
-        return merchantService.merchantContractCreate(contract);
+    @GetMapping("/contract/content")
+    public BaseResult<?> merchantContractContent() {
+        return merchantService.merchantContractContent();
     }
 
     /**
-     * 修改合同
+     * 提交、修改合同
      *
-     * @param contract
+     * @param jo subject、person、mobile、tax
      * @return
      */
-    @PostMapping("/contract/modify")
-    public BaseResult<?> merchantContractModify(@RequestBody Contract contract) {
-        return merchantService.merchantContractModify(contract);
+    @PostMapping("/contract/submit")
+    public BaseResult<?> merchantContractModify(@RequestBody JSONObject jo) {
+        return merchantService.merchantContractModify(jo);
     }
 
     /**
@@ -156,21 +155,14 @@ public class MerchantController {
      * 商户电子签
      *
      * @param type 0-企业、1-个人
+     * @param fee 服务价格
+     * @param buyType 服务版本 月卡-1、季卡-2、年卡-3
      * @return
      */
     @GetMapping("/sign/create")
-    public BaseResult<?> merchantSignCreate(@RequestParam("type") Integer type) {
-        return merchantService.merchantSignCreate(type);
-    }
-
-    /**
-     * 商户电子签-同意
-     * @param flowId
-     * @return
-     */
-    @GetMapping("/sign/agree")
-    public BaseResult<?> merchantSignAgree(@RequestParam("flowId") String flowId) {
-        return merchantService.merchantSignAgree(flowId);
+    public BaseResult<?> merchantSignCreate(@RequestParam("type") Integer type
+            , @RequestParam("fee") String fee, @RequestParam("buyType") Integer buyType) {
+        return merchantService.merchantSignCreate(type, fee, buyType);
     }
 
     /**

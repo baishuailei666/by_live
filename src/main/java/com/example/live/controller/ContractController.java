@@ -22,6 +22,7 @@ public class ContractController {
 
     /**
      * 合同列表
+     *
      * @param query page、mobile、shop、company
      * @return
      */
@@ -32,21 +33,23 @@ public class ContractController {
 
     /**
      * 合同详情
-     * @param id
+     *
+     * @param id document_id
      * @return
      */
     @GetMapping("/info")
-    public BaseResult<?> contractInfo(@RequestParam("id") Integer id) {
+    public BaseResult<?> contractInfo(@RequestParam("id") String id) {
         return contractService.contractInfo(id);
     }
 
     /**
      * 合同下载
-     * @param id
+     *
+     * @param id document_id
      * @return
      */
     @GetMapping("/down")
-    public BaseResult<?> contractDown(@RequestParam("id") Integer id) {
+    public BaseResult<?> contractDown(@RequestParam("id") String id) {
         return contractService.contractDown(id);
     }
 

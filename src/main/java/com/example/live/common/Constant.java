@@ -12,6 +12,8 @@ import java.util.Map;
 public class Constant {
 
     public static final String name = "杭州太博文化传媒有限公司";
+    public static final String legal_person = "陈盛林";
+    public static final String legal_mobile = "18758888566";
 
     // 超级管理员user_id=11
     public static final int admin_id = 11;
@@ -114,12 +116,12 @@ public class Constant {
         contentTypeMap.put(2, "备注");
         contentTypeMap.put(3, "消息通知");
     }
-    // 签署类型：1-企业签署、2-个人签署
+    // 签署类型：0-企业签署、1-个人签署
     public static Map<Integer, String> signTypeMap;
     static {
         signTypeMap = new HashMap<>();
-        signTypeMap.put(1, "企业签署");
-        signTypeMap.put(2, "个人签署");
+        signTypeMap.put(0, "企业签署");
+        signTypeMap.put(1, "个人签署");
     }
     // 签署状态：0-未签、1-已签
     public static Map<Integer, String> signStatusMap;

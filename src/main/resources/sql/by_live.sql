@@ -11,7 +11,7 @@
  Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 23/07/2022 10:52:20
+ Date: 26/07/2022 19:46:49
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `anchor`  (
   `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '带货口碑：4.09',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 249 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for content
@@ -57,7 +57,8 @@ CREATE TABLE `content`  (
   `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '内容',
   `type` tinyint(2) NULL DEFAULT NULL COMMENT '跟进记录-1、备注-2、消息通知-3',
   `ts` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `oid_rid_type`(`oid`, `rid`, `type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -71,14 +72,9 @@ CREATE TABLE `contract`  (
   `buy_type` tinyint(2) NULL DEFAULT NULL COMMENT '权益类型：月卡-1、季卡-2、年卡-3',
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `content` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '电子签合同内容',
   `sign_status` tinyint(2) NULL DEFAULT 0 COMMENT '签署状态：0-未签、1-已签',
-  `sign_type` tinyint(2) NULL DEFAULT NULL COMMENT '签署类型：1-企业签署、2-个人签署',
-  `company` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '店铺公司名称',
-  `tax` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '统一社会信用代码/签署人姓名',
-  `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '法定代表人/签署人身份证号',
-  `mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '签署人手机号',
+  `sign_type` tinyint(2) NULL DEFAULT NULL COMMENT '签署类型：0-企业签署、1-个人签署',
+  `document_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '签署成功合同id，可用于下载查看等',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -175,6 +171,20 @@ CREATE TABLE `merchant_audit`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for merchant_sign
+-- ----------------------------
+DROP TABLE IF EXISTS `merchant_sign`;
+CREATE TABLE `merchant_sign`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `merchant_id` int(11) NOT NULL,
+  `subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '小店主体名称',
+  `person` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '签署人',
+  `mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号码',
+  `tax` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '统一社会信用代码/身份证号码',
+  PRIMARY KEY (`id`, `merchant_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for mobile_code
 -- ----------------------------
 DROP TABLE IF EXISTS `mobile_code`;
@@ -204,7 +214,7 @@ CREATE TABLE `order`  (
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '支付成功时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for relation_user
@@ -232,7 +242,7 @@ CREATE TABLE `resource_merchant`  (
   `ut` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 84 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user
@@ -261,6 +271,6 @@ CREATE TABLE `video`  (
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '视频地址',
   `ct` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
