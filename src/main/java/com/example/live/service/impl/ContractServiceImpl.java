@@ -74,6 +74,7 @@ public class ContractServiceImpl implements ContractService {
             vo.setUt(c.getUt());
             vo.setTax(c.getTax());
             vo.setDocumentId(c.getDocumentId());
+            vo.setDocumentName(c.getDocumentName());
             vo.setMobile(c.getMobile());
             vo.setCompany(c.getSubject());
             vo.setOwner(c.getPerson());

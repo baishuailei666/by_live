@@ -118,7 +118,7 @@ public class MerchantController {
     }
 
     /**
-     * 提交、修改合同
+     * 提交、修改签署合同填写信息
      *
      * @param jo subject、person、mobile、tax
      * @return

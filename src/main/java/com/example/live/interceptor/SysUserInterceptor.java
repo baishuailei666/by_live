@@ -138,6 +138,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         jsonObject.put("code", code);
         jsonObject.put("data", null);
         jsonObject.put("msg", object);
+        jsonObject.put("from", "Interceptor");
 
         writer.write(jsonObject.toJSONString());
     }

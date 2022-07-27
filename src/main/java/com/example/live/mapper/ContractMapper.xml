@@ -21,7 +21,7 @@
     <select id="contractList" resultType="com.example.live.entity.Contract" parameterType="com.example.live.controller.query.ContractQuery">
         select c.id, c.merchant_id as merchantId, c.ope_user as opeUser, c.buy_type as buyType
              , c.ct, c.ut, c.sign_status as signStatus, c.sign_type as signType
-             , c.document_id as documentId, ms.subject, ms.person, ms.mobile, ms.tax
+             , c.document_id as documentId, c.document_name as documentName, ms.subject, ms.person, ms.mobile, ms.tax
         from contract c
         left join merchant_sign ms on c.merchant_id=ms.merchant_id
         where 1=1

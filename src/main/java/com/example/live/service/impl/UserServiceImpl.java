@@ -106,10 +106,15 @@ public class UserServiceImpl implements UserService {
                     // 注册商户
                     merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
                     String ts = DateUtil.getTime();
+                    mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
                     mvo.setCt(ts);
                     mvo.setLt(ts);
+                    User user2 = userMapper.getUser2(opeUser);
+                    if (user2!=null) {
+                        mvo.setOpeUserWx(user2.getWx());
+                    }
                     session.setAttribute(Constant.session_user, mvo);
                     return new BaseResult<>(mvo);
                 }
@@ -121,17 +126,13 @@ public class UserServiceImpl implements UserService {
             }
             // 登录商户
             mvo.setMobile(mobile);
+            mvo.setId(merchant.getId());
             mvo.setCt(merchant.getCt());
             mvo.setLt(merchant.getLt());
             mvo.setShop(merchant.getShop());
             mvo.setShopId(merchant.getShopId());
             mvo.setOpeUser(merchant.getOpeUser());
-            if (merchant.getOpeUser()!=null) {
-                User user2 = userMapper.getUser2(merchant.getOpeUser());
-                if (user2!=null) {
-                    mvo.setOpeUserWx(user2.getWx());
-                }
-            }
+            mvo.setOpeUserWx(merchant.getOpeUserWx());
 
             Order order = orderMapper.getOrder1(merchant.getId());
             if (order!=null) {

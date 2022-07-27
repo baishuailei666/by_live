@@ -12,7 +12,7 @@ public interface MerchantSignMapper {
 
     @Select("select ms.id, ms.subject, ms.person, ms.mobile, ms.tax, m.shop_id as shopId, m.shop from merchant_sign ms" +
             " left join merchant m on m.id=ms.merchant_id" +
-            " where m.merchant_id=#{mid}")
+            " where ms.merchant_id=#{mid}")
     MerchantSign getSignMerchant(@Param("mid") int mid);
 
     @Select("select id, subject, person, mobile, tax from merchant_sign where merchant_id=#{mid}")

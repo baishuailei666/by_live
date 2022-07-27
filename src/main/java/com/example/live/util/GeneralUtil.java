@@ -19,31 +19,6 @@ public final class GeneralUtil {
 
     }
 
-    private static final String random1 = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String random2 = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private static final String random3 = "abcdefghijklmnopqrstuvwxyz";
-
-
-    // 自定义随机字符串
-    public static String getRandomStr(int len, int r) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        String base;
-        if (r==1) {
-            base = random1;
-        } else if (r==2) {
-            base = random2;
-        } else {
-            base = random3;
-        }
-
-        for (int i = 0; i < len; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
-        }
-        return sb.toString();
-    }
-
     // 获取4位随机数
     public static String get4Random() {
         Random random = new Random();

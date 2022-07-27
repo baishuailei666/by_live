@@ -14,8 +14,8 @@ import java.util.List;
 @Mapper
 public interface ContractMapper {
 
-    @Insert("insert into contract(document_id, ct, ut, sign_type, buy_type, ope_user, merchant_id) " +
-            "values(#{documentId}, now(), now(), #{signType}, #{buyType}, #{opeUser}, #{merchantId})")
+    @Insert("insert into contract(document_id, document_name, ct, ut, sign_type, buy_type, ope_user, merchant_id) " +
+            "values(#{documentId}, #{documentName}, now(), now(), #{signType}, #{buyType}, #{opeUser}, #{merchantId})")
     void insContract(Contract contract);
 
     int contractCount(ContractQuery query);

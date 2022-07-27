@@ -73,6 +73,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo==null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
+        mvo.setOpeUserWx(null);
         Order order = orderMapper.getOrder1(mvo.getId());
         if (order!=null) {
             mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
@@ -311,6 +312,7 @@ public class MerchantServiceImpl implements MerchantService {
         contract.setBuyType(buyType);
         contract.setSignType(type);
         contract.setDocumentId(jo2.getString("documentId"));
+        contract.setDocumentName(jo.getString("filename"));
         contractMapper.insContract(contract);
         return new BaseResult<>(jo2);
     }

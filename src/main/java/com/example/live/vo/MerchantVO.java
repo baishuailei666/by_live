@@ -1,9 +1,6 @@
 package com.example.live.vo;
 
-import com.example.live.entity.LevelRight;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 商户端系统：

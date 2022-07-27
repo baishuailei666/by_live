@@ -23,6 +23,7 @@ public class ContractVO {
     private String remark;
     // 合同文档id
     private String documentId;
+    private String documentName;
     // 签署状态：0-未签、1-已签
     private String signStatus;
     // 签署类型：1-企业签署、2-个人签署

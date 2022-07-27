@@ -26,7 +26,7 @@ public class CloudSignUtil {
     private static final String templateId_person = "yDRt4UU2b31h4Uy0fKyKRJeoaOzglL9w";
 
     // 企业签
-    private static final String templateId_company = "yDRt4UU2b31h4Uy0fKyKRJeoaOzglL9w";
+    private static final String templateId_company = "yDRt4UU2b39n5Uy0fKyKS4R0Z7M5jOvE";
 
     // userId
     private static final String userInfoId = "yDRt3UU2we0a3Uy0fKyKS9OOC4BVSaWC";
@@ -57,7 +57,7 @@ public class CloudSignUtil {
 
     // 先获取签署预览
     public JSONObject signPreview(JSONObject jo) {
-        String filename = GeneralUtil.get4Random()+"-"+Constant.buy_subject;
+        String filename = GeneralUtil.get4Random()+Constant.buy_subject;
         jo.put("filename", filename);
 
         String flowId = signProcess1(jo);
@@ -74,31 +74,11 @@ public class CloudSignUtil {
     // 获取签署链接
     public String signUrl(String flowId) {
         String result = signProcess3(flowId);
-        return signProcess4();
+        return signProcess4(flowId);
     }
     // 合同文件下载
     public String signDown(String documentId) {
         return singFileDown(documentId);
-    }
-
-    public static void main(String[] args) {
-        JSONObject jo = new JSONObject();
-        jo.put("type", 1);
-        jo.put("person", "白帅雷");
-        jo.put("mobile", "15394249033");
-        jo.put("subject", "白白白电子商务有限公司");
-        jo.put("filename", Constant.buy_subject);
-
-//        signProcess1(jo);
-
-//        signProcess2("yDRt4UU2b7m6zUy0fKyKuLs64uCHFE0R", Constant.sign_name, 1);
-        // DocumentId=yDRt4UU2bxhioUy0fKyK1AEef4strMLR
-
-//        signProcess3("yDRt4UU2b7m6zUy0fKyKuLs64uCHFE0R");
-
-//        signProcess4();
-
-        signTemplateInfo(templateId_person);
     }
 
 
@@ -126,7 +106,7 @@ public class CloudSignUtil {
             // 合同类型
             req.setFlowType(Constant.buy_subject);
 
-            FlowCreateApprover[] flowCreateApprovers1 = new FlowCreateApprover[1];
+            FlowCreateApprover[] flowCreateApprovers1 = new FlowCreateApprover[2];
 
             // 创建签署流程的签署方信息
             FlowCreateApprover flowCreateApprover1 = new FlowCreateApprover();
@@ -145,10 +125,18 @@ public class CloudSignUtil {
             // 签署前置条件：是否需要阅读全文，默认为不需要
             flowCreateApprover1.setIsFullText(true);
             // 签署前置条件：阅读时长限制，默认不需要
-            flowCreateApprover1.setPreReadTime(15L);
+            flowCreateApprover1.setPreReadTime(10L);
             // 当前只支持true、默认true
             flowCreateApprover1.setRequired(true);
-            flowCreateApprovers1[0] = flowCreateApprover1;
+
+            // 签署方：甲方
+            FlowCreateApprover flowCreateApprover0 = new FlowCreateApprover();
+            flowCreateApprover0.setApproverType(3L);
+            flowCreateApprover0.setRequired(true);
+
+            // 注意模板设置的签署顺序
+            flowCreateApprovers1[0] = flowCreateApprover0;
+            flowCreateApprovers1[1] = flowCreateApprover1;
 
             // 签署流程参与者信息
             req.setApprovers(flowCreateApprovers1);
@@ -161,8 +149,8 @@ public class CloudSignUtil {
             return resp.getFlowId();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     // 第二步：创建电子文档
@@ -186,20 +174,22 @@ public class CloudSignUtil {
             req.setNeedPreview(true);
 
             // 企业签
-            // 乙方：法人：componentId_12、手机号：componentId_13、签订时间：componentId_3
-            // 抖店名称：componentId_14、抖店ID：componentId_15、抖店主体名称：componentId_16
-            // 服务合作费用：componentId_17、服务合作时间：componentId_18、乙方签字：componentId_20
-            // 签署人姓名：componentId_22、签署人手机号：componentId_24、签署时间：componentId_19
+            // 乙方：
+            // 乙方签字：componentId_20
+            // 发起方：法人：componentId_1、手机号：componentId_2、签订时间：componentId_3
+            // 抖店名称：componentId_5、抖店ID：componentId_9、抖店主体名称：componentId_10
+            // 服务合作费用：componentId_11、服务合作时间：componentId_12、
+            // 签署人姓名：componentId_13、签署人手机号：componentId_14、签署时间：componentId_15
             //
-            // 甲方：日期：componentId_4、电话：componentId_8、法人：componentId_7、签字：componentId_6
+            // 甲方：日期：componentId_37
 
             // 个人签
-            // 乙方：法人：componentId_1、手机号：componentId_2、签订时间：componentId_12
-            // 抖店名称：componentId_3、抖店ID：componentId_4、抖店主体名称：componentId_5
-            // 服务合作费用：componentId_6、服务合作时间：componentId_7、乙方签字：componentId_8
-            // 签署人姓名：componentId_11、签署人手机号：componentId_10、签署时间：componentId_9
-            //
-            // 甲方：日期：componentId_16、电话：componentId_15、法人：componentId_14、签字：componentId_13
+            // 乙方签字：componentId_23
+            // 发起方：法人：componentId_25、手机号：componentId_26、签订时间：componentId_27
+            // 抖店名称：componentId_28、抖店ID：componentId_29、抖店主体名称：componentId_30
+            // 服务合作费用：componentId_31、服务合作时间：componentId_32、
+            // 签署人姓名：componentId_33、签署人手机号：componentId_34、签署时间：componentId_35
+            // 甲方：日期：componentId_22、印章：componentId_21
 
             String person = jo.getString("person");
             String mobile = jo.getString("mobile");
@@ -211,41 +201,40 @@ public class CloudSignUtil {
 
             if (type==1) {
                 req.setTemplateId(templateId_person);
-                FormField[] formFields = new FormField[16];
-                // 乙方
+                FormField[] formFields = new FormField[11];
                 FormField fb0 = new FormField();
-                fb0.setComponentId("componentId_1");
+                fb0.setComponentId("componentId_25");
                 fb0.setComponentValue(person);
                 FormField fb1 = new FormField();
-                fb1.setComponentId("componentId_2");
+                fb1.setComponentId("componentId_26");
                 fb1.setComponentValue(mobile);
                 FormField fb2 = new FormField();
-                fb2.setComponentId("componentId_12");
+                fb2.setComponentId("componentId_27");
                 fb2.setComponentValue(date);
                 FormField fb3 = new FormField();
-                fb3.setComponentId("componentId_3");
+                fb3.setComponentId("componentId_28");
                 fb3.setComponentValue(shop);
                 FormField fb4 = new FormField();
-                fb4.setComponentId("componentId_4");
+                fb4.setComponentId("componentId_29");
                 fb4.setComponentValue(shopId);
                 FormField fb5 = new FormField();
-                fb5.setComponentId("componentId_5");
+                fb5.setComponentId("componentId_30");
                 fb5.setComponentValue(subject);
                 FormField fb6 = new FormField();
-                fb6.setComponentId("componentId_6");
+                fb6.setComponentId("componentId_31");
                 fb6.setComponentValue(fee);
                 FormField fb7 = new FormField();
-                fb7.setComponentId("componentId_7");
+                fb7.setComponentId("componentId_32");
                 fb7.setComponentValue(days);
                 FormField fb9 = new FormField();
-                fb9.setComponentId("componentId_9");
-                fb9.setComponentValue(date);
+                fb9.setComponentId("componentId_33");
+                fb9.setComponentValue(person);
                 FormField fb10 = new FormField();
-                fb10.setComponentId("componentId_10");
+                fb10.setComponentId("componentId_34");
                 fb10.setComponentValue(mobile);
                 FormField fb11 = new FormField();
-                fb11.setComponentId("componentId_11");
-                fb11.setComponentValue(person);
+                fb11.setComponentId("componentId_35");
+                fb11.setComponentValue(date);
 
                 formFields[0] = fb0;
                 formFields[1] = fb1;
@@ -258,102 +247,56 @@ public class CloudSignUtil {
                 formFields[8] = fb9;
                 formFields[9] = fb10;
                 formFields[10] = fb11;
-
-                // 甲方
-                FormField fa13 = new FormField();
-                fa13.setComponentId("componentId_13");
-                fa13.setComponentValue(Constant.name);
-
-                FormField fa14 = new FormField();
-                fa14.setComponentId("componentId_14");
-                fa14.setComponentValue(Constant.legal_person);
-
-                FormField fa15 = new FormField();
-                fa15.setComponentId("componentId_15");
-                fa15.setComponentValue(Constant.legal_mobile);
-
-                FormField fa16 = new FormField();
-                fa16.setComponentId("componentId_16");
-                fa16.setComponentValue(date);
-
-                formFields[12] = fa13;
-                formFields[13] = fa14;
-                formFields[14] = fa15;
-                formFields[15] = fa16;
-
                 req.setFormFields(formFields);
             } else {
                 req.setTemplateId(templateId_company);
-                FormField[] formFields = new FormField[16];
+                FormField[] formFields = new FormField[11];
                 // 乙方
                 FormField fb0 = new FormField();
-                fb0.setComponentId("componentId_12");
+                fb0.setComponentId("componentId_1");
                 fb0.setComponentValue(person);
                 FormField fb1 = new FormField();
-                fb1.setComponentId("componentId_13");
+                fb1.setComponentId("componentId_2");
                 fb1.setComponentValue(mobile);
                 FormField fb2 = new FormField();
                 fb2.setComponentId("componentId_3");
                 fb2.setComponentValue(date);
                 FormField fb3 = new FormField();
-                fb3.setComponentId("componentId_14");
+                fb3.setComponentId("componentId_5");
                 fb3.setComponentValue(shop);
                 FormField fb4 = new FormField();
-                fb4.setComponentId("componentId_15");
+                fb4.setComponentId("componentId_9");
                 fb4.setComponentValue(shopId);
                 FormField fb5 = new FormField();
-                fb5.setComponentId("componentId_16");
+                fb5.setComponentId("componentId_10");
                 fb5.setComponentValue(subject);
                 FormField fb6 = new FormField();
-                fb6.setComponentId("componentId_17");
+                fb6.setComponentId("componentId_11");
                 fb6.setComponentValue(fee);
                 FormField fb7 = new FormField();
-                fb7.setComponentId("componentId_18");
+                fb7.setComponentId("componentId_12");
                 fb7.setComponentValue(days);
                 FormField fb9 = new FormField();
-                fb9.setComponentId("componentId_22");
+                fb9.setComponentId("componentId_13");
                 fb9.setComponentValue(person);
                 FormField fb10 = new FormField();
-                fb10.setComponentId("componentId_24");
+                fb10.setComponentId("componentId_14");
                 fb10.setComponentValue(mobile);
                 FormField fb11 = new FormField();
-                fb11.setComponentId("componentId_19");
+                fb11.setComponentId("componentId_15");
                 fb11.setComponentValue(date);
 
                 formFields[0] = fb0;
                 formFields[1] = fb1;
                 formFields[2] = fb2;
                 formFields[3] = fb3;
-                formFields[5] = fb4;
-                formFields[6] = fb5;
-                formFields[7] = fb6;
-                formFields[8] = fb7;
-                formFields[9] = fb9;
-                formFields[10] = fb10;
-                formFields[11] = fb11;
-
-                // 甲方
-                FormField fa13 = new FormField();
-                fa13.setComponentId("componentId_6");
-                fa13.setComponentValue(Constant.name);
-
-                FormField fa14 = new FormField();
-                fa14.setComponentId("componentId_7");
-                fa14.setComponentValue(Constant.legal_person);
-
-                FormField fa15 = new FormField();
-                fa15.setComponentId("componentId_8");
-                fa15.setComponentValue(Constant.legal_mobile);
-
-                FormField fa16 = new FormField();
-                fa16.setComponentId("componentId_4");
-                fa16.setComponentValue(date);
-
-                formFields[12] = fa13;
-                formFields[13] = fa14;
-                formFields[14] = fa15;
-                formFields[15] = fa16;
-
+                formFields[4] = fb4;
+                formFields[5] = fb5;
+                formFields[6] = fb6;
+                formFields[7] = fb7;
+                formFields[8] = fb9;
+                formFields[9] = fb10;
+                formFields[10] = fb11;
                 req.setFormFields(formFields);
             }
             req.setOperator(getUserInfo());
@@ -389,19 +332,23 @@ public class CloudSignUtil {
             return resp.getStatus();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     // 第四步：获取小程序跳转链接
     // 返回：
     // SchemeUrl:小程序链接地址
     // RequestId
-    public static String signProcess4() {
+    public static String signProcess4(String flowId) {
         try {
             // 实例化一个请求对象,每个接口都会对应一个request对象
             CreateSchemeUrlRequest req = new CreateSchemeUrlRequest();
             req.setOperator(getUserInfo());
+            // pathType=1是必传
+            req.setFlowId(flowId);
+            // 跳转页面：1-小程序合同详情、2-小程序合同列表、0-不传，默认首页
+            req.setPathType(1L);
 
             // 返回的resp是一个CreateSchemeUrlResponse的实例，与请求对象对应
             CreateSchemeUrlResponse resp = essClient.CreateSchemeUrl(req);
@@ -410,8 +357,8 @@ public class CloudSignUtil {
             return QRCodeUtil.code(resp.getSchemeUrl());
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     // 文件下载
@@ -433,31 +380,7 @@ public class CloudSignUtil {
             return resp.getFileUrls()[0].getUrl();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
-        }
-        return null;
-    }
-
-    // 模板查询接口
-    public static void signTemplateInfo(String templateId) {
-        try{
-            // 实例化一个请求对象,每个接口都会对应一个request对象
-            DescribeFlowTemplatesRequest req = new DescribeFlowTemplatesRequest();
-            req.setOperator(getUserInfo());
-
-            Filter[] filters = new Filter[1];
-            Filter filter = new Filter();
-            filter.setKey("template-id");
-            String[] val = {templateId};
-            filter.setValues(val);
-            filters[0] = filter;
-            req.setFilters(filters);
-
-            // 返回的resp是一个DescribeFlowTemplatesResponse的实例，与请求对象对应
-            DescribeFlowTemplatesResponse resp = essClient.DescribeFlowTemplates(req);
-            // 输出json格式的字符串回包
-            System.out.println(DescribeFlowTemplatesResponse.toJsonString(resp));
-        } catch (TencentCloudSDKException e) {
-            e.printStackTrace();
+            return null;
         }
     }
 

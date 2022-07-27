@@ -14,15 +14,17 @@ public interface MerchantMapper {
 
     List<Merchant> merchantList(@Param("ids") List<Integer> ids);
 
-    @Select("select id,mobile,pwd,shop,goods,ope_user as opeUser, login_count as loginCount from merchant where mobile=#{mobile}")
+    @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.shop,m.goods,m.ope_user as opeUser, m.login_count as loginCount,u.wx as opeUserWx from merchant m" +
+            " left join `user` u on m.ope_user=u.id" +
+            " where m.mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 
-    @Select("select m.id,m.mobile,m.shop,m.introduce,ma.status,ma.remark from merchant m" +
+    @Select("select m.id,m.mobile,m.shop_id as shopId, m.shop,m.introduce,ma.status,ma.remark from merchant m" +
             " left join merchant_audit ma on ma.merchant_id=m.id" +
             " where m.id=#{id}")
     Merchant getMerchant2(@Param("id") int id);
 
-    @Select("select m.id,m.mobile,m.shop,m.introduce,m.shop_status as shopStatus,m.days from merchant m" +
+    @Select("select m.id,m.mobile,m.shop_id as shopId,m.shop,m.introduce,m.shop_status as shopStatus,m.days from merchant m" +
             " where m.id=#{id}")
     Merchant getMerchant3(@Param("id") int id);
 
@@ -46,6 +48,9 @@ public interface MerchantMapper {
     @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
             " values(#{mobile}, #{opeUser}, 1, now(), now())")
     void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);
+
+    @Select("select LAST_INSERT_ID()")
+    int lastId();
 
     @Update("update merchant set lt=now(), login_count=#{lc} where id=#{id}")
     void updateLt(@Param("id") int id, @Param("lc") int lc);

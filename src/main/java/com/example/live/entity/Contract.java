@@ -27,6 +27,8 @@ public class Contract {
     private int signType;
     // 签署成功合同id，可用于下载查看等
     private String documentId;
+    // 合同名称
+    private String documentName;
 
 
     /**

@@ -37,4 +37,6 @@ public class Merchant {
     private String ct;
 
 
+    private String opeUserWx;
+
 }
