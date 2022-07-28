@@ -150,4 +150,13 @@ public class CommonController {
         return commonService.kef();
     }
 
+    /**
+     *  展示月卡、季卡、年卡价格
+     * @return
+     */
+    @GetMapping("/price")
+    public BaseResult<?> price(){
+        return commonService.showPrices();
+    }
+
 }

@@ -206,7 +206,8 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public BaseResult<?> showPrices() {
         UserVO user = UserUtil.getUser();
-        if (user == null) {
+        MerchantVO merchant = UserUtil.getMerchant();
+        if (user == null && merchant == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         //展示价格，只有超管账号下才有月季年卡价格信息

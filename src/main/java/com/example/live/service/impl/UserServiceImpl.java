@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService {
     private CloudSmsUtil cloudSmsUtil;
 
 
-
     @Override
     public BaseResult<?> userLogin(HttpSession session, JSONObject jo) {
         // opeUser 业务员
@@ -70,14 +69,16 @@ public class UserServiceImpl implements UserService {
             // 后台管理系统
             String en = MD5Util.encode(pwd);
             User user = userMapper.getUser1(mobile, en);
-            if (user==null) {
+            if (user == null) {
                 return new BaseResult<>(12, "账号密码错误,登录失败");
             }
             UserVO vo = new UserVO();
             vo.setId(user.getId());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
-            if (user.getLevel()==3) {
+            vo.setWx(user.getWx());
+            vo.setRemark(user.getRemark());
+            if (user.getLevel() == 3) {
                 // 上级id
                 Integer mid = relationUserMapper.getMainId(user.getId());
                 vo.setAgentUser(mid);
@@ -102,9 +103,10 @@ public class UserServiceImpl implements UserService {
                 }
 
                 Merchant merchant = merchantMapper.getMerchant1(mobile);
-                if (merchant==null) {
+                if (merchant == null) {
                     // 注册商户
                     merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
+//                    merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), 11);
                     String ts = DateUtil.getTime();
                     mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
@@ -112,46 +114,53 @@ public class UserServiceImpl implements UserService {
                     mvo.setCt(ts);
                     mvo.setLt(ts);
                     User user2 = userMapper.getUser2(opeUser);
-                    if (user2!=null) {
+                    if (user2 != null) {
                         mvo.setOpeUserWx(user2.getWx());
                     }
                     session.setAttribute(Constant.session_user, mvo);
                     return new BaseResult<>(mvo);
                 }
             }
-            Merchant merchant = merchantMapper.getMerchant1(mobile);
-            String en = MD5Util.encode(pwd);
-            if (!Objects.equals(en, merchant.getPwd())) {
-                return new BaseResult<>(12, "账号密码错误,登录失败");
-            }
-            // 登录商户
-            mvo.setMobile(mobile);
-            mvo.setId(merchant.getId());
-            mvo.setCt(merchant.getCt());
-            mvo.setLt(merchant.getLt());
-            mvo.setShop(merchant.getShop());
-            mvo.setShopId(merchant.getShopId());
-            mvo.setOpeUser(merchant.getOpeUser());
-            mvo.setOpeUserWx(merchant.getOpeUserWx());
-
-            Order order = orderMapper.getOrder1(merchant.getId());
-            if (order!=null) {
-                mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
-                mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
-                mvo.setVipType(order.getBuyType());
-            }
-            // 更新登录时间、登录次数
-            merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount()+1);
-            session.setAttribute(Constant.session_user, mvo);
-            return new BaseResult<>(mvo);
+            return loginMerchant(session, mvo, mobile, pwd, code);
         }
         return new BaseResult<>();
+    }
+
+    //验证码和密码商户端登录调整
+    private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd, String code) {
+        Merchant merchant = merchantMapper.getMerchant1(mobile);
+        if (StringUtils.isEmpty(code)) {
+            String en = MD5Util.encode(pwd);
+            if (merchant == null || !Objects.equals(en, merchant.getPwd())) {
+                return new BaseResult<>(12, "账号密码错误,登录失败");
+            }
+        }
+        // 登录商户
+        mvo.setMobile(mobile);
+        mvo.setId(merchant.getId());
+        mvo.setCt(merchant.getCt());
+        mvo.setLt(merchant.getLt());
+        mvo.setShop(merchant.getShop());
+        mvo.setShopId(merchant.getShopId());
+        mvo.setOpeUser(merchant.getOpeUser());
+        mvo.setOpeUserWx(merchant.getOpeUserWx());
+
+        Order order = orderMapper.getOrder1(merchant.getId());
+        if (order != null) {
+            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
+            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+            mvo.setVipType(order.getBuyType());
+        }
+        // 更新登录时间、登录次数
+        merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount() + 1);
+        session.setAttribute(Constant.session_user, mvo);
+        return new BaseResult<>(mvo);
     }
 
     @Override
     public BaseResult<?> userInfo() {
         UserVO vo = UserUtil.getUser();
-        if (vo==null) {
+        if (vo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         User user = userMapper.getUser2(vo.getId());
@@ -164,16 +173,16 @@ public class UserServiceImpl implements UserService {
     public BaseResult<?> userList(String keyword, Integer page) {
         Integer agentUser = UserUtil.getUserId();
         // 超级管理员查看所有
-        if (agentUser==Constant.admin_id) {
+        if (agentUser == Constant.admin_id) {
             agentUser = null;
         }
         int count = userMapper.count(agentUser, keyword);
-        if (count==0) {
+        if (count == 0) {
             return new BaseResult<>();
         }
         List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page));
         List<UserListVO> voList = Lists.newLinkedList();
-        list.forEach(u ->{
+        list.forEach(u -> {
             UserListVO vo = new UserListVO();
             BeanUtils.copyProperties(u, vo);
             vo.setLevel(Constant.levelTypeMap.get(u.getLevel()));
@@ -185,7 +194,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> mobileCode(String mobile) {
         MobileCode mobileCode = mobileCodeMapper.getCodeEnt(mobile);
-        if (mobileCode!=null) {
+        if (mobileCode != null) {
             boolean com = DateUtil.comTsVal(mobileCode.getTs(), 5);
             if (!com) {
                 return new BaseResult<>(18, "请勿重复发送验证码,验证码有效期为5分钟");
@@ -239,7 +248,7 @@ public class UserServiceImpl implements UserService {
         BASE64Encoder b64 = new BASE64Encoder();
         String huiXian = "";//用于二维码回显
         try {
-            String img = "data:" + file.getContentType()+";base64," + b64.encode(file.getBytes());
+            String img = "data:" + file.getContentType() + ";base64," + b64.encode(file.getBytes());
             userMapper.updateImg(img, id);
             huiXian = img;
         } catch (IOException e) {
@@ -256,11 +265,11 @@ public class UserServiceImpl implements UserService {
         int level = jo.getIntValue("level");
 
         // 超级管理员-1、管理员（代理）-2、业务员-3
-        if (level>3 || level<1) {
+        if (level > 3 || level < 1) {
             return new BaseResult<>(16, "参数错误");
         }
         User user = userMapper.getUserMobile(mobile);
-        if (user!=null) {
+        if (user != null) {
             return new BaseResult<>(11, "手机号已存在");
         }
 
@@ -290,7 +299,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> orderList(OrderQuery query) {
         int count = orderMapper.orderCount(query);
-        if (count==0) {
+        if (count == 0) {
             return new BaseResult<>();
         }
         query.setPage(GeneralUtil.indexPage(query.getPage()));
@@ -302,15 +311,15 @@ public class UserServiceImpl implements UserService {
         Map<Integer, Merchant> merchantMap = merchantList.stream().collect(Collectors.toMap(Merchant::getId, Function.identity(), (k1, k2) -> k2));
 
         List<OrderVO> voList = Lists.newLinkedList();
-        data.forEach(o ->{
+        data.forEach(o -> {
             OrderVO ovo = new OrderVO();
             BeanUtils.copyProperties(o, ovo);
             Merchant merchant = merchantMap.get(o.getMerchantId());
-            if (merchant!=null) {
+            if (merchant != null) {
                 ovo.setMobile(merchant.getMobile());
                 ovo.setShop(merchant.getShop());
             }
-            ovo.setPayStatus(Constant.pay_success.equals(o.getStatus())?"已支付":"未支付");
+            ovo.setPayStatus(Constant.pay_success.equals(o.getStatus()) ? "已支付" : "未支付");
             ovo.setBuyType1(Constant.buyTypeMap.get(o.getBuyType()));
             ovo.setPayType1(Constant.payTypeMap.get(o.getPayType()));
             voList.add(ovo);

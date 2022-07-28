@@ -46,7 +46,7 @@ public interface MerchantMapper {
     void delShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId);
 
     @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
-            " values(#{mobile}, #{opeUser}, 1, now(), now())")
+            " values(#{mobile},#{pwd},#{opeUser}, 1, now(), now())")
     void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);
 
     @Select("select LAST_INSERT_ID()")
@@ -67,6 +67,7 @@ public interface MerchantMapper {
 
     /**
      * 查询商户列表，包含手机、店铺名、状态条件筛选
+     *
      * @param opeUserId
      * @param mobile
      * @param shop
@@ -83,7 +84,7 @@ public interface MerchantMapper {
             + " </where>"
             + "LIMIT #{index}, 10"
             + " </script> "})
-    List<Merchant> getMerchantListByParams(@Param("opeUserId") Integer opeUserId, @Param("mobile")String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus,@Param("index") Integer index);
+    List<Merchant> getMerchantListByParams(@Param("opeUserId") Integer opeUserId, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus, @Param("index") Integer index);
 
     @Select({"<script>" +
             " SELECT COUNT(*) FROM `merchant` "
@@ -94,7 +95,7 @@ public interface MerchantMapper {
             + " <if test=' shopStatus != null and shopStatus != \"\" '> AND shop_status = #{shopStatus}</if>"
             + " </where>"
             + " </script> "})
-    int getMerchantListByParamsCount(@Param("opeUserId") Integer opeUserId, @Param("mobile")String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
+    int getMerchantListByParamsCount(@Param("opeUserId") Integer opeUserId, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
 
 
 }
