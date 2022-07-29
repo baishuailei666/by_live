@@ -14,11 +14,8 @@ public interface DataConfigMapper {
     @Select("SELECT `content` FROM data_config WHERE agent_user=#{agentUser} limit 1")
     String  getConfigStr(@Param("agentUser") Integer agentUser);
 
-    @Update("update data_config set `content`=#{content} where id=#{id} and agent_user=#{agentUser}")
-    void modifyConfig(@Param("id") Integer id, @Param("agentUser") Integer agentUser, @Param("content") String content);
-
-    @Select("SELECT id, content, agent_user as agentUser FROM data_config WHERE id=#{id}")
-    DataConfig getContent(@Param("id") Integer id);
+    @Update("update data_config set `content`=#{content} where agent_user=#{agentUser}")
+    void modifyConfig(@Param("agentUser") Integer agentUser, @Param("content") String content);
 
     @Select("SELECT id, `content`, agent_user as agentUser, ct FROM data_config WHERE agent_user=#{agentUser} limit 1")
     DataConfig getContent2(@Param("agentUser") Integer agentUser);

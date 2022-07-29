@@ -37,6 +37,11 @@ public class Merchant {
     private String ct;
 
 
+    // 店铺审核状态：已认证、审核中、未通过
+    private String auditStatus;
+    // 审核备注
+    private String auditRemark;
+    //
     private String opeUserWx;
 
 }

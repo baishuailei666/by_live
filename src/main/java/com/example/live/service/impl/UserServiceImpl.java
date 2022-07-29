@@ -9,6 +9,7 @@ import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
+import com.example.live.single.AsyncService;
 import com.example.live.util.*;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.OrderVO;
@@ -51,6 +52,8 @@ public class UserServiceImpl implements UserService {
     private CommonService commonService;
     @Autowired
     private CloudSmsUtil cloudSmsUtil;
+    @Autowired
+    private AsyncService asyncService;
 
 
     @Override
@@ -106,36 +109,32 @@ public class UserServiceImpl implements UserService {
                 if (merchant == null) {
                     // 注册商户
                     merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
-//                    merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), 11);
                     String ts = DateUtil.getTime();
                     mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
                     mvo.setCt(ts);
                     mvo.setLt(ts);
-                    User user2 = userMapper.getUser2(opeUser);
-                    if (user2 != null) {
-                        mvo.setOpeUserWx(user2.getWx());
-                    }
+
                     session.setAttribute(Constant.session_user, mvo);
                     return new BaseResult<>(mvo);
                 }
             }
-            return loginMerchant(session, mvo, mobile, pwd, code);
+            return loginMerchant(session, mvo, mobile, pwd);
         }
         return new BaseResult<>();
     }
 
-    //验证码和密码商户端登录调整
-    private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd, String code) {
+    // 验证码和密码商户端登录调整
+    private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd) {
         Merchant merchant = merchantMapper.getMerchant1(mobile);
-        if (StringUtils.isEmpty(code)) {
-            String en = MD5Util.encode(pwd);
-            if (merchant == null || !Objects.equals(en, merchant.getPwd())) {
-                return new BaseResult<>(12, "账号密码错误,登录失败");
-            }
+        if (merchant == null) {
+            return new BaseResult<>(12, "请求参数错误");
         }
-        // 登录商户
+        String en = MD5Util.encode(pwd);
+        if (!Objects.equals(en, merchant.getPwd())) {
+            return new BaseResult<>(14, "登录失败,密码错误");
+        }
         mvo.setMobile(mobile);
         mvo.setId(merchant.getId());
         mvo.setCt(merchant.getCt());
@@ -143,17 +142,20 @@ public class UserServiceImpl implements UserService {
         mvo.setShop(merchant.getShop());
         mvo.setShopId(merchant.getShopId());
         mvo.setOpeUser(merchant.getOpeUser());
-        mvo.setOpeUserWx(merchant.getOpeUserWx());
+        mvo.setShopStatus(merchant.getShopStatus());
 
-        Order order = orderMapper.getOrder1(merchant.getId());
-        if (order != null) {
-            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
-            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
-            mvo.setVipType(order.getBuyType());
-        }
-        // 更新登录时间、登录次数
-        merchantMapper.updateLt(merchant.getId(), merchant.getLoginCount() + 1);
+//        // 登录接口不做业务处理，仅返回用户相关登录信息；/merchant/info返回用户业务会员信息
+//        Order order = orderMapper.getOrder1(merchant.getId());
+//        if (order != null) {
+//            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
+//            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+//            mvo.setVipType(order.getBuyType());
+//        }
         session.setAttribute(Constant.session_user, mvo);
+        // 更新状态
+        asyncService.asyncMerchantLogin(merchant.getId(), merchant.getLoginCount());
+        // 更新会员
+        asyncService.asyncMerchantOrder(merchant.getId(), merchant.getDays());
         return new BaseResult<>(mvo);
     }
 

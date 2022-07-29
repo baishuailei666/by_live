@@ -2,15 +2,14 @@ package com.example.live.single;
 
 import com.example.live.entity.RelationUser;
 import com.example.live.entity.ResourceMerchant;
-import com.example.live.mapper.MobileCodeMapper;
-import com.example.live.mapper.RelationUserMapper;
-import com.example.live.mapper.ResourceMerchantMapper;
-import com.example.live.mapper.UserMapper;
+import com.example.live.mapper.*;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,9 +30,13 @@ public class TimerTask {
     @Autowired
     private ResourceMerchantMapper resourceMerchantMapper;
     @Autowired
-    private UserMapper userMapper;
-    @Autowired
     private RelationUserMapper relationUserMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Resource
+    private OrderMapper orderMapper;
+
+
 
     // 每天23:30进行数据资源分配
     @Scheduled(cron = "0 30 23 * * ?")
@@ -101,6 +104,12 @@ public class TimerTask {
         }
 
     }
+
+    // 每天23:50处理会员过期用户
+//    @Scheduled(cron = "0 50 23 * * ?")
+//    public void merchantExpireHandler() {
+//
+//    }
 
 
     // 每月最后一天的23:30分执行 28-31，考虑到了每月最短和最长的天数

@@ -12,8 +12,6 @@ import java.util.Map;
 public class Constant {
 
     public static final String name = "杭州太博文化传媒有限公司";
-    public static final String legal_person = "陈盛林";
-    public static final String legal_mobile = "18758888566";
 
     // 超级管理员user_id=11
     public static final int admin_id = 11;
@@ -21,7 +19,7 @@ public class Constant {
     // session最大过期时间
     public static final int interval = 3600;
 
-    public static final String session_user = "user";
+    public static final String session_user = "system_user";
     // 默认密码
     public static final String defaultPwd = "123456";
 
@@ -46,12 +44,6 @@ public class Constant {
     public static final String cloud_url = "https://taibo-culture-1313027383.cos.ap-shanghai.myqcloud.com";
     public static final String cloud_secretId = "AKIDLWTBdqDMGvKYWHm35sPiogIfoiMlvqVu";
     public static final String cloud_secretKey = "DBtMaaLq55sRlqfFZt52kDRQAetteARS";
-
-
-    // 商品链接：3545396053325007934
-    public static final String goods_url = "https://haohuo.jinritemai.com/views/product/detail?id=";
-    // 店铺链接：13939925088
-    public static final String  shop_url = "https://haohuo.jinritemai.com/views/shop/index?id=";
 
     /**
      * 支付宝支付
@@ -123,13 +115,7 @@ public class Constant {
         signTypeMap.put(0, "企业签署");
         signTypeMap.put(1, "个人签署");
     }
-    // 签署状态：0-未签、1-已签
-    public static Map<Integer, String> signStatusMap;
-    static {
-        signStatusMap = new HashMap<>();
-        signStatusMap.put(0, "未签署");
-        signStatusMap.put(1, "已签署");
-    }
+
     // 未开-0、已开-1、驳回-2
     public static Map<Integer, String> invoiceStatusMap;
     static {
@@ -151,7 +137,7 @@ public class Constant {
     public static Map<Integer, String> auditStatusMap;
     static {
         auditStatusMap = new HashMap<>();
-        auditStatusMap.put(0, "待审核");
+        auditStatusMap.put(0, "审核中");
         auditStatusMap.put(1, "已通过");
         auditStatusMap.put(2, "已拒绝");
     }

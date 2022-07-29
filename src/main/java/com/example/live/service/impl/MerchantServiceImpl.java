@@ -12,17 +12,23 @@ import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.OrderMapper;
 import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
+import com.example.live.single.AsyncService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantOrderVO;
 import com.example.live.vo.MerchantVO;
+import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -49,11 +55,17 @@ public class MerchantServiceImpl implements MerchantService {
     private ContractMapper contractMapper;
     @Autowired
     private MerchantSignMapper merchantSignMapper;
+    @Autowired
+    private AsyncService asyncService;
 
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
-        int opeUserId = UserUtil.getUser().getId();
+        UserVO userVO = UserUtil.getUser();
+        if (userVO==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        int opeUserId = userVO.getId();
         String shop = jo.getString("shop");
         Integer page = jo.getInteger("page");
         String mobile = jo.getString("mobile");
@@ -62,8 +74,36 @@ public class MerchantServiceImpl implements MerchantService {
         if (count == 0) {
             return new BaseResult<>();
         } else {
-            List<Merchant> merchantListByParams = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
-            return new BaseResult<>(count, merchantListByParams);
+            List<Merchant> data = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
+            List<Integer> mids = Lists.newArrayList();
+            data.forEach(m -> mids.add(m.getId()));
+
+            Map<Integer, Order> order1Map = Maps.newHashMap();
+            List<Order> orderList = orderMapper.merchantOrderList2(mids);
+            Map<Integer, List<Order>> orderListMap = orderList.stream().collect(Collectors.groupingBy(Order::getMerchantId));
+            orderListMap.forEach((k, v) ->{
+                v.sort(Comparator.comparing(Order::getUt));
+                Order order = v.get(v.size()-1);
+                order1Map.put(k, order);
+            });
+
+            List<MerchantVO> voList = Lists.newLinkedList();
+            data.forEach(m ->{
+                MerchantVO vo = new MerchantVO();
+                vo.setId(m.getId());
+                vo.setShop(m.getShop());
+                vo.setMobile(m.getMobile());
+                vo.setOpeUser(m.getOpeUser());
+                vo.setShopStatus(m.getShopStatus());
+                Order order = order1Map.get(m.getId());
+                int days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
+                vo.setDays(days);
+                vo.setCt(m.getCt());
+                vo.setLt(m.getLt());
+                vo.setLoginCount(m.getLoginCount());
+                vo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+            });
+            return new BaseResult<>(count, voList);
         }
     }
 
@@ -102,8 +142,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public BaseResult<?> merchantShopBind(JSONObject jo) {
-        MerchantVO loginMvo = UserUtil.getMerchant();
-        if (loginMvo == null) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         String shop = jo.getString("shop");
@@ -111,6 +151,9 @@ public class MerchantServiceImpl implements MerchantService {
         String shopId = jo.getString("shopId");
         String introduce = jo.getString("introduce");
 
+        if (StringUtils.isBlank(shop)) {
+            return new BaseResult<>(16, "店铺名称不能为空");
+        }
         if (StringUtils.isBlank(shopId)) {
             return new BaseResult<>(11, "店铺ID不能为空");
         }
@@ -124,30 +167,35 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(14, "商家介绍最多140字");
         }
 
-        int ex = merchantMapper.existShop(shopId);
-        if (ex != 0) {
+        Integer ex = merchantMapper.existShop(shopId);
+        if (ex != null) {
             return new BaseResult<>(15, "店铺已被认证");
         }
         // 店铺绑定
-        merchantMapper.bindShop(loginMvo.getId(), shopId, shop, goods, introduce);
-        // 提交审核
-        merchantAuditMapper.merchantShopAudit(loginMvo.getId(), loginMvo.getOpeUser());
-        // 消息通知
-        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:" + shopId, 3);
+        merchantMapper.bindShop(mvo.getId(), shopId, shop, goods, introduce);
+        // async
+        asyncService.asyncAudit(mvo, "店铺认证审核,店铺ID:"+shopId);
         return new BaseResult<>();
     }
 
     @Override
     public BaseResult<?> merchantShop() {
-        Integer merchantId = UserUtil.getMerchantId();
-        Merchant merchant = merchantMapper.getMerchant2(merchantId);
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        Merchant merchant = merchantMapper.getMerchant2(mvo.getId());
+        // // 状态：待审核-0、审核通过-1、已拒绝-2
+        if (merchant!=null) {
+            merchant.setAuditStatus(Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
+        }
         return new BaseResult<>(merchant);
     }
 
     @Override
     public BaseResult<?> merchantShopModify(JSONObject jo) {
-        MerchantVO loginMvo = UserUtil.getMerchant();
-        if (loginMvo == null) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         String shop = jo.getString("shop");
@@ -157,6 +205,9 @@ public class MerchantServiceImpl implements MerchantService {
 
         if (StringUtils.isBlank(shopId)) {
             return new BaseResult<>(15, "店铺ID不能为空");
+        }
+        if (StringUtils.isBlank(shop)) {
+            return new BaseResult<>(16, "店铺名称不能为空");
         }
         if (StringUtils.isBlank(goods)) {
             return new BaseResult<>(11, "商品链接不能为空");
@@ -168,34 +219,43 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(13, "商家介绍最多140字");
         }
 
-        int ex = merchantMapper.existShop(shopId);
-        if (ex != 0) {
+        Integer ex = merchantMapper.existShop(shopId);
+        if (ex != null && ex==mvo.getId()) {
+            // 店铺修改
+            merchantMapper.modifyShop(mvo.getId(), shopId, shop, goods, introduce);
+            // async
+            asyncService.asyncAudit(mvo, "店铺修改审核,店铺ID:"+shopId);
+            return new BaseResult<>();
+        } else {
             return new BaseResult<>(14, "店铺已被认证");
         }
-        // 店铺修改
-        merchantMapper.modifyShop(loginMvo.getId(), shopId, shop, goods, introduce);
-        // 提交审核
-        merchantAuditMapper.merchantShopAudit(loginMvo.getId(), loginMvo.getOpeUser());
-        // 消息通知
-        contentMapper.insContent(loginMvo.getId(), loginMvo.getOpeUser(), "店铺审核,店铺ID:" + shopId, 3);
-        return new BaseResult<>();
     }
 
     @Override
     public BaseResult<?> merchantShopDel(String shopId) {
-        int merchantId = UserUtil.getMerchantId();
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         int shop_merchant_id = merchantMapper.shopMerchant(shopId);
-        if (merchantId != shop_merchant_id) {
+        if (mvo.getId() != shop_merchant_id) {
             return new BaseResult<>(16, "删除失败,店铺ID不是当前商户");
         }
-        merchantMapper.modifyShop(merchantId, null, null, null, null);
+        merchantMapper.modifyShop(mvo.getId(), null, null, null, null);
         return new BaseResult<>();
     }
 
     @Override
-    public BaseResult<?> videoCentre(Integer type) {
-        List<Video> data = videoMapper.videoList(type);
-        return new BaseResult<>(data.size(), data);
+    public BaseResult<?> videoCentre(Integer type, Integer page) {
+        if (type==null) {
+            return new BaseResult<>(12, "参数错误");
+        }
+        int count = videoMapper.count(type);
+        if (count==0) {
+            return new BaseResult<>();
+        }
+        List<Video> data = videoMapper.videoList(type, GeneralUtil.indexPage(page));
+        return new BaseResult<>(count, data);
     }
 
     @Override
@@ -207,10 +267,10 @@ public class MerchantServiceImpl implements MerchantService {
 
         Video video = videoMapper.getVideo(id);
         if (video==null) {
-            return new BaseResult<>(12, "暂无数据");
+            return new BaseResult<>(12, "没有数据");
         }
         if (video.getLevel() != mvo.getVipType()) {
-            return new BaseResult<>(13, "暂无权限");
+            return new BaseResult<>(13, "没有权限");
         }
         String val = Constant.cloud_url+video.getPath();
         return new BaseResult<>(val);

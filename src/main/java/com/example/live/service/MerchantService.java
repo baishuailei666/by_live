@@ -30,7 +30,7 @@ public interface MerchantService {
 
     BaseResult<?> merchantShopDel(String shopId);
 
-    BaseResult<?> videoCentre(Integer type);
+    BaseResult<?> videoCentre(Integer type, Integer page);
 
     BaseResult<?> videoPlay(Integer id);
 

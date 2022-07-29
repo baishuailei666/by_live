@@ -122,10 +122,18 @@ public class CommonServiceImpl implements CommonService {
         if (mvo == null) {
             return new BaseResult<>();
         }
-        Integer mid = commonService.agentUser(mvo.getOpeUser());
-        String val = dataConfigMapper.getConfigStr(mid);
+        User user2 = userMapper.getUser2(mvo.getOpeUser());
+        String val = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);
-        return new BaseResult<>(phone[0] + ";" + phone[1]);
+        JSONObject jo = new JSONObject();
+        // 业务员微信
+        jo.put("opeUserWx", user2.getWx());
+        // 客服电话
+        jo.put("kef1", phone[0]);
+        jo.put("kef2", phone[1]);
+        // 客服时间
+        jo.put("kefTime", "09:00-18:00");
+        return new BaseResult<>(jo);
     }
 
     @Override
@@ -154,9 +162,13 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public BaseResult<?> dataConfigModify(JSONObject jo) {
-        Integer id = jo.getInteger("id");
-
-        Integer agentUser = jo.getInteger("agentUser");
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (user.getId() != Constant.admin_id) {
+            return new BaseResult<>(13, "您没有权限操作！");
+        }
         String emailSend = jo.getString("emailSend");
         String emailReceive = jo.getString("emailReceive");
         String kef1 = jo.getString("kef1");
@@ -166,17 +178,7 @@ public class CommonServiceImpl implements CommonService {
         if (StringUtils.isNotEmpty(kef2)) {
             content += Constant.split + kef2;
         }
-        if (id != null) {
-            DataConfig dc = dataConfigMapper.getContent(id);
-            if (dc == null) {
-                return new BaseResult<>(BaseEnum.No_Login);
-            }
-            if (dc.getAgentUser() != agentUser) {
-                return new BaseResult<>(11, "参数错误,数据不匹配");
-            }
-            // 修改
-            dataConfigMapper.modifyConfig(id, agentUser, content);
-        }
+        dataConfigMapper.modifyConfig(Constant.admin_id, content);
         return new BaseResult<>();
     }
 
@@ -199,21 +201,20 @@ public class CommonServiceImpl implements CommonService {
                 split[1] +
                 Constant.split2 +
                 month + Constant.split + quarter + Constant.split + year;
-        dataConfigMapper.modifyConfig(data.getId(), data.getAgentUser(), sbd);
+        dataConfigMapper.modifyConfig(Constant.admin_id, sbd);
         return new BaseResult<>();
     }
 
     @Override
     public BaseResult<?> showPrices() {
-        UserVO user = UserUtil.getUser();
         MerchantVO merchant = UserUtil.getMerchant();
-        if (user == null && merchant == null) {
+        if (merchant == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         //展示价格，只有超管账号下才有月季年卡价格信息
         String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);
-        String[] split = configStr.split(";");
-        String[] s = split[2].split(",");
+        String[] split = configStr.split(Constant.split2);
+        String[] s = split[2].split(Constant.split);
         DataConfigVO dataConfigVO = new DataConfigVO();
         dataConfigVO.setMonthCard(s[0]);
         dataConfigVO.setSeasonCard(s[1]);

@@ -81,7 +81,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         // 审核通过发送邮箱
         if (status==1) {
-            mailUtil.sendMailHandler(user.getAgentUser(), id);
+            mailUtil.sendMailHandler(Constant.admin_id, id);
         }
         invoiceMapper.invoiceUpdate(id, status, remark);
         return new BaseResult<>();

@@ -89,11 +89,12 @@ public class MerchantController {
      * 视频中心
      *
      * @param type 1-月卡、2-季卡、3-年卡
+     * @param page 1
      * @return
      */
     @GetMapping("/video/centre")
-    public BaseResult<?> videoCentre(@RequestParam("type") Integer type) {
-        return merchantService.videoCentre(type);
+    public BaseResult<?> videoCentre(@RequestParam("type") Integer type, @RequestParam("page") Integer page) {
+        return merchantService.videoCentre(type, page);
     }
 
     /**

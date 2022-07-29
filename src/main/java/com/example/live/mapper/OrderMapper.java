@@ -20,7 +20,7 @@ public interface OrderMapper {
             " values(#{orderNo}, #{merchantId}, #{buyType}, #{money}, #{opeUser}, #{payType}, #{status}, now(), now())")
     void insOrder(Order order);
 
-    @Select("select id, order_no as orderNo, trade_no as tradeNo, buy_type as buyType from `order` where `status`='TRADE_SUCCESS' and merchant_id=#{merchantId} order by ut desc limit 1")
+    @Select("select id, order_no as orderNo, buy_type as buyType from `order` where `status`='TRADE_SUCCESS' and merchant_id=#{merchantId} order by ut desc limit 1")
     Order getOrder1(@Param("merchantId") int merchantId);
 
     @Select("select id, merchant_id as merchantId, order_no as orderNo, trade_no as tradeNo, buy_type as buyType from `order` where order_no=#{orderNo} order by ut desc limit 1")
@@ -36,5 +36,7 @@ public interface OrderMapper {
     int orderCount(OrderQuery query);
 
     List<Order> orderList(OrderQuery query);
+
+    List<Order> merchantOrderList2(@Param("list") List<Integer> list);
 
 }

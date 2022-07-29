@@ -14,12 +14,11 @@ public interface MerchantMapper {
 
     List<Merchant> merchantList(@Param("ids") List<Integer> ids);
 
-    @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.shop,m.goods,m.ope_user as opeUser, m.login_count as loginCount,u.wx as opeUserWx from merchant m" +
-            " left join `user` u on m.ope_user=u.id" +
+    @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.days, m.shop,m.ope_user as opeUser, m.login_count as loginCount, m.shop_status as shopStatus from merchant m" +
             " where m.mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 
-    @Select("select m.id,m.mobile,m.shop_id as shopId, m.shop,m.introduce,ma.status,ma.remark from merchant m" +
+    @Select("select m.id,m.mobile,m.shop_id as shopId, m.shop,m.introduce,ma.status as auditStatus,ma.remark as auditRemark from merchant m" +
             " left join merchant_audit ma on ma.merchant_id=m.id" +
             " where m.id=#{id}")
     Merchant getMerchant2(@Param("id") int id);
@@ -28,8 +27,8 @@ public interface MerchantMapper {
             " where m.id=#{id}")
     Merchant getMerchant3(@Param("id") int id);
 
-    @Select("select count(1) from merchant where shop_id=#{shopId}")
-    int existShop(@Param("shopId") String shopId);
+    @Select("select id from merchant where shop_id=#{shopId}")
+    Integer existShop(@Param("shopId") String shopId);
 
     @Select("select id from merchant where shop_id=#{shopId}")
     int shopMerchant(@Param("shopId") String shopId);
@@ -42,9 +41,6 @@ public interface MerchantMapper {
     void modifyShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId
             , @Param("shop") String shop, @Param("goods") String goods, @Param("introduce") String introduce);
 
-    @Update("update merchant set shop_id=null, shop=null, goods=null, introduce=null where id=#{merchantId} and shop_id=#{shopId}")
-    void delShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId);
-
     @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
             " values(#{mobile},#{pwd},#{opeUser}, 1, now(), now())")
     void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);
@@ -54,6 +50,9 @@ public interface MerchantMapper {
 
     @Update("update merchant set lt=now(), login_count=#{lc} where id=#{id}")
     void updateLt(@Param("id") int id, @Param("lc") int lc);
+
+    @Update("update merchant set days=#{days} where id=#{id}")
+    void updateDays(@Param("id") int id, @Param("days") int days);
 
     @Update("update merchant set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
@@ -75,7 +74,7 @@ public interface MerchantMapper {
      * @return
      */
     @Select({"<script>" +
-            " SELECT id,mobile,shop,shop_id,shop_status,ope_user,days,login_count,lt,ct FROM `merchant` "
+            " SELECT id,mobile,shop,shop_id,shop_status as shopStatus,ope_user as opeUser,days,login_count,lt,ct FROM `merchant` "
             + " <where>"
             + " ope_user = #{opeUserId}"
             + " <if test=' mobile != null and mobile != \"\"' > AND mobile = #{mobile}</if>"

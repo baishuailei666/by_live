@@ -15,10 +15,12 @@ import java.util.List;
 @Mapper
 public interface VideoMapper {
 
-    List<Video> videoList(@Param("type") Integer type);
+    int count(@Param("type") int type);
+
+    List<Video> videoList(@Param("type") int type, @Param("from") int from);
 
     @Select("select path,level from video where id=#{id}")
-    Video getVideo(@Param("id") Integer id);
+    Video getVideo(@Param("id") int id);
 
     @Insert("insert into video(title, level, path) values(#{title}, #{level}, #{path})")
     void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path);

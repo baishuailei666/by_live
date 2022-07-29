@@ -24,7 +24,4 @@ public interface RelationUserMapper {
     @Select("select main_user_id from relation_user where child_user_id=#{cid}")
     Integer getMainId(@Param("cid") int cid);
 
-    @Delete("delete from relation_user where main_user_id=#{mid}")
-    void delRelation(@Param("mid") int mid);
-
 }

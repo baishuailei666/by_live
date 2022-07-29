@@ -15,6 +15,7 @@ public class MerchantVO {
     private String mobile;
     private String shopId;
     private String shop;
+    private String shopStatus;
     private Integer opeUser;
     // 对应业务员微信
     private String opeUserWx;
@@ -22,6 +23,7 @@ public class MerchantVO {
     private int vipType;
     // 剩余天数
     private Integer days;
+    private Integer loginCount;
     private String ct;
     private String lt;
 

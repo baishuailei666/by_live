@@ -69,7 +69,6 @@ public class ContractServiceImpl implements ContractService {
             vo.setId(c.getId());
             vo.setBuyType(Constant.buyTypeMap.get(c.getBuyType()));
             vo.setSignType(Constant.signTypeMap.get(c.getSignType()));
-            vo.setSignStatus(Constant.signStatusMap.get(c.getSignStatus()));
             vo.setCt(c.getCt());
             vo.setUt(c.getUt());
             vo.setTax(c.getTax());

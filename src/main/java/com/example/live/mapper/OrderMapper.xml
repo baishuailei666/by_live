@@ -78,4 +78,14 @@
         where id=#{id}
     </update>
 
+    <select id="merchantOrderList2" resultType="com.example.live.entity.Order">
+        select order_no as orderNo, trade_no as tradeNo, buy_type, ct, ut
+        from `order`
+        where `status` = 'TRADE_SUCCESS'
+        and merchant_id in
+        <foreach item="mid" collection="list" separator="," open="(" close=")">
+            #{mid}
+        </foreach>
+    </select>
+
 </mapper>

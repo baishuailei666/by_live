@@ -2,14 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.live.mapper.VideoMapper">
 
+    <select id="count" resultType="int">
+        select count(1) from video
+        where `level` =#{type}
+    </select>
 
     <select id="videoList" resultType="com.example.live.entity.Video">
-        select id, title
+        select id, title, `path`, ct
         from video
-        where 1=1
-        <if test="type!=null">
-            and level =#{type}
-        </if>
+        where `level` =#{type}
+        limit #{from}, 10
     </select>
 
 
