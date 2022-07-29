@@ -55,7 +55,7 @@ public class UserController {
      * @param session session
      * @return BaseResult
      */
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public BaseResult<?> logout(HttpSession session) {
         session.removeAttribute(Constant.session_user);
         return new BaseResult<>();
