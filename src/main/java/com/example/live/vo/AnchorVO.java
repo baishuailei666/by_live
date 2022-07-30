@@ -20,7 +20,7 @@ public class AnchorVO {
     // 粉丝
     private String fans;
     // 推广类目（类目=数量;类目=数量）
-    private String category;
+    private List<String> category;
     // 推广商品
     private Integer goods;
     // 橱窗销量

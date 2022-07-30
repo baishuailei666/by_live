@@ -1,6 +1,7 @@
 package com.example.live.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.Anchor;
@@ -11,6 +12,7 @@ import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.AnchorVO;
 import com.example.live.vo.ContentVO;
+import com.example.live.vo.MerchantVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -89,6 +91,13 @@ public class AnchorServiceImpl implements AnchorService {
     }
     @Override
     public BaseResult<?> anchorInfo(Integer id) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (mvo.getVipType()==0) {
+            return new BaseResult<>(12, "没有权限");
+        }
         Anchor anchor = anchorMapper.anchorInfo(id);
         if (anchor!=null) {
             String category = anchor.getCategory();
@@ -101,16 +110,23 @@ public class AnchorServiceImpl implements AnchorService {
     public BaseResult<?> anchorList(String category,Integer page) {
         int i = anchorMapper.anchorListCount(category);
         if (i == 0) {
-            return new BaseResult<>(0, null);
+            return new BaseResult<>();
         }
         List<Anchor> data = anchorMapper.anchorList(category, GeneralUtil.indexPage(page));
         List<AnchorVO> voList = Lists.newLinkedList();
         data.forEach(a -> {
             AnchorVO avo = new AnchorVO();
             BeanUtils.copyProperties(a, avo);
+            String val = GeneralUtil.getStarString(a.getNickname(), 1, 1);
+            avo.setNickname(val);
             List<JSONObject> list = categoryHandler(a.getCategory());
             if (list!=null) {
-                avo.setCategory(list.get(0).getString("key"));
+                List<String> list1 = Lists.newLinkedList();
+                list1.add(list.get(0).getString("key"));
+                if (list.size()>2) {
+                    list1.add(list.get(1).getString("key"));
+                }
+                avo.setCategory(list1);
             }
             voList.add(avo);
         });

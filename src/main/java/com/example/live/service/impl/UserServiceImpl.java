@@ -144,13 +144,12 @@ public class UserServiceImpl implements UserService {
         mvo.setOpeUser(merchant.getOpeUser());
         mvo.setShopStatus(merchant.getShopStatus());
 
-//        // 登录接口不做业务处理，仅返回用户相关登录信息；/merchant/info返回用户业务会员信息
-//        Order order = orderMapper.getOrder1(merchant.getId());
-//        if (order != null) {
-//            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
-//            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
-//            mvo.setVipType(order.getBuyType());
-//        }
+        Order order = orderMapper.getOrder1(merchant.getId());
+        if (order != null) {
+            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
+            mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+            mvo.setVipType(order.getBuyType());
+        }
         session.setAttribute(Constant.session_user, mvo);
         // 更新状态
         asyncService.asyncMerchantLogin(merchant.getId(), merchant.getLoginCount());
