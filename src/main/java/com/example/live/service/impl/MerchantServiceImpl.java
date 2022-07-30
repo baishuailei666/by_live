@@ -6,11 +6,6 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.*;
 import com.example.live.mapper.*;
-import com.example.live.mapper.ContentMapper;
-import com.example.live.mapper.MerchantAuditMapper;
-import com.example.live.mapper.MerchantMapper;
-import com.example.live.mapper.OrderMapper;
-import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.single.AsyncService;
 import com.example.live.util.CloudSignUtil;
@@ -269,7 +264,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (video==null) {
             return new BaseResult<>(12, "没有数据");
         }
-        if (video.getLevel() != mvo.getVipType()) {
+        if (video.getLevel() > mvo.getVipType()) {
             return new BaseResult<>(13, "没有权限");
         }
         String val = Constant.cloud_url+video.getPath();

@@ -41,7 +41,7 @@ public class Constant {
     public static final String email_subject = buy_subject+"-开票信息";
 
     // 腾讯云
-    public static final String cloud_url = "https://taibo-culture-1313027383.cos.ap-shanghai.myqcloud.com";
+    public static final String cloud_url = "https://taibo-culture-1313027383.cos.ap-shanghai.myqcloud.com/";
     public static final String cloud_secretId = "AKIDLWTBdqDMGvKYWHm35sPiogIfoiMlvqVu";
     public static final String cloud_secretKey = "DBtMaaLq55sRlqfFZt52kDRQAetteARS";
 

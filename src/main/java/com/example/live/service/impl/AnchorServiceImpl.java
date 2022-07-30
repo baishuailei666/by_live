@@ -130,7 +130,7 @@ public class AnchorServiceImpl implements AnchorService {
             }
             voList.add(avo);
         });
-        return new BaseResult<>(data.size(), voList);
+        return new BaseResult<>(i, voList);
     }
 
     @Override
