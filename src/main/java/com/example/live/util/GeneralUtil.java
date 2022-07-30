@@ -123,7 +123,21 @@ public final class GeneralUtil {
         }
         return content.substring(0, frontNum) + starStr
                 + content.substring(content.length() - endNum);
+    }
 
+    //推广类目格式更改
+    public static String getCategory(String s){
+        StringBuilder category = new StringBuilder();
+        if (StringUtils.isNotEmpty(s)) {
+            String[] split = s.split(Constant.split2);
+            for (String s1 : split) {
+                int i = s1.indexOf("=");
+                String substring = s1.substring(0, i);
+                category.append(substring).append("，");
+            }
+            category.deleteCharAt(category.length() - 1);
+        }
+        return category.toString();
     }
 
 }

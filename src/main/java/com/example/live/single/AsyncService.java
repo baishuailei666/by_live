@@ -1,10 +1,7 @@
 package com.example.live.single;
 
 import com.example.live.entity.Order;
-import com.example.live.mapper.ContentMapper;
-import com.example.live.mapper.MerchantAuditMapper;
-import com.example.live.mapper.MerchantMapper;
-import com.example.live.mapper.OrderMapper;
+import com.example.live.mapper.*;
 import com.example.live.util.GeneralUtil;
 import com.example.live.vo.MerchantVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,8 @@ public class AsyncService {
     private MerchantMapper merchantMapper;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private AnchorMapper anchorMapper;
 
     @Async("asyncThread")
     public void asyncAudit(MerchantVO mvo, String note) {
@@ -41,7 +40,7 @@ public class AsyncService {
     @Async("asyncThread")
     public void asyncMerchantLogin(int merchantId, int loginCount) {
         // 更新登录时间、登录次数
-        merchantMapper.updateLt(merchantId, loginCount+1);
+        merchantMapper.updateLt(merchantId, loginCount + 1);
         System.out.println("## asyncMerchantLogin");
     }
 
@@ -49,13 +48,22 @@ public class AsyncService {
     public void asyncMerchantOrder(int merchantId, int days) {
         // 更新会员信息
         Order order = orderMapper.getOrder1(merchantId);
-        if (order!=null) {
+        if (order != null) {
             int days2 = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
-            if (days2<days && days2>0) {
+            if (days2 < days && days2 > 0) {
                 merchantMapper.updateDays(merchantId, days2);
             }
         }
         System.out.println("## asyncMerchantOrder");
+    }
+
+    @Async("asyncThread")
+    public void asyncInsertMerchantAnchor(int merchantId, int anchorId) {
+        int i = anchorMapper.queryAnchor(merchantId, anchorId);
+        if (i <= 0) {
+            anchorMapper.insertAnchor(merchantId, anchorId);
+            System.out.println("## asyncInsertMerchantAnchor");
+        }
     }
 
 }

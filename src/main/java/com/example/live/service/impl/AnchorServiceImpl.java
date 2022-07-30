@@ -8,6 +8,7 @@ import com.example.live.entity.Anchor;
 import com.example.live.mapper.AnchorMapper;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.service.AnchorService;
+import com.example.live.single.AsyncService;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.AnchorVO;
@@ -32,6 +33,8 @@ public class AnchorServiceImpl implements AnchorService {
     private AnchorMapper anchorMapper;
     @Autowired
     private ContentMapper contentMapper;
+    @Autowired
+    private AsyncService asyncService;
 
     private List<JSONObject> categoryHandler(String category) {
         if (StringUtils.isBlank(category)) {
@@ -102,6 +105,7 @@ public class AnchorServiceImpl implements AnchorService {
         if (anchor!=null) {
             String category = anchor.getCategory();
             anchor.setCateList(categoryHandler(category));
+            asyncService.asyncInsertMerchantAnchor(mvo.getId(),anchor.getId());
         }
         return new BaseResult<>(anchor);
     }
@@ -137,7 +141,11 @@ public class AnchorServiceImpl implements AnchorService {
     public BaseResult<?> anchorCollect() {
         Integer mid = UserUtil.getMerchantId();
         List<Anchor> data = anchorMapper.anchorCollect(mid);
-        data.forEach(a -> a.setCateList(categoryHandler(a.getCategory())));
+        data.forEach(a -> {
+            String category = a.getCategory();
+            a.setCateList(categoryHandler(category));
+            a.setCategory(GeneralUtil.getCategory(category));
+        });
         return new BaseResult<>(data.size(), data);
     }
 

@@ -14,7 +14,8 @@ public interface MerchantMapper {
 
     List<Merchant> merchantList(@Param("ids") List<Integer> ids);
 
-    @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.days, m.shop,m.ope_user as opeUser, m.login_count as loginCount, m.shop_status as shopStatus from merchant m" +
+    @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.days, m.shop,m.ope_user as opeUser, " +
+            "m.login_count as loginCount, m.shop_status as shopStatus, m.ct as ct, m.lt as lt from merchant m" +
             " where m.mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 

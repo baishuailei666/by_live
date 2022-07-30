@@ -143,6 +143,7 @@ public class UserServiceImpl implements UserService {
         mvo.setShopId(merchant.getShopId());
         mvo.setOpeUser(merchant.getOpeUser());
         mvo.setShopStatus(merchant.getShopStatus());
+        mvo.setLoginCount(merchant.getLoginCount()+1);
 
         Order order = orderMapper.getOrder1(merchant.getId());
         if (order != null) {

@@ -79,5 +79,8 @@ public class Anchor extends BaseRowModel {
     @ExcelProperty(value = "带货口碑",index = 19)
     private String score;
 
+    //是否加微信
+    private int add;
+
 
 }

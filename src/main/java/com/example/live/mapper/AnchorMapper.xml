@@ -46,24 +46,26 @@
     </select>
 
     <select id="anchorCollect" resultType="com.example.live.entity.Anchor">
-        select a.id
-             , a.nickname
-             , a.img
-             , a.author_id as a.authorId, a.gender
-             , a.level
-             , a.fans
-             , a.url
-             , a.category
-             , a.goods
-             , a.sales
-             , a.introduce
-             , a.live
+        select a.id as id
+             , a.nickname as nickname
+             , a.img as img
+             , a.author_id as authorId
+             , a.gender as gender
+             , a.level as level
+             , a.fans as fans
+             , a.url as url
+             , a.category as category
+             , a.goods as goods
+             , a.sales as sales
+             , a.introduce as introduce
+             , a.live as live
              , a.live_day as liveDay
-             , a.view
-             , a.avg_dur  as avgDur
-             , a.rate
-             , a.price
-             , a.score
+             , a.view as view
+             , a.avg_dur as avgDur
+             , a.rate as rate
+             , a.price as price
+             , a.score as score
+             , ma.add as `add`
         from anchor a
                  left join merchant_anchor ma on ma.anchor_id = a.id
         where ma.merchant_id = #{merchantId}
