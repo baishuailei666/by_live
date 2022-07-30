@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * 通用的结果返回类
  * 默认status=200
- * 成功返回code=0
+ * 成功返回code=200
  * 根据返回结果不同，返回不同的code
  *
  * @param <T>

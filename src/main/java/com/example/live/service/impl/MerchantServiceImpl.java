@@ -179,12 +179,23 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
+
+        JSONObject jo = new JSONObject();
         Merchant merchant = merchantMapper.getMerchant2(mvo.getId());
         // // 状态：待审核-0、审核通过-1、已拒绝-2
         if (merchant!=null) {
-            merchant.setAuditStatus(Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
+            jo.put("shop", merchant.getShop());
+            jo.put("goods", merchant.getGoods());
+            jo.put("shopId", merchant.getShopId());
+            jo.put("introduce", merchant.getIntroduce());
+            jo.put("auditRemark", merchant.getAuditRemark());
+            if (StringUtils.isBlank(merchant.getAuditStatus())) {
+                jo.put("auditStatus", "未认证");
+            } else {
+                jo.put("auditStatus", Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
+            }
         }
-        return new BaseResult<>(merchant);
+        return new BaseResult<>(jo);
     }
 
     @Override
@@ -242,14 +253,35 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public BaseResult<?> videoCentre(Integer type, Integer page) {
-        if (type==null) {
-            return new BaseResult<>(12, "参数错误");
+        MerchantVO vo = UserUtil.getMerchant();
+        if (vo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
         }
-        int count = videoMapper.count(type);
+        List<Integer> list = Lists.newArrayList();
+        if (type==0) {
+            // 全部：0、1、2、3
+            list.add(0);
+            if (vo.getVipType()==3) {
+                list.add(1);
+                list.add(2);
+                list.add(3);
+            } else if (vo.getVipType()==2) {
+                list.add(1);
+                list.add(2);
+            } else if (vo.getVipType()==1) {
+                list.add(1);
+            }
+        } else {
+            if (type>vo.getVipType()) {
+                return new BaseResult<>(16, "没有权限");
+            }
+            list.add(type);
+        }
+        int count = videoMapper.count(list);
         if (count==0) {
             return new BaseResult<>();
         }
-        List<Video> data = videoMapper.videoList(type, GeneralUtil.indexPage(page));
+        List<Video> data = videoMapper.videoList(list, GeneralUtil.indexPage(page));
         return new BaseResult<>(count, data);
     }
 

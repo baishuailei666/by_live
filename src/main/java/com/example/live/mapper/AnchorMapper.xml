@@ -17,10 +17,6 @@
     </insert>
 
     <select id="anchorList" resultType="com.example.live.entity.Anchor">
-        --         select id, nickname, img, author_id as authorId, gender, level, fans, url
---              , category, goods, sales, introduce, live, live_day as liveDay, view, avg_dur as avgDur
---              , rate, price, score
---         from anchor
         select id
              , nickname
              , img

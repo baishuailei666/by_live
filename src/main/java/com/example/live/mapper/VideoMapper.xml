@@ -4,20 +4,19 @@
 
     <select id="count" resultType="int">
         select count(1) from video
-        where 1=1
-        <if test="type!=0">
-           and `level` = #{type}
-        </if>
+        where `level` in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <select id="videoList" resultType="com.example.live.entity.Video">
         select id, title, `path`, ct
         from video
-        where 1=1
-        <if test="type!=0">
-            and `level` = #{type}
-        </if>
-        order by ct DESC
+        where `level` in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         limit #{from}, 10
     </select>
 

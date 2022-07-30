@@ -15,9 +15,9 @@ import java.util.List;
 @Mapper
 public interface VideoMapper {
 
-    int count(@Param("type") int type);
+    int count(@Param("list") List<Integer> list);
 
-    List<Video> videoList(@Param("type") int type, @Param("from") int from);
+    List<Video> videoList(@Param("list") List<Integer> list, @Param("from") int from);
 
     @Select("select path,level from video where id=#{id}")
     Video getVideo(@Param("id") int id);
