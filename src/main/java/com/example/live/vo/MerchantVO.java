@@ -16,6 +16,7 @@ public class MerchantVO {
     private String shopId;
     private String shop;
     private String shopStatus;
+    private String opeUserRemark;
     private Integer opeUser;
     // 对应业务员微信
     private String opeUserWx;

@@ -40,7 +40,7 @@ public class UserController {
      * 密码登录、验证码登录
      *
      * @param session 单点项目不用考虑分布式session
-     * @param jo      mobile\pwd\code\source:back-管理端、merchant-商户端
+     * @param jo      mobile\pwd\code\source:back-管理端、merchant-商户端、promotion
      * @return BaseResult
      */
     @PostMapping("/login")

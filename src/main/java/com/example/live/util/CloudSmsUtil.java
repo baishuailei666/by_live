@@ -52,12 +52,13 @@ public class CloudSmsUtil {
      * 发送短信
      * 手机号+86
      */
-    public void sendSms(List<String> mobile, String code) {
+    public static void sendSms(List<String> mobile, String code) {
         try {
-            mobile.forEach(s -> s = "86"+s);
+            List<String> val = Lists.newArrayList();
+            mobile.forEach(s -> val.add("+86"+s));
             // 实例化一个请求对象,每个接口都会对应一个request对象
             SendSmsRequest req = new SendSmsRequest();
-            req.setPhoneNumberSet(mobile.toArray(new String[1]));
+            req.setPhoneNumberSet(val.toArray(new String[0]));
             req.setTemplateParamSet(new String[]{code});
             req.setSmsSdkAppid(sms_sdkAppId);
             req.setTemplateID(sms_templateId);
@@ -66,7 +67,6 @@ public class CloudSmsUtil {
             // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
             SendSmsResponse resp = smsClient.SendSms(req);
             // 输出json格式的字符串回包
-
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
         }

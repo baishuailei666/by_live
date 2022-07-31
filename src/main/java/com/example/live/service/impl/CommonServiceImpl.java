@@ -128,6 +128,7 @@ public class CommonServiceImpl implements CommonService {
         JSONObject jo = new JSONObject();
         // 业务员微信
         jo.put("opeUserWx", user2.getWx());
+        jo.put("opeUserRemark", user2.getRemark());
         // 客服电话
         jo.put("kef1", phone[0]);
         jo.put("kef2", phone[1]);

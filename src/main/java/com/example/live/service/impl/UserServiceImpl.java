@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> userLogin(HttpSession session, JSONObject jo) {
         // opeUser 业务员
-        Integer opeUser = jo.getInteger("opeUser");
+        Integer opeUser = jo.getInteger("promotion");
         // source:back-管理端、merchant-商户端
         String source = jo.getString("source");
         String mobile = jo.getString("mobile");
@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
                     mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
+                    mvo.setLoginCount(1);
                     mvo.setCt(ts);
                     mvo.setLt(ts);
 
@@ -120,20 +121,22 @@ public class UserServiceImpl implements UserService {
                     return new BaseResult<>(mvo);
                 }
             }
-            return loginMerchant(session, mvo, mobile, pwd);
+            return loginMerchant(session, mvo, mobile, pwd, code);
         }
         return new BaseResult<>();
     }
 
     // 验证码和密码商户端登录调整
-    private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd) {
+    private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd, String code) {
         Merchant merchant = merchantMapper.getMerchant1(mobile);
         if (merchant == null) {
             return new BaseResult<>(12, "请求参数错误");
         }
-        String en = MD5Util.encode(pwd);
-        if (!Objects.equals(en, merchant.getPwd())) {
-            return new BaseResult<>(14, "登录失败,密码错误");
+        if (StringUtils.isBlank(code)) {
+            String en = MD5Util.encode(pwd);
+            if (!Objects.equals(en, merchant.getPwd())) {
+                return new BaseResult<>(14, "登录失败,密码错误");
+            }
         }
         mvo.setMobile(mobile);
         mvo.setId(merchant.getId());

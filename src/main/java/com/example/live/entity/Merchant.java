@@ -43,5 +43,6 @@ public class Merchant {
     private String auditRemark;
     //
     private String opeUserWx;
+    private String opeUserRemark;
 
 }

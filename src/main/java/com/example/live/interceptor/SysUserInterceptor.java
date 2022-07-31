@@ -113,7 +113,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         if (path.contains("/anchor/info")) {
             // 主播详情
             if (mvo.getVipType()<1) {
-                handleResponse(request, response, 10, "暂无权限");
+                handleResponse(request, response, 19, "暂无权限");
                 return false;
             }
         }
