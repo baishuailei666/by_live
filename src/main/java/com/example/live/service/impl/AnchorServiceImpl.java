@@ -98,7 +98,7 @@ public class AnchorServiceImpl implements AnchorService {
         if (mvo==null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        if (mvo.getVipType()==0) {
+        if (mvo.getVipType()<1) {
             return new BaseResult<>(12, "没有权限");
         }
         Anchor anchor = anchorMapper.anchorInfo(id);
