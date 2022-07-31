@@ -22,7 +22,7 @@ public interface MerchantSignMapper {
             " values(#{subject}, #{person}, #{mobile}, #{tax}, #{merchantId})")
     void insOne(MerchantSign sign);
 
-    @Update("update merchant_sign set subject=#{subject}, mobile=#{mobile}, tax=#{tax}, person=#{person} where id=#{id} and merchant_id={merchantId}")
+    @Update("update merchant_sign set subject=#{subject}, mobile=#{mobile}, tax=#{tax}, person=#{person} where id=#{id} and merchant_id=#{merchantId}")
     void modifyOne(MerchantSign sign);
 
 }

@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -193,10 +194,10 @@ public class MerchantServiceImpl implements MerchantService {
             jo.put("introduce", merchant.getIntroduce());
             jo.put("auditRemark", merchant.getAuditRemark());
             if (StringUtils.isEmpty(merchant.getShop())) {
-                jo.put("auditStatus", "未认证");
+                jo.put("auditStatus", "未绑定");
             } else {
                 if (StringUtils.isBlank(merchant.getAuditStatus())) {
-                    jo.put("auditStatus", "未认证");
+                    jo.put("auditStatus", "未绑定");
                 } else {
                     jo.put("auditStatus", Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
                 }
@@ -383,7 +384,8 @@ public class MerchantServiceImpl implements MerchantService {
         if (type != 1 && type != 0) {
             return new BaseResult<>(14, "参数错误");
         }
-        if (buyType == null || buyType != 1 || buyType != 2 || buyType != 3) {
+        boolean contains = !Constant.buyTypeMap.keySet().contains(buyType);
+        if (buyType==null||contains){
             return new BaseResult<>(14, "参数错误");
         }
 
