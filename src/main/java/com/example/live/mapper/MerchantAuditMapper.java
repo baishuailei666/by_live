@@ -4,6 +4,7 @@ import com.example.live.vo.MerchantAuditVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -23,7 +24,11 @@ public interface MerchantAuditMapper {
 
 
     void updateMerchantAudit(@Param("merchantId") String merchantId, @Param("opeUser") Integer opeUser
-            , @Param("status") Integer status, @Param("reason") String reason);
+            ,@Param("ct")String ct,@Param("status") Integer status, @Param("reason") String reason);
+
+    @Select("select max(ct) from `merchant_audit` where merchant_id=#{merchantId} and ope_user=#{opeUser}")
+    String updateMerchantAuditCt(@Param("merchantId") String merchantId, @Param("opeUser") Integer opeUser);
+
 
     @Insert("insert into `merchant_audit`(merchant_id, ope_user, ct, ut)" +
             "values(#{merchantId}, #{opeUser}, now(), now())")

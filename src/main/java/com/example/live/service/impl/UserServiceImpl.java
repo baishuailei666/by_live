@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
             if (StringUtils.isNotBlank(code)) {
                 // 验证码登录
                 String val = mobileCodeMapper.getCode(mobile);
-                if (!Objects.equals(code, val)) {
+                if (!code.equals(val)) {
                     return new BaseResult<>(11, "验证码不正确");
                 }
 

@@ -53,11 +53,14 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private AsyncService asyncService;
 
+    @Autowired
+    private DataConfigMapper dataConfigMapper;
+
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
         UserVO userVO = UserUtil.getUser();
-        if (userVO==null) {
+        if (userVO == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         int opeUserId = userVO.getId();
@@ -76,14 +79,14 @@ public class MerchantServiceImpl implements MerchantService {
             Map<Integer, Order> order1Map = Maps.newHashMap();
             List<Order> orderList = orderMapper.merchantOrderList2(mids);
             Map<Integer, List<Order>> orderListMap = orderList.stream().collect(Collectors.groupingBy(Order::getMerchantId));
-            orderListMap.forEach((k, v) ->{
+            orderListMap.forEach((k, v) -> {
                 v.sort(Comparator.comparing(Order::getUt));
-                Order order = v.get(v.size()-1);
+                Order order = v.get(v.size() - 1);
                 order1Map.put(k, order);
             });
 
             List<MerchantVO> voList = Lists.newLinkedList();
-            data.forEach(m ->{
+            data.forEach(m -> {
                 MerchantVO vo = new MerchantVO();
                 vo.setId(m.getId());
                 vo.setShop(m.getShop());
@@ -105,12 +108,12 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> merchantInfo() {
         MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo==null) {
+        if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         mvo.setOpeUserWx(null);
         Order order = orderMapper.getOrder1(mvo.getId());
-        if (order!=null) {
+        if (order != null) {
             mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
             mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
             mvo.setVipType(order.getBuyType());
@@ -169,7 +172,7 @@ public class MerchantServiceImpl implements MerchantService {
         // 店铺绑定
         merchantMapper.bindShop(mvo.getId(), shopId, shop, goods, introduce);
         // async
-        asyncService.asyncAudit(mvo, "店铺认证审核,店铺ID:"+shopId);
+        asyncService.asyncAudit(mvo, "店铺认证审核,店铺ID:" + shopId);
         return new BaseResult<>();
     }
 
@@ -183,16 +186,20 @@ public class MerchantServiceImpl implements MerchantService {
         JSONObject jo = new JSONObject();
         Merchant merchant = merchantMapper.getMerchant2(mvo.getId());
         // // 状态：待审核-0、审核通过-1、已拒绝-2
-        if (merchant!=null) {
+        if (merchant != null) {
             jo.put("shop", merchant.getShop());
             jo.put("goods", merchant.getGoods());
             jo.put("shopId", merchant.getShopId());
             jo.put("introduce", merchant.getIntroduce());
             jo.put("auditRemark", merchant.getAuditRemark());
-            if (StringUtils.isBlank(merchant.getAuditStatus())) {
+            if (StringUtils.isEmpty(merchant.getShop())) {
                 jo.put("auditStatus", "未认证");
             } else {
-                jo.put("auditStatus", Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
+                if (StringUtils.isBlank(merchant.getAuditStatus())) {
+                    jo.put("auditStatus", "未认证");
+                } else {
+                    jo.put("auditStatus", Constant.auditStatusMap.get(GeneralUtil.parseInt(merchant.getAuditStatus())));
+                }
             }
         }
         return new BaseResult<>(jo);
@@ -226,11 +233,11 @@ public class MerchantServiceImpl implements MerchantService {
         }
 
         Integer ex = merchantMapper.existShop(shopId);
-        if (ex != null && ex==mvo.getId()) {
+        if (ex != null && ex == mvo.getId()) {
             // 店铺修改
             merchantMapper.modifyShop(mvo.getId(), shopId, shop, goods, introduce);
             // async
-            asyncService.asyncAudit(mvo, "店铺修改审核,店铺ID:"+shopId);
+            asyncService.asyncAudit(mvo, "店铺修改审核,店铺ID:" + shopId);
             return new BaseResult<>();
         } else {
             return new BaseResult<>(14, "店铺已被认证");
@@ -254,31 +261,31 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> videoCentre(Integer type, Integer page) {
         MerchantVO vo = UserUtil.getMerchant();
-        if (vo==null) {
+        if (vo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         List<Integer> list = Lists.newArrayList();
-        if (type==0) {
+        if (type == 0) {
             // 全部：0、1、2、3
             list.add(0);
-            if (vo.getVipType()==3) {
+            if (vo.getVipType() == 3) {
                 list.add(1);
                 list.add(2);
                 list.add(3);
-            } else if (vo.getVipType()==2) {
+            } else if (vo.getVipType() == 2) {
                 list.add(1);
                 list.add(2);
-            } else if (vo.getVipType()==1) {
+            } else if (vo.getVipType() == 1) {
                 list.add(1);
             }
         } else {
-            if (type>vo.getVipType()) {
+            if (type > vo.getVipType()) {
                 return new BaseResult<>(16, "没有权限");
             }
             list.add(type);
         }
         int count = videoMapper.count(list);
-        if (count==0) {
+        if (count == 0) {
             return new BaseResult<>();
         }
         List<Video> data = videoMapper.videoList(list, GeneralUtil.indexPage(page));
@@ -288,29 +295,29 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> videoPlay(Integer id) {
         MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo==null) {
+        if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
 
         Video video = videoMapper.getVideo(id);
-        if (video==null) {
+        if (video == null) {
             return new BaseResult<>(12, "没有数据");
         }
         if (video.getLevel() > mvo.getVipType()) {
             return new BaseResult<>(13, "没有权限");
         }
-        String val = Constant.cloud_url+video.getPath();
+        String val = Constant.cloud_url + video.getPath();
         return new BaseResult<>(val);
     }
 
     @Override
     public BaseResult<?> merchantContractContent() {
         MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo==null) {
+        if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         MerchantSign merchantSign = merchantSignMapper.getOne(mvo.getId());
-        if (merchantSign==null) {
+        if (merchantSign == null) {
             return new BaseResult<>();
         }
         Merchant merchant = merchantMapper.getMerchant3(mvo.getId());
@@ -339,7 +346,7 @@ public class MerchantServiceImpl implements MerchantService {
         sign.setPerson(person);
         sign.setTax(tax);
 
-        if (id!=null) {
+        if (id != null) {
             sign.setId(id);
             merchantSignMapper.modifyOne(sign);
         } else {
@@ -367,7 +374,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantSignCreate(Integer type, String fee, Integer buyType) {
+    public BaseResult<?> merchantSignCreate(Integer type, Integer buyType) {
         MerchantVO mvo = UserUtil.getMerchant();
         // type 0-企业、1-个人
         if (type == null) {
@@ -376,7 +383,21 @@ public class MerchantServiceImpl implements MerchantService {
         if (type != 1 && type != 0) {
             return new BaseResult<>(14, "参数错误");
         }
+        if (buyType == null || buyType != 1 || buyType != 2 || buyType != 3) {
+            return new BaseResult<>(14, "参数错误");
+        }
 
+        String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);
+        String[] split = configStr.split(Constant.split2);
+        String[] s = split[2].split(Constant.split);
+        String fee;
+        if (buyType == 1) {
+            fee = s[0];
+        } else if (buyType == 2) {
+            fee = s[1];
+        } else {
+            fee = s[2];
+        }
         MerchantSign sign = merchantSignMapper.getSignMerchant(mvo.getId());
         JSONObject jo = new JSONObject();
         jo.put("type", type);

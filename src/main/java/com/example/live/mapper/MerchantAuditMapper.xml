@@ -49,7 +49,7 @@
         <if test="status==2">
             , remark = #{reason}
         </if>
-        where merchant_id=#{merchantId} and ope_user=#{opeUser}
+        where merchant_id=#{merchantId} and ope_user=#{opeUser} and ct = #{ct}
     </update>
 
 

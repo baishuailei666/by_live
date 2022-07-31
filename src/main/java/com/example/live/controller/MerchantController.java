@@ -156,14 +156,12 @@ public class MerchantController {
      * 商户电子签
      *
      * @param type 0-企业、1-个人
-     * @param fee 服务价格
      * @param buyType 服务版本 月卡-1、季卡-2、年卡-3
      * @return
      */
     @GetMapping("/sign/create")
-    public BaseResult<?> merchantSignCreate(@RequestParam("type") Integer type
-            , @RequestParam("fee") String fee, @RequestParam("buyType") Integer buyType) {
-        return merchantService.merchantSignCreate(type, fee, buyType);
+    public BaseResult<?> merchantSignCreate(@RequestParam("type") Integer type,@RequestParam("buyType") Integer buyType) {
+        return merchantService.merchantSignCreate(type, buyType);
     }
 
     /**
