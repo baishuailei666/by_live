@@ -1,8 +1,6 @@
 package com.example.live.single;
 
-import com.example.live.entity.Order;
 import com.example.live.mapper.*;
-import com.example.live.util.GeneralUtil;
 import com.example.live.vo.MerchantVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -24,8 +22,6 @@ public class AsyncService {
     @Autowired
     private MerchantMapper merchantMapper;
     @Autowired
-    private OrderMapper orderMapper;
-    @Autowired
     private AnchorMapper anchorMapper;
 
     @Async("asyncThread")
@@ -38,23 +34,14 @@ public class AsyncService {
     }
 
     @Async("asyncThread")
-    public void asyncMerchantLogin(int merchantId, int loginCount) {
+    public void asyncMerchantLoginOrder(int merchantId, int loginCount, int days, int curDays) {
         // 更新登录时间、登录次数
-        merchantMapper.updateLt(merchantId, loginCount + 1);
-        System.out.println("## asyncMerchantLogin");
-    }
-
-    @Async("asyncThread")
-    public void asyncMerchantOrder(int merchantId, int days) {
-        // 更新会员信息
-        Order order = orderMapper.getOrder1(merchantId);
-        if (order != null) {
-            int days2 = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
-            if (days2 < days && days2 > 0) {
-                merchantMapper.updateDays(merchantId, days2);
-            }
+        int val = curDays;
+        if (days<curDays) {
+            val = days;
         }
-        System.out.println("## asyncMerchantOrder");
+        merchantMapper.updateLt(merchantId, loginCount+1, val);
+        System.out.println("## asyncMerchantLogin");
     }
 
     @Async("asyncThread")

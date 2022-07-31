@@ -247,7 +247,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo.getId() != shop_merchant_id) {
             return new BaseResult<>(16, "删除失败,店铺ID不是当前商户");
         }
-        merchantMapper.modifyShop(mvo.getId(), null, null, null, null);
+        merchantMapper.modifyShop2(mvo.getId(), null, null, null, null, null);
         return new BaseResult<>();
     }
 

@@ -42,6 +42,11 @@ public interface MerchantMapper {
     void modifyShop(@Param("merchantId") int merchantId, @Param("shopId") String shopId
             , @Param("shop") String shop, @Param("goods") String goods, @Param("introduce") String introduce);
 
+    @Update("update merchant set shop_id=#{shopId}, shop=#{shop}, goods=#{goods}, introduce=#{introduce}, shop_status=#{shopStatus} where id=#{merchantId}")
+    void modifyShop2(@Param("merchantId") int merchantId, @Param("shopId") String shopId
+            , @Param("shop") String shop, @Param("goods") String goods, @Param("introduce") String introduce, @Param("shopStatus") String shopStatus);
+
+
     @Insert(" insert into merchant(mobile, pwd, ope_user, login_count, lt, ct) " +
             " values(#{mobile},#{pwd},#{opeUser}, 1, now(), now())")
     void creatMerchant(@Param("mobile") String mobile, @Param("pwd") String pwd, @Param("opeUser") Integer opeUser);
@@ -49,11 +54,8 @@ public interface MerchantMapper {
     @Select("select LAST_INSERT_ID()")
     int lastId();
 
-    @Update("update merchant set lt=now(), login_count=#{lc} where id=#{id}")
-    void updateLt(@Param("id") int id, @Param("lc") int lc);
-
-    @Update("update merchant set days=#{days} where id=#{id}")
-    void updateDays(@Param("id") int id, @Param("days") int days);
+    @Update("update merchant set lt=now(), login_count=#{lc} , days=#{days} where id=#{id}")
+    void updateLt(@Param("id") int id, @Param("lc") int lc, @Param("days") int days);
 
     @Update("update merchant set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);

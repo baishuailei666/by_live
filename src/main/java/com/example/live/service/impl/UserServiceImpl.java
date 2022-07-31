@@ -145,17 +145,18 @@ public class UserServiceImpl implements UserService {
         mvo.setShopStatus(merchant.getShopStatus());
         mvo.setLoginCount(merchant.getLoginCount()+1);
 
+        int days = 0;
+        int curDays = merchant.getDays();
         Order order = orderMapper.getOrder1(merchant.getId());
         if (order != null) {
-            mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
+            days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
+            mvo.setDays(days);
             mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
             mvo.setVipType(order.getBuyType());
         }
         session.setAttribute(Constant.session_user, mvo);
-        // 更新状态
-        asyncService.asyncMerchantLogin(merchant.getId(), merchant.getLoginCount());
-        // 更新会员
-        asyncService.asyncMerchantOrder(merchant.getId(), merchant.getDays());
+        // 更新状态、更新会员
+        asyncService.asyncMerchantLoginOrder(merchant.getId(), merchant.getLoginCount(), days, curDays);
         return new BaseResult<>(mvo);
     }
 
