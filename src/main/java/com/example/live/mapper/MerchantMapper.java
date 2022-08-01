@@ -12,6 +12,8 @@ import java.util.List;
 @Mapper
 public interface MerchantMapper {
 
+    List<Merchant> merchantSearch(@Param("keyword") String keyword);
+
     List<Merchant> merchantList(@Param("ids") List<Integer> ids);
 
     @Select("select m.id,m.mobile,m.pwd,m.shop_id as shopId, m.days, m.shop,m.ope_user as opeUser, " +

@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.live.mapper.MerchantMapper">
 
+    <select id="merchantSearch" resultType="com.example.live.entity.Merchant">
+        select id, mobile, shop
+        from merchant
+        where mobile like CONCAT('%',#{keyword},'%')
+        union
+        select id, mobile, shop
+        from merchant
+        where shop like CONCAT('%',#{keyword},'%')
+    </select>
+
     <select id="merchantList" resultType="com.example.live.entity.Merchant">
         select id, mobile, shop
         from merchant

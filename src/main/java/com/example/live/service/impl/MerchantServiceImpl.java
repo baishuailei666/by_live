@@ -107,6 +107,27 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public BaseResult<?> merchantSearch(String keyword) {
+        UserVO uvo = UserUtil.getUser();
+        if (uvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (uvo.getId()!=Constant.admin_id) {
+            return new BaseResult<>(13, "没有权限");
+        }
+        List<Merchant> list = merchantMapper.merchantSearch(keyword);
+        List<JSONObject> joList = Lists.newArrayList();
+        list.forEach(m ->{
+            JSONObject jo = new JSONObject();
+            jo.put("id", m.getId());
+            jo.put("shop", m.getShop());
+            jo.put("mobile", m.getMobile());
+            joList.add(jo);
+        });
+        return new BaseResult<>(joList);
+    }
+
+    @Override
     public BaseResult<?> merchantInfo() {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo == null) {

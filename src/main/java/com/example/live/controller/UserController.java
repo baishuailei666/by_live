@@ -138,6 +138,17 @@ public class UserController {
     }
 
     /**
+     * 查询商户id、手机号、店铺名称等
+     *
+     * @param keyword 手机号、店铺名称
+     * @return
+     */
+    @PostMapping("/user/merchant/search")
+    public BaseResult<?> merchantSearch(@RequestParam("keyword") String keyword) {
+        return merchantService.merchantSearch(keyword);
+    }
+
+    /**
      * 业务员-商户订单列表
      *
      * @param orderQuery start-查询时间开始、end-查询时间结束、page-1、mobile-商户手机号
