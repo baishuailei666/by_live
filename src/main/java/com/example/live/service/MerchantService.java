@@ -46,4 +46,6 @@ public interface MerchantService {
 
     BaseResult<?> merchantSignUrl(String flowId);
 
+    BaseResult<?> merchantSignStatus(String flowId);
+
 }

@@ -76,6 +76,10 @@ public class CloudSignUtil {
         String result = signProcess3(flowId);
         return signProcess4(flowId);
     }
+    // 签署状态
+    public boolean signStatus(String flowId) {
+        return signProcess5(flowId);
+    }
     // 合同文件下载
     public String signDown(String documentId) {
         return singFileDown(documentId);
@@ -360,6 +364,38 @@ public class CloudSignUtil {
             return null;
         }
     }
+
+    // 查询流程
+    // 返回：FlowStatus 流程状态
+    //- 1 未签署
+    //- 2 部分签署
+    //- 3 已退回
+    //- 4 完成签署
+    //- 5 已过期
+    //- 6 已取消
+    //注意：此字段可能返回 null，表示取不到有效值
+    public static boolean signProcess5(String flowId) {
+        boolean result = false;
+        try{
+            // 实例化一个请求对象,每个接口都会对应一个request对象
+            DescribeFlowBriefsRequest req = new DescribeFlowBriefsRequest();
+            String[] flowIds1 = {flowId};
+            req.setFlowIds(flowIds1);
+            req.setOperator(getUserInfo());
+            // 返回的resp是一个DescribeFlowBriefsResponse的实例，与请求对象对应
+            DescribeFlowBriefsResponse resp = essClient.DescribeFlowBriefs(req);
+            // 输出json格式的字符串回包
+            System.out.println(DescribeFlowBriefsResponse.toJsonString(resp));
+            Long flowStatus = resp.getFlowBriefs()[0].getFlowStatus();
+            if (flowStatus!=null && flowStatus==4) {
+                result = true;
+            }
+        } catch (TencentCloudSDKException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     // 文件下载
     public static String singFileDown(String documentId) {

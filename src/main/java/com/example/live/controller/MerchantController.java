@@ -175,4 +175,16 @@ public class MerchantController {
         return merchantService.merchantSignUrl(flowId);
     }
 
+    /**
+     * 商户电子签-获取签署状态
+     *
+     * @param flowId
+     * @return
+     */
+    @GetMapping("/sign/status")
+    public BaseResult<?> merchantSignStatus(@RequestParam("flowId") String flowId) {
+        return merchantService.merchantSignStatus(flowId);
+    }
+
+
 }

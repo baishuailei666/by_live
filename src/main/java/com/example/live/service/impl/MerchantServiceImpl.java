@@ -437,4 +437,13 @@ public class MerchantServiceImpl implements MerchantService {
         return new BaseResult<>(url);
     }
 
+    @Override
+    public BaseResult<?> merchantSignStatus(String flowId) {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        return new BaseResult<>(cloudSignUtil.signStatus(flowId));
+    }
+
 }

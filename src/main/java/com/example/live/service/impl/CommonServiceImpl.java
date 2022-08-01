@@ -228,6 +228,11 @@ public class CommonServiceImpl implements CommonService {
         if (StringUtils.isBlank(title) || level == null) {
             return new BaseResult<>(11, "参数不能为空");
         }
+        // 3*1024*1024*1024=3221225472
+        long g5 = 3L*1024*1024*1024;
+        if (file.getSize() > g5) {
+            return new BaseResult<>(13, "文件大小不能超过5G");
+        }
         String url = cloudCosUtil.uploadVideo(file);
         if (StringUtils.isNotBlank(url)) {
             videoMapper.insVideo(title, level, "/"+url);
