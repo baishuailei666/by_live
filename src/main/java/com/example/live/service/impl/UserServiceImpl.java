@@ -315,9 +315,14 @@ public class UserServiceImpl implements UserService {
 
         List<Order> data = orderMapper.orderList(query);
         List<Integer> ids = Lists.newArrayList();
-        data.forEach(o -> ids.add(o.getMerchantId()));
+        List<Integer> opeUserId = Lists.newArrayList();
+        data.forEach(o -> {ids.add(o.getMerchantId());opeUserId.add(o.getOpeUser());});
         List<Merchant> merchantList = merchantMapper.merchantList(ids);
         Map<Integer, Merchant> merchantMap = merchantList.stream().collect(Collectors.toMap(Merchant::getId, Function.identity(), (k1, k2) -> k2));
+        List<User> users = userMapper.userList2(opeUserId);
+        Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity(), (k1, k2) -> k2));
+
+
 
         List<OrderVO> voList = Lists.newLinkedList();
         data.forEach(o -> {
@@ -327,6 +332,10 @@ public class UserServiceImpl implements UserService {
             if (merchant != null) {
                 ovo.setMobile(merchant.getMobile());
                 ovo.setShop(merchant.getShop());
+            }
+            User user = userMap.get(o.getOpeUser());
+            if (user != null) {
+                ovo.setOpeUser(user.getId()+Constant.split3+user.getRemark()+Constant.split3+user.getMobile());
             }
             ovo.setPayStatus(Constant.pay_success.equals(o.getStatus()) ? "已支付" : "未支付");
             ovo.setBuyType1(Constant.buyTypeMap.get(o.getBuyType()));

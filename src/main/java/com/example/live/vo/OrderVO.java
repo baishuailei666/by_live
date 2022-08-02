@@ -22,7 +22,7 @@ public class OrderVO {
     // 金额
     private Double money;
     // 业务员
-    private Integer opeUser;
+    private String opeUser;
     // 支付类型：支付宝-1、微信-2、对公-3
     private String payType1;
     // 支付状态

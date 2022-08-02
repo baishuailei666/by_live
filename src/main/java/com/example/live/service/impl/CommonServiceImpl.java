@@ -228,6 +228,10 @@ public class CommonServiceImpl implements CommonService {
         if (StringUtils.isBlank(title) || level == null) {
             return new BaseResult<>(11, "参数不能为空");
         }
+        String filename = file.getResource().getFilename();
+        if (!GeneralUtil.videoFormat(filename)) {
+            return new BaseResult<>(15, "视频文件格式不正确");
+        }
         // 3*1024*1024*1024=3221225472
         long g5 = 3L*1024*1024*1024;
         if (file.getSize() > g5) {

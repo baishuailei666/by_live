@@ -102,9 +102,9 @@ public final class GeneralUtil {
     /**
      * 对字符加星号处理：除前面几位和后面几位外，其他的字符以星号代替
      *
-     * @param content 传入的字符串
+     * @param content  传入的字符串
      * @param frontNum 保留前面字符的位数
-     * @param endNum 保留后面字符的位数
+     * @param endNum   保留后面字符的位数
      * @return 带星号的字符串
      */
     public static String getStarString(String content, int frontNum, int endNum) {
@@ -126,7 +126,7 @@ public final class GeneralUtil {
     }
 
     //推广类目格式更改
-    public static String getCategory(String s){
+    public static String getCategory(String s) {
         StringBuilder category = new StringBuilder();
         if (StringUtils.isNotEmpty(s)) {
             String[] split = s.split(Constant.split2);
@@ -138,6 +138,29 @@ public final class GeneralUtil {
             category.deleteCharAt(category.length() - 1);
         }
         return category.toString();
+    }
+
+    //视频格式判断
+    public static Boolean videoFormat(String s) {
+        if (StringUtils.isEmpty(s)) {
+            return false;
+        }
+        if (!s.contains(".")) {
+            return false;
+        }
+        String[] split = s.split("\\.");
+        String format = split[split.length - 1];
+        switch (format) {
+            case "mp4":
+            case "avi":
+            case "flv":
+            case "mpg":
+            case "wmv":
+            case "ram":
+                return true;
+            default:
+                return false;
+        }
     }
 
 }
