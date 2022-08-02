@@ -439,7 +439,8 @@ public class MerchantServiceImpl implements MerchantService {
         contract.setBuyType(buyType);
         contract.setSignType(type);
         contract.setDocumentId(jo2.getString("documentId"));
-        contract.setDocumentName(jo.getString("filename"));
+        contract.setDocumentName(jo2.getString("filename"));
+        contract.setFlowId(jo2.getString("flowId"));
         contractMapper.insContract(contract);
         return new BaseResult<>(jo2);
     }

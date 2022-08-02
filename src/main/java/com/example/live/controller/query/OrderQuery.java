@@ -2,6 +2,8 @@ package com.example.live.controller.query;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 后台：订单列表查询
  *
@@ -15,7 +17,7 @@ public class OrderQuery {
     private String shop;
     private String start;
     private String end;
-    private Integer opeUser;
+    private List<Integer> opeUserIds;
     private String orderNo;
     // 购买类型：1-月卡、2-季卡、3-年卡
     private Integer buyType;

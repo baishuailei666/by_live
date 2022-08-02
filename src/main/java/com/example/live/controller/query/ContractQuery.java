@@ -2,6 +2,8 @@ package com.example.live.controller.query;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/14 10:42
@@ -17,6 +19,6 @@ public class ContractQuery {
     // 权益类型：月卡-1、季卡-2、年卡-3
     private Integer buyType;
     // 业务员
-    private Integer opeUser;
+    private List<Integer> opeUserIds;
     private Integer page;
 }

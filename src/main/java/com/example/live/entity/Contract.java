@@ -29,6 +29,8 @@ public class Contract {
     private String documentId;
     // 合同名称
     private String documentName;
+    // 签署合同flowId
+    private String flowId;
 
 
     /**

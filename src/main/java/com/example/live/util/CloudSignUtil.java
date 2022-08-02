@@ -3,6 +3,7 @@ package com.example.live.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
+import com.google.common.collect.Maps;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
@@ -11,6 +12,9 @@ import com.tencentcloudapi.ess.v20201111.EssClient;
 import com.tencentcloudapi.ess.v20201111.models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -396,6 +400,31 @@ public class CloudSignUtil {
         return result;
     }
 
+    public Map<String, String> signStatusMap(List<String> flowIds) {
+        if (flowIds==null || flowIds.size()==0) {
+            return null;
+        }
+        Map<String, String> map = Maps.newHashMap();
+        try{
+            // 实例化一个请求对象,每个接口都会对应一个request对象
+            DescribeFlowBriefsRequest req = new DescribeFlowBriefsRequest();
+            req.setFlowIds(flowIds.toArray(new String[0]));
+            req.setOperator(getUserInfo());
+            // 返回的resp是一个DescribeFlowBriefsResponse的实例，与请求对象对应
+            DescribeFlowBriefsResponse resp = essClient.DescribeFlowBriefs(req);
+            // 输出json格式的字符串回包
+            for (FlowBrief flowBrief:resp.getFlowBriefs()) {
+                String value = "未签";
+                if (flowBrief.getFlowStatus()!=null&&flowBrief.getFlowStatus()==4) {
+                    value = "已签";
+                }
+                map.put(flowBrief.getFlowId(), value);
+            }
+        } catch (TencentCloudSDKException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
 
     // 文件下载
     public static String singFileDown(String documentId) {

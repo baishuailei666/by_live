@@ -224,23 +224,29 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> uploadVideo(MultipartFile file, String title, Integer level) {
-        if (StringUtils.isBlank(title) || level == null) {
-            return new BaseResult<>(11, "参数不能为空");
-        }
-        String filename = file.getResource().getFilename();
+    public BaseResult<?> uploadVideo(MultipartFile file) {
+        String filename = file.getOriginalFilename();
         if (!GeneralUtil.videoFormat(filename)) {
             return new BaseResult<>(15, "视频文件格式不正确");
         }
         // 3*1024*1024*1024=3221225472
         long g5 = 3L*1024*1024*1024;
         if (file.getSize() > g5) {
-            return new BaseResult<>(13, "文件大小不能超过5G");
+            return new BaseResult<>(13, "文件大小不能超过3G");
         }
-        String url = cloudCosUtil.uploadVideo(file);
-        if (StringUtils.isNotBlank(url)) {
-            videoMapper.insVideo(title, level, "/"+url);
+        String path = cloudCosUtil.uploadVideo(file);
+        if (StringUtils.isBlank(path)) {
+            return new BaseResult<>(14, "视频上传失败");
         }
+        return new BaseResult<>(Constant.split4+path);
+    }
+
+    @Override
+    public BaseResult<?> uploadVideoParam(String path, String title, Integer level) {
+        if (!path.startsWith(Constant.split4)) {
+            path = Constant.split4+path;
+        }
+        videoMapper.insVideo(title, level, path);
         return new BaseResult<>();
     }
 

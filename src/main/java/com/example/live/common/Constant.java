@@ -37,6 +37,7 @@ public class Constant {
     public static final String split = ",";
     public static final String split2 = ";";
     public static final String split3 = "-";
+    public static final String split4 = "/";
     // 发送邮件主题
     public static final String email_subject = buy_subject+"-开票信息";
 

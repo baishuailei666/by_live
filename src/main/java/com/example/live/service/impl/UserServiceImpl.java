@@ -16,6 +16,7 @@ import com.example.live.vo.OrderVO;
 import com.example.live.vo.UserListVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -272,23 +271,29 @@ public class UserServiceImpl implements UserService {
         String mobile = jo.getString("mobile");
         String remark = jo.getString("remark");
         int level = jo.getIntValue("level");
+        UserVO u = UserUtil.getUser();
+        if (u==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (u.getLevel()>2) {
+            return new BaseResult<>(17, "没有权限");
+        }
 
         // 超级管理员-1、管理员（代理）-2、业务员-3
-        if (level > 3 || level < 1) {
-            return new BaseResult<>(16, "参数错误");
+        if (level != 2 && level != 3) {
+            return new BaseResult<>(16, "请求参数错误");
         }
         User user = userMapper.getUserMobile(mobile);
         if (user != null) {
-            return new BaseResult<>(11, "手机号已存在");
+            return new BaseResult<>(15, "手机号用户已存在");
         }
 
         userMapper.insUser(mobile, GeneralUtil.defaultPwd(), level, remark);
 
-        Integer loginUserId = UserUtil.getUserId();
-
         int userId = userMapper.lastId();
+
         // 用户从属关系
-        relationUserMapper.insRelation(loginUserId, userId);
+        relationUserMapper.insRelation(u.getId(), userId);
         return new BaseResult<>();
     }
 
@@ -307,6 +312,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResult<?> orderList(OrderQuery query) {
+        UserVO u = UserUtil.getUser();
+        if (u==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        List<Integer> opeUserIds = Lists.newArrayList();
+        if (u.getLevel()!=3) {
+            // 不是业务员级别
+            opeUserIds = commonService.opeUserIds(u.getId());
+        } else {
+            opeUserIds.add(u.getId());
+        }
+        query.setOpeUserIds(opeUserIds);
         int count = orderMapper.orderCount(query);
         if (count == 0) {
             return new BaseResult<>();
@@ -315,14 +332,15 @@ public class UserServiceImpl implements UserService {
 
         List<Order> data = orderMapper.orderList(query);
         List<Integer> ids = Lists.newArrayList();
-        List<Integer> opeUserId = Lists.newArrayList();
-        data.forEach(o -> {ids.add(o.getMerchantId());opeUserId.add(o.getOpeUser());});
+        Set<Integer> opeUserId = Sets.newHashSet();
+        data.forEach(o -> {
+            ids.add(o.getMerchantId());
+            opeUserId.add(o.getOpeUser());
+        });
         List<Merchant> merchantList = merchantMapper.merchantList(ids);
         Map<Integer, Merchant> merchantMap = merchantList.stream().collect(Collectors.toMap(Merchant::getId, Function.identity(), (k1, k2) -> k2));
-        List<User> users = userMapper.userList2(opeUserId);
+        List<User> users = userMapper.userList2(new ArrayList<>(opeUserId));
         Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity(), (k1, k2) -> k2));
-
-
 
         List<OrderVO> voList = Lists.newLinkedList();
         data.forEach(o -> {
@@ -335,7 +353,7 @@ public class UserServiceImpl implements UserService {
             }
             User user = userMap.get(o.getOpeUser());
             if (user != null) {
-                ovo.setOpeUser(user.getId()+Constant.split3+user.getRemark()+Constant.split3+user.getMobile());
+                ovo.setOpeUser(GeneralUtil.opeUserHandler(user.getId(), user.getRemark(), user.getMobile()));
             }
             ovo.setPayStatus(Constant.pay_success.equals(o.getStatus()) ? "已支付" : "未支付");
             ovo.setBuyType1(Constant.buyTypeMap.get(o.getBuyType()));
@@ -370,8 +388,6 @@ public class UserServiceImpl implements UserService {
     public BaseResult<?> opeUserMerchantOrderList(OrderQuery orderQuery) {
         // orderQuery start-查询时间开始、end-查询时间结束、page-1、mobile-商户手机号
         //  、shop-商户店铺、orderNo-订单号、buyType-购买类型 1-月卡、2-季卡、3-年卡
-        UserVO user = UserUtil.getUser();
-        orderQuery.setOpeUser(user.getId());
         return this.orderList(orderQuery);
     }
 

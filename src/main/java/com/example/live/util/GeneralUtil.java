@@ -163,4 +163,8 @@ public final class GeneralUtil {
         }
     }
 
+    public static String opeUserHandler(Integer id, String remark, String mobile) {
+        return id+Constant.split4+remark+Constant.split4+mobile;
+    }
+
 }

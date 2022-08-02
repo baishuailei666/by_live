@@ -10,7 +10,9 @@ import com.example.live.entity.User;
 import com.example.live.mapper.ContractMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.mapper.UserMapper;
+import com.example.live.service.CommonService;
 import com.example.live.service.ContractService;
+import com.example.live.single.AsyncService;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -42,9 +44,26 @@ public class ContractServiceImpl implements ContractService {
     private UserMapper userMapper;
     @Autowired
     private CloudSignUtil cloudSignUtil;
+    @Autowired
+    private CommonService commonService;
+    @Autowired
+    private AsyncService asyncService;
+
 
     @Override
     public BaseResult<?> contractList(ContractQuery query) {
+        UserVO u = UserUtil.getUser();
+        if (u==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        List<Integer> opeUserIds = Lists.newArrayList();
+        if (u.getLevel()!=3) {
+            // 不是业务员级别
+            opeUserIds = commonService.opeUserIds(u.getId());
+        } else {
+            opeUserIds.add(u.getId());
+        }
+        query.setOpeUserIds(opeUserIds);
         int count = contractMapper.contractCount(query);
         if (count==0) {
             return new BaseResult<>();
@@ -53,18 +72,24 @@ public class ContractServiceImpl implements ContractService {
         List<Contract> data = contractMapper.contractList(query);
         List<Integer> mids = Lists.newArrayList();
         List<Integer> uids = Lists.newArrayList();
+        List<String> flowIds = Lists.newArrayList();
         data.forEach(c -> {
             mids.add(c.getMerchantId());
             uids.add(c.getOpeUser());
+            if (c.getSignStatus()==0) {
+                flowIds.add(c.getFlowId());
+            }
         });
         List<User> userList = userMapper.userList2(uids);
         Map<Integer, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, Function.identity(), (k1, k2) -> k2));
         List<Merchant> merchantList = merchantMapper.merchantList(mids);
         Map<Integer, Merchant> merchantMap = merchantList.stream().collect(Collectors.toMap(Merchant::getId, Function.identity(), (k1, k2) -> k2));
+        Map<String, String> signMap = cloudSignUtil.signStatusMap(flowIds);
         List<ContractVO> voList = Lists.newLinkedList();
+
+        // 回写status=1
+        List<Integer> status1List = Lists.newArrayList();
         data.forEach(c ->{
-            Merchant merchant = merchantMap.get(c.getMerchantId());
-            User user = userMap.get(c.getOpeUser());
             ContractVO vo = new ContractVO();
             vo.setId(c.getId());
             vo.setBuyType(Constant.buyTypeMap.get(c.getBuyType()));
@@ -78,14 +103,25 @@ public class ContractServiceImpl implements ContractService {
             vo.setCompany(c.getSubject());
             vo.setOwner(c.getPerson());
             vo.setMerchantId(c.getMerchantId());
+            Merchant merchant = merchantMap.get(c.getMerchantId());
             if (merchant!=null) {
                 vo.setShop(merchant.getShop());
             }
+            User user = userMap.get(c.getOpeUser());
             if (user!=null) {
-                vo.setOpeUser(user.getId()+"/"+user.getRemark()+"/"+user.getMobile());
+                vo.setOpeUser(GeneralUtil.opeUserHandler(user.getId(), user.getRemark(), user.getMobile()));
+            }
+            if (signMap!=null) {
+                String val = signMap.getOrDefault(c.getFlowId(), "未签");
+                vo.setSignStatus(val);
+                if ("已签".equals(val)) {
+                    status1List.add(c.getId());
+                }
             }
             voList.add(vo);
         });
+        // async
+        asyncService.asyncSignStatusHandler(status1List);
         return new BaseResult<>(count, voList);
     }
 

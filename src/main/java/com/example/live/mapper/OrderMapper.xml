@@ -5,6 +5,12 @@
     <select id="orderCount" resultType="int" parameterType="com.example.live.controller.query.OrderQuery">
         select count(1) from `order`
         where 1=1
+        <if test="opeUserIds!=null and opeUserIds.size()!=0">
+            and ope_user in
+            <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="mobile!=null and mobile!=''">
             and merchant_id = (select m.id from merchant m where m.mobile=#{mobile})
         </if>
@@ -16,9 +22,6 @@
         </if>
         <if test="end!=null and end!=''">
             and ct &lt;= #{end}
-        </if>
-        <if test="opeUser!=null">
-            and ope_user=#{opeUser}
         </if>
         <if test="orderNo!=null and orderNo!=''">
             and order_no=#{orderNo}
@@ -41,6 +44,12 @@
              , buy_type, status, money, ope_user as opeUser, pay_type as payType, ct, ut
         from `order`
         where 1=1
+        <if test="opeUserIds!=null and opeUserIds.size()!=0">
+            and ope_user in
+            <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="mobile!=null and mobile!=''">
             and merchant_id = (select m.id from merchant m where m.mobile=#{mobile})
         </if>

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * 异步方法处理
  *
@@ -23,6 +25,9 @@ public class AsyncService {
     private MerchantMapper merchantMapper;
     @Autowired
     private AnchorMapper anchorMapper;
+    @Autowired
+    private ContractMapper contractMapper;
+
 
     @Async("asyncThread")
     public void asyncAudit(MerchantVO mvo, String note) {
@@ -36,10 +41,7 @@ public class AsyncService {
     @Async("asyncThread")
     public void asyncMerchantLoginOrder(int merchantId, int loginCount, int days, int curDays) {
         // 更新登录时间、登录次数
-        int val = curDays;
-        if (days<curDays) {
-            val = days;
-        }
+        int val = Math.min(days, curDays);
         merchantMapper.updateLt(merchantId, loginCount+1, val);
         System.out.println("## asyncMerchantLogin");
     }
@@ -51,6 +53,12 @@ public class AsyncService {
             anchorMapper.insertAnchor(merchantId, anchorId);
             System.out.println("## asyncInsertMerchantAnchor");
         }
+    }
+
+    @Async("asyncThread")
+    public void asyncSignStatusHandler(List<Integer> ids) {
+        contractMapper.updateStatus1(ids);
+        System.out.println("## asyncSignStatusHandler");
     }
 
 }
