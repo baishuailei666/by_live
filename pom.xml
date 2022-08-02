@@ -11,7 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>live</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>by_live</name>
+    <name>live-commerce</name>
     <description>【直播带货管理系统】</description>
     <properties>
         <java.version>1.8</java.version>

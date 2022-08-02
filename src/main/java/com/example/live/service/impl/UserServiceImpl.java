@@ -68,6 +68,9 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(mobile)) {
             return new BaseResult<>(11, "手机号不能未空");
         }
+        if (opeUser==null) {
+            opeUser = Constant.admin_id;
+        }
         if ("back".equals(source)) {
             // 后台管理系统
             String en = MD5Util.encode(pwd);

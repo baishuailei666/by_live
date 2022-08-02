@@ -8,6 +8,7 @@ import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.service.MerchantService;
 import com.example.live.single.AsyncService;
+import com.example.live.util.CloudCosUtil;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -20,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +36,6 @@ public class MerchantServiceImpl implements MerchantService {
     @Autowired
     private MerchantMapper merchantMapper;
     @Autowired
-    private MerchantAuditMapper merchantAuditMapper;
-    @Autowired
-    private ContentMapper contentMapper;
-    @Autowired
     private VideoMapper videoMapper;
     @Autowired
     private InvoiceMapper invoiceMapper;
@@ -53,7 +49,8 @@ public class MerchantServiceImpl implements MerchantService {
     private MerchantSignMapper merchantSignMapper;
     @Autowired
     private AsyncService asyncService;
-
+    @Autowired
+    private CloudCosUtil cloudCosUtil;
     @Autowired
     private DataConfigMapper dataConfigMapper;
 
@@ -328,8 +325,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (video.getLevel() > mvo.getVipType()) {
             return new BaseResult<>(13, "没有权限");
         }
-        String val = Constant.cloud_url + video.getPath();
-        return new BaseResult<>(val);
+        return new BaseResult<>(cloudCosUtil.signExpire(video.getPath()));
     }
 
     @Override

@@ -5,6 +5,8 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.auth.COSSigner;
+import com.qcloud.cos.http.HttpMethodName;
 import com.qcloud.cos.http.HttpProtocol;
 import com.qcloud.cos.model.*;
 import com.qcloud.cos.region.Region;
@@ -13,6 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author baishuailei@zhejianglab.com
@@ -69,6 +75,19 @@ public class CloudCosUtil {
             e.printStackTrace();
         }
         return key;
+    }
+
+    // 生成链接签名
+    public String signExpire(String key) {
+        // 设置签名过期时间(可选)，若未进行设置，则默认使用 ClientConfig 中的签名过期时间(1小时)
+        // 这里设置签名在2个小时后过期
+        Date expirationDate = new Date(System.currentTimeMillis() + 2L * 60L * 60L * 1000L);
+
+        // 请求的 HTTP 方法，上传请求用 PUT，下载请求用 GET，删除请求用 DELETE
+        HttpMethodName method = HttpMethodName.GET;
+
+        URL url = cosClient.generatePresignedUrl(bucket, key, expirationDate, method);
+        return url.toString();
     }
 
 
