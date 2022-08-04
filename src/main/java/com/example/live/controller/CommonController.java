@@ -8,6 +8,7 @@ import com.example.live.service.UserService;
 import com.example.live.util.ExcelUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.UserVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -120,15 +121,17 @@ public class CommonController {
     /**
      * 视频参数上传
      *
-     * @param path 视频路径
-     * @param title 视频标题
-     * @param level 视频类型：全部-0、月卡-1、季卡-2、年卡-3
      * @return
      */
     @PostMapping("/upload/videoParam")
-    public BaseResult<?> uploadVideoParam(@RequestParam("path") String path
-            , @RequestParam("title") String title, @RequestParam("level") Integer level) {
+    public BaseResult<?> uploadVideoParam(@RequestBody JSONObject jo) {
         UserVO u = UserUtil.getUser();
+        String path = jo.getString("path");//视频路径
+        String title = jo.getString("title");//视频标题
+        Integer level = jo.getInteger("level");//视频类型：全部-0、月卡-1、季卡-2、年卡-3
+        if (StringUtils.isEmpty(path)||StringUtils.isEmpty(title)||level==null) {
+            return new BaseResult<>(17, "参数错误，请重新填写");
+        }
         if (u!=null&&u.getId()==Constant.admin_id) {
             return commonService.uploadVideoParam(path, title, level);
         } else {

@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface MerchantMapper {
 
-    List<Merchant> merchantSearch(@Param("keyword") String keyword);
+    List<Merchant> merchantSearch();
 
     List<Merchant> merchantList(@Param("ids") List<Integer> ids);
 

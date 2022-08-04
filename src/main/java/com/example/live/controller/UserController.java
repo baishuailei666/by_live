@@ -140,12 +140,11 @@ public class UserController {
     /**
      * 查询商户id、手机号、店铺名称等
      *
-     * @param keyword 手机号、店铺名称
      * @return
      */
-    @PostMapping("/user/merchant/search")
-    public BaseResult<?> merchantSearch(@RequestParam("keyword") String keyword) {
-        return merchantService.merchantSearch(keyword);
+    @GetMapping("/user/merchant/search")
+    public BaseResult<?> merchantSearch() {
+        return merchantService.merchantSearch();
     }
 
     /**

@@ -18,7 +18,7 @@ public interface MerchantService {
      */
     BaseResult<?> getMerchantListByParams(JSONObject jo);
 
-    BaseResult<?> merchantSearch(String keyword);
+    BaseResult<?> merchantSearch();
 
     BaseResult<?> merchantInfo();
 

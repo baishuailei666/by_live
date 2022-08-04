@@ -107,7 +107,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantSearch(String keyword) {
+    public BaseResult<?> merchantSearch() {
         UserVO uvo = UserUtil.getUser();
         if (uvo==null) {
             return new BaseResult<>(BaseEnum.No_Login);
@@ -115,7 +115,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (uvo.getId()!=Constant.admin_id) {
             return new BaseResult<>(13, "没有权限");
         }
-        List<Merchant> list = merchantMapper.merchantSearch(keyword);
+        List<Merchant> list = merchantMapper.merchantSearch();
         List<JSONObject> joList = Lists.newArrayList();
         list.forEach(m ->{
             JSONObject jo = new JSONObject();

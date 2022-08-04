@@ -5,11 +5,6 @@
     <select id="merchantSearch" resultType="com.example.live.entity.Merchant">
         select id, mobile, shop
         from merchant
-        where mobile like CONCAT('%',#{keyword},'%')
-        union
-        select id, mobile, shop
-        from merchant
-        where shop like CONCAT('%',#{keyword},'%')
     </select>
 
     <select id="merchantList" resultType="com.example.live.entity.Merchant">

@@ -1,5 +1,9 @@
 package com.example.live.common;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +31,18 @@ public class Constant {
     // source：back-管理端、merchant-商户端
     public static final String source_back = "back";
     public static final String source_merchant = "merchant";
+
+    //临时文件存放的文件夹
+    public final static String TEMPORARY = "temporary";
+
+    //是否是Linux系统
+    public final static boolean IS_LINUX = System.getProperties().getProperty("os.name").equals("Linux");
+
+    //路径分隔符Linux
+    public final static String SEP_LINUX = "/";
+
+    //路径分隔符windows
+    public final static String SEP_WINDOWS = "\\";
 
     // 购买服务说明
     public static final String buy_subject = "直播推广服务";
@@ -142,6 +158,42 @@ public class Constant {
         auditStatusMap.put(0, "审核中");
         auditStatusMap.put(1, "已通过");
         auditStatusMap.put(2, "已拒绝");
+    }
+
+    /**
+     * 获取输出路径
+     * @param folderName 文件夹名称
+     * @return
+     */
+    public static File getCurrentPath(String folderName) {
+        File file = null;
+        File directory = new File("");//参数为空
+        String courseFile;
+        try {
+            courseFile = directory.getCanonicalPath();
+            String s;
+            if (StringUtils.isEmpty(folderName)) {
+                s = courseFile;
+            } else {
+                s = courseFile + separator() + folderName;//项目同级目录下路径
+            }
+            file = new File(s);//项目同级目录下路径
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
+
+    //获取分割符，根据系统类型自动返回
+    public static String separator() {
+        if (IS_LINUX) {
+            return SEP_LINUX;
+        } else {
+            return SEP_WINDOWS;
+        }
     }
 
 
