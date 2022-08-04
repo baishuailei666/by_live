@@ -1,17 +1,15 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 10.101.116.2（3308
  Source Server Type    : MySQL
  Source Server Version : 50736
- Source Host           : 10.101.116.2:3308
- Source Schema         : by_live
+ Source Schema         : commerce
 
  Target Server Type    : MySQL
  Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 31/07/2022 21:00:16
+ Date: 04/08/2022 15:44:48
 */
 
 SET NAMES utf8mb4;
@@ -42,8 +40,7 @@ CREATE TABLE `anchor`  (
   `avg_gmv` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '场均销售额：1k-5k',
   `price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '主推价格区间：0-50',
   `score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '带货口碑：4.09',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `id`(`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 249 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -76,6 +73,7 @@ CREATE TABLE `contract`  (
   `sign_type` tinyint(2) NULL DEFAULT NULL COMMENT '签署类型：0-企业签署、1-个人签署',
   `document_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '签署成功合同id，可用于下载查看等',
   `document_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '合同名称',
+  `flow_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '合同签署流程id',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -143,7 +141,7 @@ CREATE TABLE `merchant`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `mobile`(`mobile`) USING BTREE,
   INDEX `shop`(`shop`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for merchant_anchor
@@ -197,7 +195,7 @@ CREATE TABLE `mobile_code`  (
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ts` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for order
@@ -213,10 +211,12 @@ CREATE TABLE `order`  (
   `money` double(10, 2) NULL DEFAULT NULL COMMENT '金额',
   `ope_user` int(11) NULL DEFAULT NULL COMMENT '业务员',
   `pay_type` tinyint(2) NULL DEFAULT NULL COMMENT '支付类型：支付宝-1、微信-2、对公-3',
+  `flow_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '合同id',
   `ct` timestamp(0) NULL DEFAULT NULL COMMENT '支付订单时间',
   `ut` timestamp(0) NULL DEFAULT NULL COMMENT '支付成功时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `merchant_id`(`merchant_id`) USING BTREE
+  INDEX `merchant_id`(`merchant_id`) USING BTREE,
+  INDEX `ope_user`(`ope_user`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
