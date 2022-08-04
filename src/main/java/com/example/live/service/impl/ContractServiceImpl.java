@@ -17,10 +17,8 @@ import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.ContractVO;
-import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -127,8 +125,8 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public BaseResult<?> contractInfo(String id) {
-        MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo == null) {
+        UserVO uvo = UserUtil.getUser();
+        if (uvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         String url = cloudSignUtil.signDown(id);
@@ -137,8 +135,8 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public BaseResult<?> contractDown(String id) {
-        MerchantVO mvo = UserUtil.getMerchant();
-        if (mvo == null) {
+        UserVO uvo = UserUtil.getUser();
+        if (uvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         String url = cloudSignUtil.signDown(id);

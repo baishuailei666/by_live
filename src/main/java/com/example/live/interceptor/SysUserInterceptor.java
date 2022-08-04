@@ -7,6 +7,7 @@ import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,6 +72,9 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         // 免拦截接口直接请求返回
         if (apis_none.contains(path)) {
             return true;
+        }
+        if (StringUtils.isBlank(from)) {
+            from = Constant.source_back;
         }
 
 

@@ -39,8 +39,6 @@ public class CommonServiceImpl implements CommonService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private CommonService commonService;
-    @Autowired
     private CloudCosUtil cloudCosUtil;
     @Autowired
     private VideoMapper videoMapper;
@@ -208,10 +206,6 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public BaseResult<?> showPrices() {
-        MerchantVO merchant = UserUtil.getMerchant();
-        if (merchant == null) {
-            return new BaseResult<>(BaseEnum.No_Login);
-        }
         //展示价格，只有超管账号下才有月季年卡价格信息
         String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] split = configStr.split(Constant.split2);
@@ -225,6 +219,13 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public BaseResult<?> uploadVideo(MultipartFile file) {
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (user.getId() != Constant.admin_id) {
+            return new BaseResult<>(13, "您没有权限操作！");
+        }
         String filename = file.getOriginalFilename();
         if (!GeneralUtil.videoFormat(filename)) {
             return new BaseResult<>(15, "视频文件格式不正确");
@@ -243,6 +244,13 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public BaseResult<?> uploadVideoParam(String path, String title, Integer level) {
+        UserVO user = UserUtil.getUser();
+        if (user == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+        if (user.getId() != Constant.admin_id) {
+            return new BaseResult<>(13, "您没有权限操作！");
+        }
         if (!path.startsWith(Constant.split4)) {
             path = Constant.split4+path;
         }
