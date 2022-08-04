@@ -92,17 +92,17 @@ public class ContractServiceImpl implements ContractService {
         data.forEach(c ->{
             ContractVO vo = new ContractVO();
             vo.setId(c.getId());
-            vo.setBuyType(Constant.buyTypeMap.get(c.getBuyType()));
-            vo.setSignType(Constant.signTypeMap.get(c.getSignType()));
             vo.setCt(c.getCt());
             vo.setUt(c.getUt());
             vo.setTax(c.getTax());
-            vo.setDocumentId(c.getDocumentId());
-            vo.setDocumentName(c.getDocumentName());
+            vo.setOwner(c.getPerson());
             vo.setMobile(c.getMobile());
             vo.setCompany(c.getSubject());
-            vo.setOwner(c.getPerson());
             vo.setMerchantId(c.getMerchantId());
+            vo.setDocumentId(c.getDocumentId());
+            vo.setDocumentName(c.getDocumentName());
+            vo.setBuyType(Constant.buyTypeMap.get(c.getBuyType()));
+            vo.setSignType(Constant.signTypeMap.get(c.getSignType()));
             Merchant merchant = merchantMap.get(c.getMerchantId());
             if (merchant!=null) {
                 vo.setShop(merchant.getShop());
@@ -112,9 +112,9 @@ public class ContractServiceImpl implements ContractService {
                 vo.setOpeUser(GeneralUtil.opeUserHandler(user.getId(), user.getRemark(), user.getMobile()));
             }
             if (signMap!=null) {
-                String val = signMap.getOrDefault(c.getFlowId(), "未签");
-                vo.setSignStatus(val);
+                String val = signMap.get(c.getFlowId());
                 if ("已签".equals(val)) {
+                    vo.setSignStatus(val);
                     status1List.add(c.getId());
                 }
             }
