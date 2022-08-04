@@ -25,6 +25,11 @@ public final class GeneralUtil {
         DecimalFormat df = new DecimalFormat("0000");
         return df.format(random.nextInt(10000));
     }
+    public static String get6Random() {
+        Random random = new Random();
+        DecimalFormat df = new DecimalFormat("000000");
+        return df.format(random.nextInt(1000000));
+    }
 
     // 默认密码
     public static String defaultPwd() {

@@ -41,7 +41,7 @@ public class UserUtil {
     // 商户信息
     public static MerchantVO getMerchant() {
         Object obj = Objects.requireNonNull(RequestContextHolder.getRequestAttributes())
-                .getAttribute(Constant.session_user, 1);
+                .getAttribute(Constant.session_user2, 1);
         if (obj == null) {
             return null;
         }

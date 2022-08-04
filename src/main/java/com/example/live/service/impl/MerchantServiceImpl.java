@@ -92,12 +92,15 @@ public class MerchantServiceImpl implements MerchantService {
                 vo.setOpeUser(m.getOpeUser());
                 vo.setShopStatus(m.getShopStatus());
                 Order order = order1Map.get(m.getId());
-                int days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
-                vo.setDays(days);
+                if (order!=null) {
+                    vo.setShopStatus(m.getShopStatus()+"("+Constant.buyTypeMap.get(order.getBuyType())+")");
+                    int days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
+                    vo.setDays(days);
+                }
                 vo.setCt(m.getCt());
                 vo.setLt(m.getLt());
                 vo.setLoginCount(m.getLoginCount());
-                vo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
+                voList.add(vo);
             });
             return new BaseResult<>(count, voList);
         }
@@ -461,7 +464,11 @@ public class MerchantServiceImpl implements MerchantService {
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        return new BaseResult<>(cloudSignUtil.signStatus(flowId));
+        boolean sign = cloudSignUtil.signStatus(flowId);
+        if (sign) {
+           contractMapper.updateStatus2(flowId);
+        }
+        return new BaseResult<>();
     }
 
 }

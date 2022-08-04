@@ -62,9 +62,6 @@
         <if test="end!=null and end!=''">
             and ct &lt;= #{end}
         </if>
-        <if test="opeUser!=null">
-            and ope_user=#{opeUser}
-        </if>
         <if test="orderNo!=null and orderNo!=''">
             and order_no=#{orderNo}
         </if>

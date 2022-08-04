@@ -26,6 +26,8 @@ public class Order {
     // 支付类型：支付宝-1、微信-2、对公-3
     private int payType;
     private String status;
+    // 合同签署id
+    private String flowId;
     // 支付下单时间
     private String ct;
     // 支付成功时间

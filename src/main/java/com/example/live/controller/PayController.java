@@ -73,7 +73,7 @@ public class PayController {
      * 支付宝
      */
     @RequestMapping("/ali")
-    public void aliPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+    public void aliPay(Integer type, String flowId, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo ==null) {
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
@@ -112,7 +112,7 @@ public class PayController {
             // 无效的请求参数
             httpResponse.setContentType("text/html;charset=" + Constant.charset);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 10);
+            jsonObject.put("code", 11);
             jsonObject.put("data", null);
             jsonObject.put("status", 200);
             jsonObject.put("msg", "无效的请求参数");
@@ -121,11 +121,12 @@ public class PayController {
             httpResponse.getWriter().close();
             return;
         }
-//        totalAmount = "0.01";
+        totalAmount = "0.01";
 
         Order order = new Order();
-        order.setPayType(1);
         order.setBuyType(type);
+        order.setPayType(1);
+        order.setFlowId(flowId);
         order.setOrderNo(outTradeNo);
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());
@@ -253,7 +254,7 @@ public class PayController {
      * 微信
      */
     @RequestMapping("/wx")
-    public <T> T wxPay(Integer type, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, WxPayException {
+    public <T> T wxPay(Integer type, String flowId, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, WxPayException {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo ==null) {
             JSONObject jsonObject = new JSONObject();
@@ -301,6 +302,7 @@ public class PayController {
         Order order = new Order();
         order.setPayType(2);
         order.setBuyType(type);
+        order.setFlowId(flowId);
         order.setOrderNo(outTradeNo);
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());

@@ -19,7 +19,8 @@ public class Constant {
     // session最大过期时间
     public static final int interval = 3600;
 
-    public static final String session_user = "system_user";
+    public static final String session_user = "back_user";
+    public static final String session_user2 = "merchant_user";
     // 默认密码
     public static final String defaultPwd = "123456";
 

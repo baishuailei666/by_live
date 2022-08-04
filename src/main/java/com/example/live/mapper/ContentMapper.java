@@ -17,7 +17,7 @@ import java.util.List;
 public interface ContentMapper {
 
     // 查询3s内的消息
-    @Select("select count(1) from `content` where type=3 and rid=#{id} and ts between date_add(now(), interval - 3 second) and now() ")
+    @Select("select count(1) from `content` where type=3 and rid=#{id} and ts between date_add(now(), interval - 5 second) and now() ")
     int getMsg3(@Param("id") Integer id);
 
     @Insert("insert into `content`(oid, rid, note, type) values(#{oid}, #{rid}, #{note}, #{type})")

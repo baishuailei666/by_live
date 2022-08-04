@@ -79,7 +79,7 @@ public interface MerchantMapper {
      * @return
      */
     @Select({"<script>" +
-            " SELECT id,mobile,shop,shop_id,shop_status as shopStatus,ope_user as opeUser,days,login_count,lt,ct FROM `merchant` "
+            " SELECT id,mobile,shop,shop_id as shopId,shop_status as shopStatus,ope_user as opeUser,days,login_count,lt,ct FROM `merchant` "
             + " <where>"
             + " ope_user = #{opeUserId}"
             + " <if test=' mobile != null and mobile != \"\"' > AND mobile = #{mobile}</if>"

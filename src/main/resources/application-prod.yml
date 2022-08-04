@@ -1,5 +1,8 @@
 server:
-  port: 8081
+#  back
+#  port: 8081
+#  merchant
+  port: 8089
   servlet:
     session:
       timeout: 60m

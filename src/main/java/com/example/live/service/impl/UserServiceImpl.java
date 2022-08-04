@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                     mvo.setCt(ts);
                     mvo.setLt(ts);
 
-                    session.setAttribute(Constant.session_user, mvo);
+                    session.setAttribute(Constant.session_user2, mvo);
                     return new BaseResult<>(mvo);
                 }
             }
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
             mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
             mvo.setVipType(order.getBuyType());
         }
-        session.setAttribute(Constant.session_user, mvo);
+        session.setAttribute(Constant.session_user2, mvo);
         // 更新状态、更新会员
         asyncService.asyncMerchantLoginOrder(merchant.getId(), merchant.getLoginCount(), days, curDays);
         return new BaseResult<>(mvo);

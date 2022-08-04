@@ -2,8 +2,7 @@ package com.example.live.mapper;
 
 import com.example.live.controller.query.ContractQuery;
 import com.example.live.entity.Contract;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -23,5 +22,8 @@ public interface ContractMapper {
     List<Contract> contractList(ContractQuery query);
 
     void updateStatus1(List<Integer> ids);
+
+    @Update("update contract set sign_status=1 where flow_id=#{flowId}")
+    void updateStatus2(@Param("flowId") String flowId);
 
 }

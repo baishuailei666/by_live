@@ -37,11 +37,17 @@ public class TimerTask {
     private OrderMapper orderMapper;
 
 
+    private boolean execHandler() {
+        return false;
+    }
 
     // 每天23:30进行数据资源分配
     @Scheduled(cron = "0 30 23 * * ?")
 //    @Scheduled(cron = "0/30 * * * * ?")
     public void resourceHandler() {
+        if (!execHandler()) {
+            return;
+        }
         // 资源池
         List<ResourceMerchant> data = resourceMerchantMapper.taskResource();
         if (data.size()!=0) {
@@ -115,6 +121,10 @@ public class TimerTask {
     // 每月最后一天的23:30分执行 28-31，考虑到了每月最短和最长的天数
     @Scheduled(cron = "0 30 23 28-31 * ?")
     public void clearMobileCode() {
+        if (!execHandler()) {
+            return;
+        }
+
         // 已失效的验证码
         mobileCodeMapper.clear();
 

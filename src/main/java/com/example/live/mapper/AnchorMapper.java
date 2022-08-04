@@ -18,7 +18,7 @@ public interface AnchorMapper {
     void clear();
 
     @Select("select id, nickname, img, author_id as authorId, gender, level, fans, url" +
-            ", category, goods, sales, introduce, live, live_day as liveDay, view, avg_dur as avgDur" +
+            ", category, goods, sales, introduce, live, live_day as liveDay, view, avg_gmv as avgGmv, avg_dur as avgDur" +
             ", rate, price, score from anchor where id=#{id}")
     Anchor anchorInfo(@Param("id") Integer id);
 
