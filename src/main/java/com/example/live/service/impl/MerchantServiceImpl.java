@@ -256,14 +256,15 @@ public class MerchantServiceImpl implements MerchantService {
 
         Integer ex = merchantMapper.existShop(shopId);
         if (ex != null && ex == mvo.getId()) {
+            return new BaseResult<>(14, "店铺已被认证");
+        } else {
             // 店铺修改
             merchantMapper.modifyShop(mvo.getId(), shopId, shop, goods, introduce);
             // async
             asyncService.asyncAudit(mvo, "店铺修改审核,店铺ID:" + shopId);
             return new BaseResult<>();
-        } else {
-            return new BaseResult<>(14, "店铺已被认证");
         }
+
     }
 
     @Override

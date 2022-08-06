@@ -21,7 +21,7 @@ public interface MerchantMapper {
             " where m.mobile=#{mobile}")
     Merchant getMerchant1(@Param("mobile") String mobile);
 
-    @Select("select m.id,m.mobile,m.shop_id as shopId, m.shop,m.introduce,ma.status as auditStatus,ma.remark as auditRemark from merchant m" +
+    @Select("select m.id,m.mobile,m.shop_id as shopId, m.shop,m.goods as goods,m.introduce,ma.status as auditStatus,ma.remark as auditRemark from merchant m" +
             " left join merchant_audit ma on ma.merchant_id=m.id" +
             " where m.id=#{id} order by ma.ct desc limit 1")
     Merchant getMerchant2(@Param("id") int id);
