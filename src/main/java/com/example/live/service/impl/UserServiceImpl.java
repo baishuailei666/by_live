@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(mobile)) {
             return new BaseResult<>(11, "手机号不能未空");
         }
-        if (opeUser==null) {
+        if (opeUser == null) {
             opeUser = Constant.admin_id;
         }
         if ("back".equals(source)) {
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                     mvo.setCt(ts);
                     mvo.setLt(ts);
                     User user = userMapper.getUser2(opeUser);
-                    if (user!=null) {
+                    if (user != null) {
                         mvo.setOpeUserRemark(user.getRemark());
                         mvo.setOpeUserWx(user.getWx());
                     }
@@ -153,9 +153,9 @@ public class UserServiceImpl implements UserService {
         mvo.setShopId(merchant.getShopId());
         mvo.setOpeUser(merchant.getOpeUser());
         mvo.setShopStatus(merchant.getShopStatus());
-        mvo.setLoginCount(merchant.getLoginCount()+1);
+        mvo.setLoginCount(merchant.getLoginCount() + 1);
         User user = userMapper.getUser2(merchant.getOpeUser());
-        if (user!=null) {
+        if (user != null) {
             mvo.setOpeUserRemark(user.getRemark());
             mvo.setOpeUserWx(user.getWx());
         }
@@ -282,10 +282,10 @@ public class UserServiceImpl implements UserService {
         String remark = jo.getString("remark");
         int level = jo.getIntValue("level");
         UserVO u = UserUtil.getUser();
-        if (u==null) {
+        if (u == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        if (u.getLevel()>2) {
+        if (u.getLevel() > 2) {
             return new BaseResult<>(17, "没有权限");
         }
 
@@ -323,19 +323,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> orderList(OrderQuery query) {
         UserVO u = UserUtil.getUser();
-        if (u==null) {
+        if (u == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
         List<Integer> opeUserIds = Lists.newArrayList();
-        if (u.getLevel()!=3) {
+        if (u.getLevel() != 3) {
             // 不是业务员级别
             opeUserIds = commonService.opeUserIds(u.getId());
         }
 
         //业务员查询条件
         String opeUser = query.getOpeUser();
-//        opeUserIds.add(u.getId());
-        List<Integer> userLikeRemark = userMapper.getUserLikeRemark(opeUser,opeUserIds);
+        if (opeUserIds == null || opeUserIds.size() == 0) {
+            opeUserIds.add(u.getId());
+        }
+        List<Integer> userLikeRemark = userMapper.getUserLikeRemark(opeUser, opeUserIds);
         query.setOpeUserIds(userLikeRemark);
 //        query.setOpeUserIds(opeUserIds);
         int count = orderMapper.orderCount(query);
