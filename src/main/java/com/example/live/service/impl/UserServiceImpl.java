@@ -331,8 +331,13 @@ public class UserServiceImpl implements UserService {
             // 不是业务员级别
             opeUserIds = commonService.opeUserIds(u.getId());
         }
-        opeUserIds.add(u.getId());
-        query.setOpeUserIds(opeUserIds);
+
+        //业务员查询条件
+        String opeUser = query.getOpeUser();
+//        opeUserIds.add(u.getId());
+        List<Integer> userLikeRemark = userMapper.getUserLikeRemark(opeUser,opeUserIds);
+        query.setOpeUserIds(userLikeRemark);
+//        query.setOpeUserIds(opeUserIds);
         int count = orderMapper.orderCount(query);
         if (count == 0) {
             return new BaseResult<>();

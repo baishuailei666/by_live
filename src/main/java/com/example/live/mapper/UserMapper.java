@@ -46,5 +46,12 @@ public interface UserMapper {
     @Select("select id from `user` where level=2")
     List<Integer> level2User();
 
+//    @Select("select id,level from `user` where remark like concat('%',#{remark},'%') " +
+//            "union " +
+//            "select id,level from `user` where id = #{remark} " +
+//            "union " +
+//            "select id,level from `user` where mobile = #{remark}")
+    List<Integer> getUserLikeRemark(@Param("keyword") String keyword,@Param("list")List<Integer> list);
+
 
 }

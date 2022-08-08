@@ -18,7 +18,7 @@
             in (select child_user_id from relation_user where main_user_id=#{agentUser})
         </if>
         <if test="agentUser==null">
-             is not null and id != 11
+            is not null and id != 11
         </if>
 
         <if test="keyword!=null and keyword!=''">
@@ -40,6 +40,44 @@
 
         <if test="keyword!=null and keyword!=''">
             and mobile LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <select id="getUserLikeRemark" resultType="int">
+        select id from `user`
+        where 1=1
+        <if test="keyword!=null and keyword!=''">
+            and id = #{keyword}
+        </if>
+        <if test="list != null and list.size()!=0">
+            and id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        union
+        select id from `user`
+        where 1=1
+        <if test="keyword!=null and keyword!=''">
+            and remark like concat('%',#{keyword},'%')
+        </if>
+        <if test="list != null and list.size()!=0">
+            and id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        union
+        select id from `user`
+        where 1=1
+        <if test="keyword!=null and keyword!=''">
+            and mobile = #{keyword}
+        </if>
+        <if test="list != null and list.size()!=0">
+            and id in
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
     </select>
 

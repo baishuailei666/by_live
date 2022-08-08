@@ -111,8 +111,8 @@ public class UserController {
      * @param query
      * @return
      */
-    @GetMapping("/order")
-    public BaseResult<?> orderList(OrderQuery query) {
+    @PostMapping("/order")
+    public BaseResult<?> orderList(@RequestBody OrderQuery query) {
         return userService.orderList(query);
     }
 
