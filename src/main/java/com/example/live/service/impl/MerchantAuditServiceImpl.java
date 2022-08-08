@@ -5,6 +5,7 @@ import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.User;
+import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
 import com.example.live.service.MerchantAuditService;
@@ -28,9 +29,10 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Autowired
     private MerchantAuditMapper merchantAuditMapper;
-
     @Autowired
     private MerchantMapper merchantMapper;
+    @Autowired
+    private ContentMapper contentMapper;
 
     @Override
     public BaseResult<?> audits(JSONObject jo) {
@@ -68,9 +70,11 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         }
         merchantAuditMapper.updateMerchantAudit(id, merchantId, status, reason);
         if (status==1) {
+            reason = "恭喜您，您的店铺审核通过!";
             // 更新merchant表
             merchantMapper.updateMerchantCheck(merchantId);
         }
+        contentMapper.insContent(GeneralUtil.parseInt(merchantId), id, reason, 3);
         return new BaseResult<>();
     }
 

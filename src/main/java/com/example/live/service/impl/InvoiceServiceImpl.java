@@ -45,9 +45,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (user.getLevel()!=3) {
             // 不是业务员级别
             opeUserIds = commonService.opeUserIds(user.getId());
-        } else {
-            opeUserIds.add(user.getId());
         }
+        opeUserIds.add(user.getId());
         invoiceQuery.setIds(opeUserIds);
         invoiceQuery.setPage(GeneralUtil.indexPage(invoiceQuery.getPage()));
 

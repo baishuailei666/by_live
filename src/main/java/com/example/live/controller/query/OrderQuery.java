@@ -17,6 +17,7 @@ public class OrderQuery {
     private String shop;
     private String start;
     private String end;
+
     private List<Integer> opeUserIds;
     private String orderNo;
     // 购买类型：1-月卡、2-季卡、3-年卡

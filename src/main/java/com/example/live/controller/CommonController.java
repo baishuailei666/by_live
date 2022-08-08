@@ -150,7 +150,7 @@ public class CommonController {
     }
 
     /**
-     * 消息通知：1.5s轮询
+     * 消息通知：5s轮询
      *
      * @param source 后台-back、商户端-merchant
      * @return

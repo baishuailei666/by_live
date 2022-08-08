@@ -133,6 +133,12 @@ public class Constant {
         signTypeMap.put(0, "企业签署");
         signTypeMap.put(1, "个人签署");
     }
+    public static Map<Integer, String> signStatusMap;
+    static {
+        signStatusMap = new HashMap<>();
+        signStatusMap.put(0, "未签");
+        signStatusMap.put(1, "已签");
+    }
 
     // 未开-0、已开-1、驳回-2
     public static Map<Integer, String> invoiceStatusMap;

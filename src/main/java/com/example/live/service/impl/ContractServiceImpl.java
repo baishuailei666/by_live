@@ -58,9 +58,8 @@ public class ContractServiceImpl implements ContractService {
         if (u.getLevel()!=3) {
             // 不是业务员级别
             opeUserIds = commonService.opeUserIds(u.getId());
-        } else {
-            opeUserIds.add(u.getId());
         }
+        opeUserIds.add(u.getId());
         query.setOpeUserIds(opeUserIds);
         int count = contractMapper.contractCount(query);
         if (count==0) {
@@ -101,6 +100,7 @@ public class ContractServiceImpl implements ContractService {
             vo.setDocumentName(c.getDocumentName());
             vo.setBuyType(Constant.buyTypeMap.get(c.getBuyType()));
             vo.setSignType(Constant.signTypeMap.get(c.getSignType()));
+            vo.setSignStatus(Constant.signStatusMap.get(c.getSignStatus()));
             Merchant merchant = merchantMap.get(c.getMerchantId());
             if (merchant!=null) {
                 vo.setShop(merchant.getShop());

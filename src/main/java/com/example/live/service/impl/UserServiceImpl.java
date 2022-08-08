@@ -118,6 +118,11 @@ public class UserServiceImpl implements UserService {
                     mvo.setLoginCount(1);
                     mvo.setCt(ts);
                     mvo.setLt(ts);
+                    User user = userMapper.getUser2(opeUser);
+                    if (user!=null) {
+                        mvo.setOpeUserRemark(user.getRemark());
+                        mvo.setOpeUserWx(user.getWx());
+                    }
 
                     session.setAttribute(Constant.session_user2, mvo);
                     return new BaseResult<>(mvo);
@@ -149,6 +154,11 @@ public class UserServiceImpl implements UserService {
         mvo.setOpeUser(merchant.getOpeUser());
         mvo.setShopStatus(merchant.getShopStatus());
         mvo.setLoginCount(merchant.getLoginCount()+1);
+        User user = userMapper.getUser2(merchant.getOpeUser());
+        if (user!=null) {
+            mvo.setOpeUserRemark(user.getRemark());
+            mvo.setOpeUserWx(user.getWx());
+        }
 
         int days = 0;
         int curDays = merchant.getDays();
@@ -320,9 +330,8 @@ public class UserServiceImpl implements UserService {
         if (u.getLevel()!=3) {
             // 不是业务员级别
             opeUserIds = commonService.opeUserIds(u.getId());
-        } else {
-            opeUserIds.add(u.getId());
         }
+        opeUserIds.add(u.getId());
         query.setOpeUserIds(opeUserIds);
         int count = orderMapper.orderCount(query);
         if (count == 0) {

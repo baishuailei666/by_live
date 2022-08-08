@@ -26,6 +26,8 @@ public class ContractController {
 
     @Autowired
     private ContractService contractService;
+    @Autowired
+    private CloudSignUtil cloudSignUtil;
 
     /**
      * 合同列表
@@ -37,11 +39,6 @@ public class ContractController {
     public BaseResult<?> contractList(@RequestBody ContractQuery query) {
         return contractService.contractList(query);
     }
-
-
-    @Autowired
-    private CloudSignUtil cloudSignUtil;
-
 
     /**
      * 合同预览（合同详情）

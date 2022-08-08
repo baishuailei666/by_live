@@ -112,9 +112,9 @@ public class MerchantServiceImpl implements MerchantService {
         if (uvo==null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        if (uvo.getId()!=Constant.admin_id) {
-            return new BaseResult<>(13, "没有权限");
-        }
+//        if (uvo.getId()!=Constant.admin_id) {
+//            return new BaseResult<>(13, "没有权限");
+//        }
         List<Merchant> list = merchantMapper.merchantSearch();
         List<JSONObject> joList = Lists.newArrayList();
         list.forEach(m ->{
