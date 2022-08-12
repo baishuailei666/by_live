@@ -3,6 +3,7 @@ package com.example.live.single;
 import com.example.live.entity.RelationUser;
 import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.*;
+import com.example.live.util.GeneralUtil;
 import com.example.live.vo.MerchantVO;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class AsyncService {
         // 资源池
         List<ResourceMerchant> data = resourceMerchantMapper.taskResource();
         if (data.size()!=0) {
-            // 管理员以上用户
+            // 管理员以上用户 level<=2
             List<Integer> ids = userMapper.level2User();
             if (ids.size()!=0) {
                 List<RelationUser> list = relationUserMapper.relationUserList(ids);
@@ -85,51 +86,58 @@ public class AsyncService {
                 // 管理员所属商户资源
                 Map<Integer, List<ResourceMerchant>> agentResourceMap = data.stream().collect(Collectors.groupingBy(ResourceMerchant::getAgentUser));
                 ids.forEach(agent ->{
+                    // 业务员
                     List<RelationUser> list1 = agentMap.getOrDefault(agent, null);
-                    if (list1==null || list1.size()==0) {
-                        // 发送邮件
-                        System.out.println("#管理员所属的业务员为空,agent:"+agent);
-                        return;
-                    }
+                    // 资源数据
                     List<ResourceMerchant> list2 = agentResourceMap.getOrDefault(agent, null);
-                    if (list2==null || list2.size()==0) {
-                        // 发送邮件
-                        System.out.println("#管理员所属商户资源为空,agent:"+agent);
-                        return;
-                    }
-                    // 计算商户资源、业务员的分配系数
-                    int coe = list2.size() / list1.size();
-                    if (coe<5) {
-                        list2.forEach(rm -> rm.setOpeUser(list1.get(0).getChildUserId()));
-                        resourceMerchantMapper.taskDistribution(list2);
-                        System.out.println("#数据过少默认分配给第一个业务员");
-                        return;
-                    }
-                    List<ResourceMerchant> list4 = Lists.newArrayList();
-                    for (int i=0; i<list1.size(); i++) {
-                        int s = i*coe;
-                        int e = (i+1)*coe;
-                        if (e>=list2.size()) {
-                            e = list2.size();
+
+                    if (list1!=null&&list1.size()!=0 && list2!=null&&list2.size()!=0) {
+                        // 计算商户资源、业务员的分配系数
+                        int coe = list2.size() / list1.size();
+                        if (coe<5) {
+                            list2.forEach(rm -> rm.setOpeUser(list1.get(0).getChildUserId()));
+                            resourceMerchantMapper.taskDistribution(list2);
+                            System.out.println("# asyncResourceHandler:数据过少默认分配给第一个业务员");
+                        } else {
+                            // 方法一：随机分
+                            list2.forEach(rm -> {
+                                int i = GeneralUtil.getIntRandom(list1.size());
+                                rm.setOpeUser(list1.get(i).getChildUserId());
+                            });
+                            resourceMerchantMapper.taskDistribution(list2);
+
+
+//                              // 方法二：数组索引分+随机分
+//                            List<ResourceMerchant> list4 = Lists.newArrayList();
+//                            for (int i=0; i<list1.size(); i++) {
+//                                int s = i*coe;
+//                                int e = (i+1)*coe;
+//                                if (e>=list2.size()) {
+//                                    e = list2.size();
+//                                }
+//
+//                                List<ResourceMerchant> list3 = list2.subList(s, e);
+//
+//                                RelationUser ru = list1.get(i);
+//                                list3.forEach(rm -> rm.setOpeUser(ru.getChildUserId()));
+//                                list4.addAll(list3);
+//                                // 需要添加 &allowMultiQueries=true
+//                                resourceMerchantMapper.taskDistribution(list3);
+//                            }
+//
+//                            // 未分配的资源重新进行分配
+//                            list2.retainAll(list4);
+//                            // 避免出现未分配的资源
+//                            if (list2.size()!=0) {
+//                                list2.forEach(rm -> {
+//                                    int i = GeneralUtil.getIntRandom(list1.size());
+//                                    rm.setOpeUser(list1.get(i).getChildUserId());
+//                                });
+//                                resourceMerchantMapper.taskDistribution(list2);
+//                            }
                         }
-
-                        List<ResourceMerchant> list3 = list2.subList(s, e);
-
-                        RelationUser ru = list1.get(i);
-                        list3.forEach(rm -> rm.setOpeUser(ru.getChildUserId()));
-                        // 需要添加 &allowMultiQueries=true
-                        resourceMerchantMapper.taskDistribution(list3);
-
-                        list3.forEach(r ->{
-                            if (r.getOpeUser()==null) {
-                                list4.add(r);
-                            }
-                        });
                     }
-                    // 避免出现未分配的资源
-                    if (list4.size()!=0) {
-                        resourceMerchantMapper.taskDistribution(list4);
-                    }
+
                 });
             }
         }

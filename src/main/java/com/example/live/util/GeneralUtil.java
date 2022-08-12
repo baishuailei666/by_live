@@ -16,7 +16,7 @@ public final class GeneralUtil {
 
     public static void main(String[] args) throws Exception {
         System.out.println("***GeneralUtil main***");
-
+        System.out.println(getIntRandom(13));
     }
 
     // 获取4位随机数
@@ -29,6 +29,13 @@ public final class GeneralUtil {
         Random random = new Random();
         DecimalFormat df = new DecimalFormat("000000");
         return df.format(random.nextInt(1000000));
+    }
+    public static int getIntRandom(int len) {
+        int i = (int)(Math.random()*(len +1));
+        if (i>=len) {
+            return getIntRandom(len-1);
+        }
+        return i;
     }
 
     // 默认密码

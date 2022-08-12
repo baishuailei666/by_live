@@ -43,7 +43,7 @@ public interface UserMapper {
     void delUser(@Param("id") Integer id);
 
     // 管理员（代理）-2
-    @Select("select id from `user` where level=2")
+    @Select("select id from `user` where level<=2")
     List<Integer> level2User();
 
 //    @Select("select id,level from `user` where remark like concat('%',#{remark},'%') " +
