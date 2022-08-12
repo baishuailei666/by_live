@@ -67,10 +67,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
             throws IOException {
         String path = request.getServletPath();
         String from = request.getHeader("from");
-        System.out.println("path:" + path + ",from:"+from);
 
         // 免拦截接口直接请求返回
         if (apis_none.contains(path)) {
+            System.out.println("## path:" + path + ", from:"+from);
             return true;
         }
         if (StringUtils.isBlank(from)) {
@@ -97,6 +97,9 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         if (user==null) {
             return handleNoLogin(request, response);
         }
+        String from = request.getHeader("from");
+        System.out.println("## path:" + path + ", from:"+from +", user:"+user.getId());
+
         // 超级管理员独有权限
         if (apis_admin11.contains(path) && user.getLevel()!=1) {
             handleResponse(request, response, 21, "没有操作权限");
@@ -110,6 +113,9 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         if (mvo==null) {
             return handleNoLogin(request, response);
         }
+        String from = request.getHeader("from");
+        System.out.println("## path:" + path + ", from:"+from +", merchant:"+mvo.getId());
+
         if (apis_admin11.contains(path)) {
             handleResponse(request, response, 21, "没有操作权限");
             return false;
@@ -118,7 +124,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
     }
     // 未登录处理
     private boolean handleNoLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        handleResponse(request, response, 10, "登录已过期,请重新登录");
+        handleResponse(request, response, 10, "登录状态已失效,请重新登录");
         return false;
     }
 
@@ -126,9 +132,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
     private void handleResponse(HttpServletRequest request, HttpServletResponse response, int code, Object object) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setContentType("application/json; charset=utf-8");
         response.setHeader("Cache-Control", "no-cache");
         response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json; charset=utf-8");
+
         PrintWriter writer = response.getWriter();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("status", 200);

@@ -63,7 +63,7 @@ public class PayController {
         int mid = order.getMerchantId();
         Merchant merchant = merchantMapper.getMerchant3(mid);
         if (merchant!=null) {
-            String buy = Constant.buyTypeMap.get(order.getBuyType());
+            String buy = "已认证-"+Constant.buyTypeMap.get(order.getBuyType());
             int days = GeneralUtil.typeDays(order.getBuyType());
             merchantMapper.updateMerchantDays(mid, buy, GeneralUtil.parseInt(merchant.getDays())+days);
         }

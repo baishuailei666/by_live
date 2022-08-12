@@ -39,10 +39,9 @@ public class AsyncService {
     }
 
     @Async("asyncThread")
-    public void asyncMerchantLoginOrder(int merchantId, int loginCount, int days, int curDays) {
+    public void asyncMerchantLoginOrder(int merchantId, int loginCount, int days, boolean isVip) {
         // 更新登录时间、登录次数
-        int val = Math.min(days, curDays);
-        merchantMapper.updateLt(merchantId, loginCount+1, val);
+        merchantMapper.updateLt(merchantId, loginCount + 1, days);
         System.out.println("## asyncMerchantLogin");
     }
 

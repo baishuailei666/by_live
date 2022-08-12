@@ -38,7 +38,7 @@ public class TimerTask {
 
 
     private boolean execHandler() {
-        return false;
+        return true;
     }
 
     // 每天23:30进行数据资源分配

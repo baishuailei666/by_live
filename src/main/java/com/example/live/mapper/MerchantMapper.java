@@ -69,37 +69,9 @@ public interface MerchantMapper {
     @Update("update merchant set shop_status=#{shopStatus}, days=#{days} where id=#{merchantId}")
     void updateMerchantDays(@Param("merchantId") Integer merchantId, @Param("shopStatus") String shopStatus, @Param("days") Integer days);
 
-    /**
-     * 查询商户列表，包含手机、店铺名、状态条件筛选
-     *
-     * @param opeUserId
-     * @param mobile
-     * @param shop
-     * @param shopStatus
-     * @return
-     */
-    @Select({"<script>" +
-            " SELECT id,mobile,shop,shop_id as shopId,shop_status as shopStatus,ope_user as opeUser,days,login_count,lt,ct FROM `merchant` "
-            + " <where>"
-            + " ope_user = #{opeUserId}"
-            + " <if test=' mobile != null and mobile != \"\"' > AND mobile = #{mobile}</if>"
-            + " <if test=' shop != null and shop != \"\"'> AND shop LIKE CONCAT('%',#{shop},'%')</if>"
-            + " <if test=' shopStatus != null and shopStatus != \"\" '> AND shop_status = #{shopStatus}</if>"
-            + " </where>"
-            + "LIMIT #{index}, 10"
-            + " </script> "})
-    List<Merchant> getMerchantListByParams(@Param("opeUserId") Integer opeUserId, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus, @Param("index") Integer index);
+    List<Merchant> getMerchantListByParams(@Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus, @Param("index") Integer index);
 
-    @Select({"<script>" +
-            " SELECT COUNT(*) FROM `merchant` "
-            + " <where>"
-            + " ope_user = #{opeUserId}"
-            + " <if test=' mobile != null and mobile != \"\"' > AND mobile = #{mobile}</if>"
-            + " <if test=' shop != null and shop != \"\"'> AND shop LIKE CONCAT('%',#{shop},'%')</if>"
-            + " <if test=' shopStatus != null and shopStatus != \"\" '> AND shop_status = #{shopStatus}</if>"
-            + " </where>"
-            + " </script> "})
-    int getMerchantListByParamsCount(@Param("opeUserId") Integer opeUserId, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
+    int getMerchantListByParamsCount(@Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
 
 
 }

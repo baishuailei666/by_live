@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,7 +91,7 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public List<Integer> opeUserIds(Integer agentUser) {
         if (agentUser == Constant.admin_id) {
-            return null;
+            return new ArrayList<>();
         }
         return relationUserMapper.relationIds(agentUser);
     }

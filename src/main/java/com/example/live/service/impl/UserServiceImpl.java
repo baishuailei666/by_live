@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CommonService commonService;
     @Autowired
-    private CloudSmsUtil cloudSmsUtil;
-    @Autowired
     private AsyncService asyncService;
 
 
@@ -161,9 +159,10 @@ public class UserServiceImpl implements UserService {
         }
 
         int days = 0;
-        int curDays = merchant.getDays();
+        boolean isVip = false;
         Order order = orderMapper.getOrder1(merchant.getId());
         if (order != null) {
+            isVip = true;
             days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
             mvo.setDays(days);
             mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
@@ -171,7 +170,7 @@ public class UserServiceImpl implements UserService {
         }
         session.setAttribute(Constant.session_user2, mvo);
         // 更新状态、更新会员
-        asyncService.asyncMerchantLoginOrder(merchant.getId(), merchant.getLoginCount(), days, curDays);
+        asyncService.asyncMerchantLoginOrder(merchant.getId(), merchant.getLoginCount(), days, isVip);
         return new BaseResult<>(mvo);
     }
 
@@ -221,7 +220,7 @@ public class UserServiceImpl implements UserService {
         String code = GeneralUtil.get4Random();
         List<String> str = Lists.newArrayList();
         str.add(mobile);
-        cloudSmsUtil.sendSms(str, code);
+        CloudSmsUtil.sendSms(str, code);
         mobileCodeMapper.insCode(mobile, code);
         return new BaseResult<>();
     }

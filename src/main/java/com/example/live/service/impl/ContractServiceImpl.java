@@ -19,9 +19,14 @@ import com.example.live.util.UserUtil;
 import com.example.live.vo.ContractVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -124,13 +129,50 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public BaseResult<?> contractInfo(String id) {
+    public BaseResult<?> contractView(String id, HttpServletResponse response) {
         UserVO uvo = UserUtil.getUser();
         if (uvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        String url = cloudSignUtil.signDown(id);
-        return new BaseResult<>(url);
+        //临时文件夹路径
+        File path = Constant.getCurrentPath(Constant.TEMPORARY);
+        //文件路径
+        String filePath = path + Constant.separator() + id + ".pdf";
+        //获取合同下载url
+        String pdfUrl = cloudSignUtil.signDown(id);
+        try {
+            URL url = new URL(pdfUrl);
+            File file = new File(filePath);
+            FileUtils.copyURLToFile(url, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //读取文件
+        byte[] read = null;
+        try {
+            read = FileUtils.readFileToByteArray(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 将文件内容 byte[]，通过 response 返回给客户端进行下载
+        if (read != null && read.length > 0) {
+            try {
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Length", String.valueOf(read.length));
+                response.getOutputStream().write(read);
+                response.flushBuffer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    FileUtils.forceDelete(new File(filePath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return new BaseResult<>();
     }
 
     @Override

@@ -17,5 +17,62 @@
         </foreach>
     </select>
 
+    <select id="getMerchantListByParams" resultType="com.example.live.entity.Merchant">
+        SELECT id,mobile,shop,shop_id as shopId,shop_status as shopStatus
+             ,ope_user as opeUser,days,login_count as loginCount,lt,ct
+        FROM `merchant`
+        where 1=1
+          <if test="ids!=null and ids.size()!=0">
+              and ope_user in
+              <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                  #{item}
+              </foreach>
+          </if>
+        <if test="mobile !=null and mobile!=''">
+            and mobile = #{mobile}
+        </if>
+        <if test="shop !=null and shop!=''">
+            and shop LIKE CONCAT('%',#{shop},'%')
+        </if>
+        <if test="shopStatus !=null and shopStatus!=''">
+          <if test="shopStatus='已认证'">
+              and shop_status CONCAT('%',#{shop},'%')
+          </if>
+
+          <if test="shopStatus='已付费'">
+              and shop_status CONCAT('%','卡','%')
+          </if>
+
+        </if>
+        limit #{index}, 10
+    </select>
+
+    <select id="getMerchantListByParamsCount" resultType="int">
+        SELECT count(1)
+        FROM `merchant`
+        where 1=1
+        <if test="ids!=null and ids.size()!=0">
+            and ope_user in
+            <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mobile !=null and mobile!=''">
+            and mobile = #{mobile}
+        </if>
+        <if test="shop !=null and shop!=''">
+            and shop LIKE CONCAT('%',#{shop},'%')
+        </if>
+        <if test="shopStatus !=null and shopStatus!=''">
+            <if test="shopStatus='已认证'">
+                and shop_status CONCAT('%',#{shop},'%')
+            </if>
+
+            <if test="shopStatus='已付费'">
+                and shop_status CONCAT('%','卡','%')
+            </if>
+
+        </if>
+    </select>
 
 </mapper>

@@ -6,24 +6,26 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.entity.*;
 import com.example.live.mapper.*;
+import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.single.AsyncService;
 import com.example.live.util.CloudCosUtil;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
+import com.example.live.vo.MerchantListVO;
 import com.example.live.vo.MerchantOrderVO;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -53,53 +55,74 @@ public class MerchantServiceImpl implements MerchantService {
     private CloudCosUtil cloudCosUtil;
     @Autowired
     private DataConfigMapper dataConfigMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private CommonService commonService;
 
 
     @Override
     public BaseResult<?> getMerchantListByParams(JSONObject jo) {
-        UserVO userVO = UserUtil.getUser();
-        if (userVO == null) {
+        UserVO u = UserUtil.getUser();
+        if (u == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        int opeUserId = userVO.getId();
+        int opeUserId = u.getId();
         String shop = jo.getString("shop");
         Integer page = jo.getInteger("page");
         String mobile = jo.getString("mobile");
         String shopStatus = jo.getString("shopStatus");
-        int count = merchantMapper.getMerchantListByParamsCount(opeUserId, mobile, shop, shopStatus);
+
+        List<Integer> opeUserIds = Lists.newArrayList();
+        if (u.getLevel()!=3) {
+            // 不是业务员级别
+            opeUserIds = commonService.opeUserIds(u.getId());
+        }
+        opeUserIds.add(u.getId());
+
+        int count = merchantMapper.getMerchantListByParamsCount(opeUserIds, mobile, shop, shopStatus);
         if (count == 0) {
             return new BaseResult<>();
         } else {
-            List<Merchant> data = merchantMapper.getMerchantListByParams(opeUserId, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
+            List<Merchant> data = merchantMapper.getMerchantListByParams(opeUserIds, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
             List<Integer> mids = Lists.newArrayList();
-            data.forEach(m -> mids.add(m.getId()));
+            Set<Integer> uids = Sets.newHashSet();
+            data.forEach(m -> {
+                mids.add(m.getId());
+                uids.add(m.getOpeUser());
+            });
 
-            Map<Integer, Order> order1Map = Maps.newHashMap();
+            List<User> users = userMapper.userList2(new ArrayList<>(uids));
+            Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity(), (k1, k2) -> k2));
+
             List<Order> orderList = orderMapper.merchantOrderList2(mids);
             Map<Integer, List<Order>> orderListMap = orderList.stream().collect(Collectors.groupingBy(Order::getMerchantId));
+            Map<Integer, Order> order1Map = Maps.newHashMap();
             orderListMap.forEach((k, v) -> {
                 v.sort(Comparator.comparing(Order::getUt));
                 Order order = v.get(v.size() - 1);
                 order1Map.put(k, order);
             });
 
-            List<MerchantVO> voList = Lists.newLinkedList();
+            List<MerchantListVO> voList = Lists.newLinkedList();
             data.forEach(m -> {
-                MerchantVO vo = new MerchantVO();
+                MerchantListVO vo = new MerchantListVO();
                 vo.setId(m.getId());
+                vo.setCt(m.getCt());
+                vo.setLt(m.getLt());
                 vo.setShop(m.getShop());
                 vo.setMobile(m.getMobile());
-                vo.setOpeUser(m.getOpeUser());
                 vo.setShopStatus(m.getShopStatus());
+                vo.setLoginCount(m.getLoginCount());
                 Order order = order1Map.get(m.getId());
                 if (order!=null) {
-                    vo.setShopStatus(m.getShopStatus()+"("+Constant.buyTypeMap.get(order.getBuyType())+")");
                     int days = GeneralUtil.buyDays(order.getBuyType(), order.getUt());
                     vo.setDays(days);
                 }
-                vo.setCt(m.getCt());
-                vo.setLt(m.getLt());
-                vo.setLoginCount(m.getLoginCount());
+                User user = userMap.get(m.getOpeUser());
+                if (user != null) {
+                    vo.setOpeUser(GeneralUtil.opeUserHandler(user.getId(), user.getRemark(), user.getMobile()));
+                }
                 voList.add(vo);
             });
             return new BaseResult<>(count, voList);

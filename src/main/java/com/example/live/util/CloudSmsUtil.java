@@ -66,6 +66,7 @@ public class CloudSmsUtil {
 
             // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
             SendSmsResponse resp = smsClient.SendSms(req);
+            resp.getRequestId();
             // 输出json格式的字符串回包
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
