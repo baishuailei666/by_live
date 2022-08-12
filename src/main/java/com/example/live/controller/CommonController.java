@@ -5,6 +5,7 @@ import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
 import com.example.live.service.CommonService;
 import com.example.live.service.UserService;
+import com.example.live.single.AsyncService;
 import com.example.live.util.ExcelUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.UserVO;
@@ -24,12 +25,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/common")
 public class CommonController {
+
     @Autowired
     private ExcelUtil excelUtil;
     @Autowired
     private UserService userService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private AsyncService asyncService;
 
     /**
      * 验证码发送
@@ -177,6 +181,14 @@ public class CommonController {
     @GetMapping("/price")
     public BaseResult<?> price(){
         return commonService.showPrices();
+    }
+
+
+    @GetMapping("/handler")
+    public void handler(@RequestParam("tag") String tag){
+        if ("tb".equals(tag)) {
+            asyncService.asyncResourceHandler();
+        }
     }
 
 }

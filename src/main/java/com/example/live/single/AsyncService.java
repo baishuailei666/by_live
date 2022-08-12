@@ -1,12 +1,17 @@
 package com.example.live.single;
 
+import com.example.live.entity.RelationUser;
+import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.*;
 import com.example.live.vo.MerchantVO;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 异步方法处理
@@ -27,6 +32,13 @@ public class AsyncService {
     private AnchorMapper anchorMapper;
     @Autowired
     private ContractMapper contractMapper;
+    @Autowired
+    private ResourceMerchantMapper resourceMerchantMapper;
+    @Autowired
+    private RelationUserMapper relationUserMapper;
+    @Autowired
+    private UserMapper userMapper;
+
 
 
     @Async("asyncThread")
@@ -58,6 +70,70 @@ public class AsyncService {
     public void asyncSignStatusHandler(List<Integer> ids) {
         contractMapper.updateStatus1(ids);
         System.out.println("## asyncSignStatusHandler");
+    }
+
+    public void asyncResourceHandler() {
+        // 资源池
+        List<ResourceMerchant> data = resourceMerchantMapper.taskResource();
+        if (data.size()!=0) {
+            // 管理员以上用户
+            List<Integer> ids = userMapper.level2User();
+            if (ids.size()!=0) {
+                List<RelationUser> list = relationUserMapper.relationUserList(ids);
+                // 管理员所属的业务员
+                Map<Integer, List<RelationUser>> agentMap = list.stream().collect(Collectors.groupingBy(RelationUser::getMainUserId));
+                // 管理员所属商户资源
+                Map<Integer, List<ResourceMerchant>> agentResourceMap = data.stream().collect(Collectors.groupingBy(ResourceMerchant::getAgentUser));
+                ids.forEach(agent ->{
+                    List<RelationUser> list1 = agentMap.getOrDefault(agent, null);
+                    if (list1==null || list1.size()==0) {
+                        // 发送邮件
+                        System.out.println("#管理员所属的业务员为空,agent:"+agent);
+                        return;
+                    }
+                    List<ResourceMerchant> list2 = agentResourceMap.getOrDefault(agent, null);
+                    if (list2==null || list2.size()==0) {
+                        // 发送邮件
+                        System.out.println("#管理员所属商户资源为空,agent:"+agent);
+                        return;
+                    }
+                    // 计算商户资源、业务员的分配系数
+                    int coe = list2.size() / list1.size();
+                    if (coe<5) {
+                        list2.forEach(rm -> rm.setOpeUser(list1.get(0).getChildUserId()));
+                        resourceMerchantMapper.taskDistribution(list2);
+                        System.out.println("#数据过少默认分配给第一个业务员");
+                        return;
+                    }
+                    List<ResourceMerchant> list4 = Lists.newArrayList();
+                    for (int i=0; i<list1.size(); i++) {
+                        int s = i*coe;
+                        int e = (i+1)*coe;
+                        if (e>=list2.size()) {
+                            e = list2.size();
+                        }
+
+                        List<ResourceMerchant> list3 = list2.subList(s, e);
+
+                        RelationUser ru = list1.get(i);
+                        list3.forEach(rm -> rm.setOpeUser(ru.getChildUserId()));
+                        // 需要添加 &allowMultiQueries=true
+                        resourceMerchantMapper.taskDistribution(list3);
+
+                        list3.forEach(r ->{
+                            if (r.getOpeUser()==null) {
+                                list4.add(r);
+                            }
+                        });
+                    }
+                    // 避免出现未分配的资源
+                    if (list4.size()!=0) {
+                        resourceMerchantMapper.taskDistribution(list4);
+                    }
+                });
+            }
+        }
+        System.out.println("ok");
     }
 
 }
