@@ -43,6 +43,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         apis_none.add("/common/kef");
         apis_none.add("/common/msg/**");
         apis_none.add("/common/pwd/modify");
+        apis_none.add("/contract/preview");
 
         // 不能解决from传参的问题
         apis_none.add("/common/upload/img");

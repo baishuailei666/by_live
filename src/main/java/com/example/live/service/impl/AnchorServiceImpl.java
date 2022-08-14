@@ -103,6 +103,7 @@ public class AnchorServiceImpl implements AnchorService {
         }
         Anchor anchor = anchorMapper.anchorInfo(id);
         if (anchor!=null) {
+            anchor.setImg(Constant.anchor_img);
             String category = anchor.getCategory();
             anchor.setCateList(categoryHandler(category));
             asyncService.asyncInsertMerchantAnchor(mvo.getId(),anchor.getId());
@@ -121,8 +122,8 @@ public class AnchorServiceImpl implements AnchorService {
         data.forEach(a -> {
             AnchorVO avo = new AnchorVO();
             BeanUtils.copyProperties(a, avo);
-            String val = GeneralUtil.getStarString(a.getNickname(), 1, 1);
-            avo.setNickname(val);
+            avo.setImg(Constant.anchor_img);
+            avo.setNickname(a.getNickname());
             List<JSONObject> list = categoryHandler(a.getCategory());
             if (list!=null) {
                 List<String> list1 = Lists.newLinkedList();
@@ -143,6 +144,7 @@ public class AnchorServiceImpl implements AnchorService {
         List<Anchor> data = anchorMapper.anchorCollect(mid);
         data.forEach(a -> {
             String category = a.getCategory();
+            a.setImg(Constant.anchor_img);
             a.setCateList(categoryHandler(category));
             a.setCategory(GeneralUtil.getCategory(category));
         });

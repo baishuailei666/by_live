@@ -3,6 +3,8 @@ package com.example.live.util;
 import com.example.live.common.Constant;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -16,7 +18,10 @@ public final class GeneralUtil {
 
     public static void main(String[] args) throws Exception {
         System.out.println("***GeneralUtil main***");
-        System.out.println(getIntRandom(13));
+        
+        for (int i = 0; i < 150; i++) {
+            System.out.println(getIntRandom(13));
+        }
     }
 
     // 获取4位随机数
@@ -47,6 +52,10 @@ public final class GeneralUtil {
     public static int indexPage(int page) {
         page = page == 0 ? 1 : page;
         return (page - 1) * 10;
+    }
+    public static int index2Page(int page, int size) {
+        page = page == 0 ? 1 : page;
+        return (page - 1) * size;
     }
 
     public static int parseInt(Object num) {
@@ -174,7 +183,7 @@ public final class GeneralUtil {
                 return false;
         }
     }
-
+    // id/昵称/手机
     public static String opeUserHandler(Integer id, String remark, String mobile) {
         return id+Constant.split4+remark+Constant.split4+mobile;
     }

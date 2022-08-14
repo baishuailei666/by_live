@@ -245,7 +245,7 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
-    public BaseResult<?> uploadVideoParam(String path, String title, Integer level) {
+    public BaseResult<?> uploadVideoParam(String path, String title, Integer level, String cover) {
         UserVO user = UserUtil.getUser();
         if (user == null) {
             return new BaseResult<>(BaseEnum.No_Login);
@@ -256,7 +256,7 @@ public class CommonServiceImpl implements CommonService {
         if (!path.startsWith(Constant.split4)) {
             path = Constant.split4+path;
         }
-        videoMapper.insVideo(title, level, path);
+        videoMapper.insVideo(title, level, path, cover);
         return new BaseResult<>();
     }
 

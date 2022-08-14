@@ -2,7 +2,6 @@ package com.example.live.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
-import com.example.live.entity.Contract;
 import com.example.live.entity.Invoice;
 import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

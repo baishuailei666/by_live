@@ -442,6 +442,9 @@ public class CloudSignUtil {
             DescribeFileUrlsResponse resp = essClient.DescribeFileUrls(req);
             // 输出json格式的字符串回包
             System.out.println("#signFileDown:"+DescribeFileUrlsResponse.toJsonString(resp));
+            if (resp.getFileUrls()==null||resp.getFileUrls().length==0) {
+                return null;
+            }
             return resp.getFileUrls()[0].getUrl();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();

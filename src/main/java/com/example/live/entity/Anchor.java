@@ -3,6 +3,7 @@ package com.example.live.entity;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSONObject;
+import com.example.live.common.Constant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

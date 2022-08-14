@@ -24,7 +24,7 @@ public class ExcelListen<T extends BaseRowModel> extends AnalysisEventListener<T
     // 读取内容完成后执行
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        System.out.println("#excel list:"+list.size());
+
     }
 
 }

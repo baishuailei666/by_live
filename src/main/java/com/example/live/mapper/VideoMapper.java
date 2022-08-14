@@ -17,11 +17,11 @@ public interface VideoMapper {
 
     int count(@Param("list") List<Integer> list);
 
-    List<Video> videoList(@Param("list") List<Integer> list, @Param("from") int from);
+    List<Video> videoList(@Param("list") List<Integer> list, @Param("from") int from, @Param("size") int size);
 
-    @Select("select path,level from video where id=#{id}")
+    @Select("select path,level,cover from video where id=#{id}")
     Video getVideo(@Param("id") int id);
 
-    @Insert("insert into video(title, level, path) values(#{title}, #{level}, #{path})")
-    void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path);
+    @Insert("insert into video(title, level, path, cover) values(#{title}, #{level}, #{path}, #{cover})")
+    void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path, @Param("cover") String cover);
 }

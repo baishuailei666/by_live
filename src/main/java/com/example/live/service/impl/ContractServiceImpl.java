@@ -20,6 +20,7 @@ import com.example.live.vo.ContractVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,16 +131,13 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public BaseResult<?> contractView(String id, HttpServletResponse response) {
-        UserVO uvo = UserUtil.getUser();
-        if (uvo == null) {
-            return new BaseResult<>(BaseEnum.No_Login);
-        }
-        //临时文件夹路径
-        File path = Constant.getCurrentPath(Constant.TEMPORARY);
-        //文件路径
-        String filePath = path + Constant.separator() + id + ".pdf";
         //获取合同下载url
         String pdfUrl = cloudSignUtil.signDown(id);
+        if (StringUtils.isBlank(pdfUrl)) {
+            return new BaseResult<>();
+        }
+
+        String filePath = Constant.TEMPORARY + "/" + id + ".pdf";
         try {
             URL url = new URL(pdfUrl);
             File file = new File(filePath);

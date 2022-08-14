@@ -17,5 +17,7 @@ public class Video {
     private String path;
     // 全部-0、月卡-1、季卡-2、年卡-3
     private int level;
+    // 视频封面
+    private String cover;
     private String ct;
 }

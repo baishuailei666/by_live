@@ -130,6 +130,7 @@ public class CommonController {
     @PostMapping("/upload/videoParam")
     public BaseResult<?> uploadVideoParam(@RequestBody JSONObject jo) {
         UserVO u = UserUtil.getUser();
+        String cover = jo.getString("cover");//视频封面
         String path = jo.getString("path");//视频路径
         String title = jo.getString("title");//视频标题
         Integer level = jo.getInteger("level");//视频类型：全部-0、月卡-1、季卡-2、年卡-3
@@ -137,7 +138,7 @@ public class CommonController {
             return new BaseResult<>(17, "参数错误，请重新填写");
         }
         if (u!=null&&u.getId()==Constant.admin_id) {
-            return commonService.uploadVideoParam(path, title, level);
+            return commonService.uploadVideoParam(path, title, level, cover);
         } else {
             return new BaseResult<>(17, "接口请求失败");
         }

@@ -314,16 +314,15 @@ public class MerchantServiceImpl implements MerchantService {
         if (type == 0) {
             // 全部：0、1、2、3
             list.add(0);
-            if (vo.getVipType() == 3) {
-                list.add(1);
-                list.add(2);
-                list.add(3);
-            } else if (vo.getVipType() == 2) {
-                list.add(1);
-                list.add(2);
-            } else if (vo.getVipType() == 1) {
-                list.add(1);
-            }
+        } else if (vo.getVipType() == 3) {
+            list.add(1);
+            list.add(2);
+            list.add(3);
+        } else if (vo.getVipType() == 2) {
+            list.add(1);
+            list.add(2);
+        } else if (vo.getVipType() == 1) {
+            list.add(1);
         } else {
             if (type > vo.getVipType()) {
                 return new BaseResult<>(16, "没有权限");
@@ -334,7 +333,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (count == 0) {
             return new BaseResult<>();
         }
-        List<Video> data = videoMapper.videoList(list, GeneralUtil.indexPage(page));
+        List<Video> data = videoMapper.videoList(list, GeneralUtil.index2Page(page, 6), 6);
         return new BaseResult<>(count, data);
     }
 
@@ -492,7 +491,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (sign) {
            contractMapper.updateStatus2(flowId);
         }
-        return new BaseResult<>();
+        return new BaseResult<>(sign);
     }
 
 }

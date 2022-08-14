@@ -11,13 +11,13 @@
     </select>
 
     <select id="videoList" resultType="com.example.live.entity.Video">
-        select id, title, `path`, ct
+        select id, title, `path`, cover, ct
         from video
         where `level` in
         <foreach collection="list" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-        limit #{from}, 10
+        limit #{from}, #{size}
     </select>
 
 

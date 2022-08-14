@@ -39,6 +39,6 @@ public interface CommonService {
 
     BaseResult<?> uploadVideo(MultipartFile file);
 
-    BaseResult<?> uploadVideoParam(String path, String title, Integer level);
+    BaseResult<?> uploadVideoParam(String path, String title, Integer level, String cover);
 
 }

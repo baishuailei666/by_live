@@ -77,21 +77,21 @@ public class UserServiceImpl implements UserService {
             }
             UserVO vo = new UserVO();
             vo.setId(user.getId());
+            vo.setWx(user.getWx());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
-            vo.setWx(user.getWx());
             vo.setRemark(user.getRemark());
-            if (user.getLevel() == 3) {
-                // 上级id
-                Integer mid = relationUserMapper.getMainId(user.getId());
-                vo.setAgentUser(mid);
-            } else {
-                // 超级管理员、管理员使用自己的id
-                vo.setAgentUser(user.getId());
-            }
+//            if (user.getLevel() == 3) {
+//                // 上级id
+//                Integer mid = relationUserMapper.getMainId(user.getId());
+//                vo.setAgentUser(mid);
+//            } else {
+//                // 超级管理员、管理员使用自己的id
+//                vo.setAgentUser(user.getId());
+//            }
             vo.setTs(user.getUt());
-            List<LevelRight> rightList = commonService.getLevelRight(user.getLevel());
-            vo.setRights(rightList);
+//            List<LevelRight> rightList = commonService.getLevelRight(user.getLevel());
+//            vo.setRights(rightList);
             session.setAttribute(Constant.session_user, vo);
             return new BaseResult<>(vo);
         }
