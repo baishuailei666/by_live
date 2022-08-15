@@ -1,6 +1,7 @@
 package com.example.live.util;
 
 import com.example.live.common.Constant;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -186,6 +187,27 @@ public final class GeneralUtil {
     // id/昵称/手机
     public static String opeUserHandler(Integer id, String remark, String mobile) {
         return id+Constant.split4+remark+Constant.split4+mobile;
+    }
+
+    // http://1313027383.vod2.myqcloud.com/b5eaa628vodsh1313027383/0adc914b387702304670194180/f0.mp4
+    // http://1313027383.vod2.myqcloud.com/b5eaa628vodsh1313027383/5529e3ec387702304671049037/f0.mp4
+    public static String urlSignHandler(String str) {
+        if (StringUtils.isBlank(str)) {
+            return str;
+        }
+        if (!str.contains("http")) {
+            return str;
+        }
+        String s1 = str.split("://")[1];
+        String[] s2 = s1.split("/");
+        String path = "/"+s2[1]+"/"+s2[2]+"/";
+        // 2小时过期
+        long ets = (System.currentTimeMillis() + 2L * 60L * 60L * 1000L) / 1000;
+        // 时间戳十六进制
+        String ets16 = String.format("%08x", ets);
+        // key/链接path/时间戳
+        String v = DigestUtils.md5Hex(Constant.key + path + ets16);
+        return str+"?t="+ets16+"&sign="+v;
     }
 
 }

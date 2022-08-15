@@ -7,7 +7,7 @@ import com.example.live.common.Constant;
 import com.example.live.entity.*;
 import com.example.live.mapper.*;
 import com.example.live.service.CommonService;
-import com.example.live.util.CloudCosUtil;
+import com.example.live.util.CloudVodUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.DataConfigVO;
@@ -40,8 +40,6 @@ public class CommonServiceImpl implements CommonService {
     private DataConfigMapper dataConfigMapper;
     @Autowired
     private UserMapper userMapper;
-    @Autowired
-    private CloudCosUtil cloudCosUtil;
     @Autowired
     private VideoMapper videoMapper;
 
@@ -237,11 +235,8 @@ public class CommonServiceImpl implements CommonService {
         if (file.getSize() > g5) {
             return new BaseResult<>(13, "文件大小不能超过3G");
         }
-        String path = cloudCosUtil.uploadVideo(file);
-        if (StringUtils.isBlank(path)) {
-            return new BaseResult<>(14, "视频上传失败");
-        }
-        return new BaseResult<>(Constant.split4+path);
+        String url = CloudVodUtil.videoUpload(file);
+        return new BaseResult<>(url);
     }
 
     @Override

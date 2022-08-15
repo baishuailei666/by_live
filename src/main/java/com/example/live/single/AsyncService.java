@@ -5,7 +5,6 @@ import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.*;
 import com.example.live.util.GeneralUtil;
 import com.example.live.vo.MerchantVO;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -46,8 +45,8 @@ public class AsyncService {
     public void asyncAudit(MerchantVO mvo, String note) {
         // 提交审核
         merchantAuditMapper.merchantShopAudit(mvo.getId(), mvo.getOpeUser());
-        // 消息通知
-        contentMapper.insContent(mvo.getId(), mvo.getOpeUser(), note, 3);
+        // 消息通知给业务员
+        contentMapper.insContent(mvo.getOpeUser(), mvo.getId(), note, 3);
         System.out.println("## asyncAudit");
     }
 

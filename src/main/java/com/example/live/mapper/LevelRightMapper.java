@@ -1,7 +1,6 @@
 package com.example.live.mapper;
 
 import com.example.live.entity.LevelRight;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 

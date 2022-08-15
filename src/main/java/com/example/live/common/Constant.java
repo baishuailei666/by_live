@@ -17,7 +17,8 @@ public class Constant {
 
     public static final String base_url = "http://taizb.com";
 
-    public static final String name = "杭州太博文化传媒有限公司";
+    // 杭州太博文化传媒有限公司
+    public static final String name = "太博甄选";
 
     // 超级管理员user_id=11
     public static final int admin_id = 11;
@@ -38,7 +39,7 @@ public class Constant {
     public final static String TEMPORARY = "temporary";
 
     // 购买服务说明
-    public static final String buy_subject = "直播推广服务";
+    public static final String buy_subject = name+"直播推广服务";
 
     // 订单支付成功
     public static final String pay_success = "TRADE_SUCCESS";
@@ -52,9 +53,12 @@ public class Constant {
     public static final String email_subject = buy_subject+"-开票信息";
 
     // 腾讯云
-    public static final String cloud_url = "https://taibo-culture-1313027383.cos.ap-shanghai.myqcloud.com";
     public static final String cloud_secretId = "AKIDLWTBdqDMGvKYWHm35sPiogIfoiMlvqVu";
     public static final String cloud_secretKey = "DBtMaaLq55sRlqfFZt52kDRQAetteARS";
+
+    // 防盗链Key
+    public static final String key = "3weBvMGpQe8Ex7GW2FNX";
+
 
     /**
      * 支付宝支付

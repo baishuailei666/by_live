@@ -2,8 +2,6 @@ package com.example.live.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-
-import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,14 +59,6 @@ public class DateUtil {
 
     public static String parseDateToStr(final String format, final Date date) {
         return new SimpleDateFormat(format).format(date);
-    }
-
-    public static Date dateTime(final String format, final String ts) {
-        try {
-            return new SimpleDateFormat(format).parse(ts);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

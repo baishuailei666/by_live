@@ -153,7 +153,6 @@ public class CloudSignUtil {
             // 返回的resp是一个CreateFlowResponse的实例，与请求对象对应
             CreateFlowResponse resp = essClient.CreateFlow(req);
             // 输出json格式的字符串回包
-            System.out.println("#signProcess1:"+CreateFlowResponse.toJsonString(resp));
             return resp.getFlowId();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
@@ -312,7 +311,6 @@ public class CloudSignUtil {
             // 返回的resp是一个CreateDocumentResponse的实例，与请求对象对应
             CreateDocumentResponse resp = essClient.CreateDocument(req);
             // 输出json格式的字符串回包
-            System.out.println("#signProcess2:"+CreateDocumentResponse.toJsonString(resp));
             jo2.put("documentId", resp.getDocumentId());
             jo2.put("previewUrl", resp.getPreviewFileUrl());
         } catch (TencentCloudSDKException e) {
@@ -336,7 +334,6 @@ public class CloudSignUtil {
             // 返回的resp是一个StartFlowResponse的实例，与请求对象对应
             StartFlowResponse resp = essClient.StartFlow(req);
             // 输出json格式的字符串回包
-            System.out.println("#signProcess3:"+StartFlowResponse.toJsonString(resp));
             return resp.getStatus();
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
@@ -361,7 +358,6 @@ public class CloudSignUtil {
             // 返回的resp是一个CreateSchemeUrlResponse的实例，与请求对象对应
             CreateSchemeUrlResponse resp = essClient.CreateSchemeUrl(req);
             // 输出json格式的字符串回包
-            System.out.println("#signProcess4:"+CreateSchemeUrlResponse.toJsonString(resp));
             return QRCodeUtil.code(resp.getSchemeUrl());
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();
@@ -389,7 +385,6 @@ public class CloudSignUtil {
             // 返回的resp是一个DescribeFlowBriefsResponse的实例，与请求对象对应
             DescribeFlowBriefsResponse resp = essClient.DescribeFlowBriefs(req);
             // 输出json格式的字符串回包
-            System.out.println(DescribeFlowBriefsResponse.toJsonString(resp));
             Long flowStatus = resp.getFlowBriefs()[0].getFlowStatus();
             if (flowStatus!=null && flowStatus==4) {
                 result = true;
@@ -441,7 +436,6 @@ public class CloudSignUtil {
             // 返回的resp是一个DescribeFileUrlsResponse的实例，与请求对象对应
             DescribeFileUrlsResponse resp = essClient.DescribeFileUrls(req);
             // 输出json格式的字符串回包
-            System.out.println("#signFileDown:"+DescribeFileUrlsResponse.toJsonString(resp));
             if (resp.getFileUrls()==null||resp.getFileUrls().length==0) {
                 return null;
             }

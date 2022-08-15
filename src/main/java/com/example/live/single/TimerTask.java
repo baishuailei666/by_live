@@ -1,18 +1,10 @@
 package com.example.live.single;
 
-import com.example.live.entity.RelationUser;
-import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.*;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
@@ -33,8 +25,9 @@ public class TimerTask {
     private ResourceMerchantMapper resourceMerchantMapper;
 
     // true-不执行、false-执行
+    // back执行、merchant不执行
     private boolean execHandler() {
-        return false;
+        return true;
     }
 
     // 每天23:30进行数据资源分配

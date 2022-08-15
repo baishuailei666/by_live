@@ -9,7 +9,6 @@ import com.example.live.mapper.*;
 import com.example.live.service.CommonService;
 import com.example.live.service.MerchantService;
 import com.example.live.single.AsyncService;
-import com.example.live.util.CloudCosUtil;
 import com.example.live.util.CloudSignUtil;
 import com.example.live.util.GeneralUtil;
 import com.example.live.util.UserUtil;
@@ -51,8 +50,6 @@ public class MerchantServiceImpl implements MerchantService {
     private MerchantSignMapper merchantSignMapper;
     @Autowired
     private AsyncService asyncService;
-    @Autowired
-    private CloudCosUtil cloudCosUtil;
     @Autowired
     private DataConfigMapper dataConfigMapper;
     @Autowired
@@ -351,7 +348,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (video.getLevel() > mvo.getVipType()) {
             return new BaseResult<>(13, "没有权限");
         }
-        return new BaseResult<>(cloudCosUtil.signExpire(video.getPath()));
+        return new BaseResult<>(GeneralUtil.urlSignHandler(video.getPath()));
     }
 
     @Override

@@ -11,7 +11,7 @@
     </select>
 
     <select id="videoList" resultType="com.example.live.entity.Video">
-        select id, title, `path`, cover, ct
+        select id, title, cover, ct
         from video
         where `level` in
         <foreach collection="list" item="item" open="(" separator="," close=")">

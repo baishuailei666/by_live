@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
 import com.example.live.common.Constant;
-import com.example.live.entity.User;
 import com.example.live.mapper.ContentMapper;
 import com.example.live.mapper.MerchantAuditMapper;
 import com.example.live.mapper.MerchantMapper;
@@ -70,9 +69,11 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         }
         merchantAuditMapper.updateMerchantAudit(id, merchantId, status, reason);
         if (status==1) {
-            reason = "恭喜您，您的店铺审核通过!";
+            reason = "审核通过";
             // 更新merchant表
             merchantMapper.updateMerchantCheck(merchantId);
+        } else {
+            reason = "审核拒绝:"+ reason;
         }
         contentMapper.insContent(GeneralUtil.parseInt(merchantId), id, reason, 3);
         return new BaseResult<>();

@@ -23,8 +23,8 @@ public interface ContentMapper {
     @Insert("insert into `content`(oid, rid, note, type) values(#{oid}, #{rid}, #{note}, #{type})")
     void insContent(@Param("oid") int oid, @Param("rid") int rid, @Param("note") String note, @Param("type") int type);
 
-    @Select("select note, ts from `content` where type=3 and oid=#{rid} limit #{page}, 10")
-    List<Content> contentList(@Param("rid") int rid, @Param("page") int page);
+    @Select("select note, ts from `content` where type=3 and oid=#{oid} limit #{page}, 10")
+    List<Content> contentList(@Param("oid") int oid, @Param("page") int page);
 
     @Select("select note, ts from `content` where oid=#{oid} and rid=#{rid} and type=#{type}")
     List<ContentVO> contentListParam(@Param("oid") int oid, @Param("rid") int rid, @Param("type") int type);

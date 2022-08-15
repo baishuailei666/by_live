@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>live</artifactId>
+<!--    <artifactId>live</artifactId>-->
 <!--    <artifactId>back</artifactId>-->
-<!--    <artifactId>merchant</artifactId>-->
+    <artifactId>merchant</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>live-commerce</name>
     <description>【直播带货管理系统】</description>
@@ -69,19 +69,15 @@
             <artifactId>easyexcel</artifactId>
             <version>1.1.2-beta5</version>
         </dependency>
-        <!-- 消息推送 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.qcloud/vod_api -->
         <dependency>
             <groupId>com.qcloud</groupId>
-            <artifactId>cos_api</artifactId>
-            <version>5.6.38</version>
+            <artifactId>vod_api</artifactId>
+            <version>2.1.5</version>
         </dependency>
         <!-- go to https://search.maven.org/search?q=tencentcloud-sdk-java and get the latest version. -->
         <!-- 请到https://search.maven.org/search?q=tencentcloud-sdk-java查询所有版本，最新版本如下 -->

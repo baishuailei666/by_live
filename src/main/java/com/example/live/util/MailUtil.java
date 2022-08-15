@@ -44,10 +44,10 @@ public class MailUtil {
                 return;
             }
 
-            String company = invoice.getCompany();
             String tax = invoice.getTax();
-            String money = invoice.getMoney()+"";
             String email = invoice.getEmail();
+            String money = invoice.getMoney()+"";
+            String company = invoice.getCompany();
 
             String sbd = head +
                     "<tbody>" +

@@ -1,21 +1,13 @@
 package com.example.live.controller;
 
-import com.example.live.common.BaseEnum;
 import com.example.live.common.BaseResult;
-import com.example.live.common.Constant;
 import com.example.live.controller.query.ContractQuery;
 import com.example.live.service.ContractService;
 import com.example.live.util.CloudSignUtil;
-import com.example.live.util.UserUtil;
-import com.example.live.vo.UserVO;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * 合同

@@ -19,7 +19,7 @@ public interface VideoMapper {
 
     List<Video> videoList(@Param("list") List<Integer> list, @Param("from") int from, @Param("size") int size);
 
-    @Select("select path,level,cover from video where id=#{id}")
+    @Select("select title,path,level,cover from video where id=#{id}")
     Video getVideo(@Param("id") int id);
 
     @Insert("insert into video(title, level, path, cover) values(#{title}, #{level}, #{path}, #{cover})")
