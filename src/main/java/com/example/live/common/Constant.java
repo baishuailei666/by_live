@@ -1,9 +1,6 @@
 package com.example.live.common;
 
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +12,7 @@ import java.util.Map;
  */
 public class Constant {
 
-    public static final String base_url = "http://taizb.com";
+    public static final String base_url = "https://taizb.com";
 
     // 杭州太博文化传媒有限公司
     public static final String name = "太博甄选";
@@ -56,7 +53,7 @@ public class Constant {
     public static final String cloud_secretId = "AKIDLWTBdqDMGvKYWHm35sPiogIfoiMlvqVu";
     public static final String cloud_secretKey = "DBtMaaLq55sRlqfFZt52kDRQAetteARS";
 
-    // 防盗链Key
+    // 云点播-防盗链Key
     public static final String key = "3weBvMGpQe8Ex7GW2FNX";
 
 

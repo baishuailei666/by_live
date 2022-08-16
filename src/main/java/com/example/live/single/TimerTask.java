@@ -2,6 +2,7 @@ package com.example.live.single;
 
 import com.example.live.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,10 +25,14 @@ public class TimerTask {
     @Autowired
     private ResourceMerchantMapper resourceMerchantMapper;
 
+    @Value("${server.port}")
+    private String port;
+
     // true-不执行、false-执行
     // back执行、merchant不执行
     private boolean execHandler() {
-        return true;
+        System.out.println("port:"+port);
+        return !port.equals("8081");
     }
 
     // 每天23:30进行数据资源分配

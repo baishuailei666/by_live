@@ -8,9 +8,7 @@ import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.sms.v20190711.SmsClient;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
-import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 /**
@@ -62,11 +60,13 @@ public class CloudSmsUtil {
             req.setTemplateParamSet(new String[]{code});
             req.setSmsSdkAppid(sms_sdkAppId);
             req.setTemplateID(sms_templateId);
+            // 修改签名需要审核
             req.setSign(Constant.name);
 
             // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
-            SendSmsResponse resp = smsClient.SendSms(req);
-            resp.getRequestId();
+             smsClient.SendSms(req);
+             // code=Ok
+//            Arrays.stream(resp.getSendStatusSet()).findFirst().get().getCode()
             // 输出json格式的字符串回包
         } catch (TencentCloudSDKException e) {
             e.printStackTrace();

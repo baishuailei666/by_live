@@ -37,7 +37,7 @@ public class ThreadPool implements AsyncConfigurer{
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(5);
         executor.setQueueCapacity(10);
         executor.setAllowCoreThreadTimeOut(true);
         executor.setThreadNamePrefix("async-thread-");

@@ -1,8 +1,8 @@
 server:
 #  merchant
-#  port: 8081
+  port: 8081
 #  back
-  port: 8089
+#  port: 8089
   servlet:
     session:
       timeout: 3600
@@ -10,9 +10,9 @@ server:
 # 微信支付
 wx:
   pay:
-    app-id:
-    mch-id:
-    mch-key:
+    app-id: wx6c127ab3dfea9960
+    mch-id: 1630323401
+    mch-key: vDr06kBEvYJEWAmaz2jUiLrCmNqiOpq9
     keyPath: classpath:apiclient_cert.p12
 
 mybatis:

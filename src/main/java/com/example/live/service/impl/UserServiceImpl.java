@@ -381,21 +381,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> orderIns(JSONObject jo) {
         UserVO uvo = UserUtil.getUser();
+        if (uvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         int merchantId = jo.getIntValue("merchantId");
         int buyType = jo.getIntValue("buyType");
         double money = jo.getDoubleValue("money");
         int payType = jo.getIntValue("payType");
 
+        Merchant merchant = merchantMapper.getMerchant3(merchantId);
+        if (merchant==null) {
+            return new BaseResult<>(13, "商户不存在");
+        }
+        if (StringUtils.isBlank(merchant.getShopStatus()) || !merchant.getShopStatus().contains("已认证")) {
+            return new BaseResult<>(15, "商户店铺未认证");
+        }
+
         Order order = new Order();
-        order.setMerchantId(merchantId);
         order.setMoney(money);
         order.setPayType(payType);
         order.setBuyType(buyType);
+        order.setMerchantId(merchantId);
         String orderNo = GeneralUtil.getOrderNo(buyType);
         order.setOrderNo(orderNo);
         order.setOpeUser(uvo.getId());
         order.setStatus(Constant.pay_success);
         orderMapper.insOrder(order);
+
+        String buy = "已认证-"+Constant.buyTypeMap.get(buyType);
+        int days = GeneralUtil.typeDays(order.getBuyType());
+        merchantMapper.updateMerchantDays(merchantId, buy, GeneralUtil.parseInt(merchant.getDays())+days);
         return new BaseResult<>();
     }
 

@@ -121,13 +121,15 @@ public class PayController {
             httpResponse.getWriter().close();
             return;
         }
-        totalAmount = "0.01";
+        if (mvo.getId()==3) {
+            totalAmount = "0.01";
+        }
 
         Order order = new Order();
         order.setBuyType(type);
         order.setPayType(1);
         order.setFlowId(flowId);
-        order.setOrderNo(outTradeNo);
+        order.setOrderNo(outTradeNo+"A");
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
@@ -298,12 +300,15 @@ public class PayController {
             httpResponse.getWriter().close();
             return (T) new BaseResult<>(httpResponse);
         }
+        if (mvo.getId()==3) {
+            totalAmount = "0.01";
+        }
 
         Order order = new Order();
         order.setPayType(2);
         order.setBuyType(type);
         order.setFlowId(flowId);
-        order.setOrderNo(outTradeNo);
+        order.setOrderNo(outTradeNo+"W");
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
@@ -328,9 +333,9 @@ public class PayController {
         request.setAttach(sessionId);//附加数据sessionId
         request.setTradeType("NATIVE"); //网页支付
 
-        Object codeUrl = this.wxService.createOrder(request);
+        JSONObject jo = this.wxService.createOrder(request);
         Map<String, Object> map = Maps.newHashMap();
-        map.put("codeUrl", codeUrl);
+        map.put("codeUrl", jo.getString("codeUrl"));
         map.put("orderNo", outTradeNo);
         return (T) new BaseResult<>(map);
     }
