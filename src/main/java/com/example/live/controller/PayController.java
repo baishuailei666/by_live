@@ -94,7 +94,7 @@ public class PayController {
         String totalAmount;
         String platform = "";
         String subject = Constant.buy_subject;
-        String outTradeNo = GeneralUtil.getOrderNo(type);
+        String outTradeNo = GeneralUtil.getOrderNo(type)+"A";
         String sessionId = httpRequest.getSession().getId();
 
         String data = dataConfigMapper.getConfigStr(Constant.admin_id);
@@ -129,7 +129,7 @@ public class PayController {
         order.setBuyType(type);
         order.setPayType(1);
         order.setFlowId(flowId);
-        order.setOrderNo(outTradeNo+"A");
+        order.setOrderNo(outTradeNo);
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
@@ -273,7 +273,7 @@ public class PayController {
 
         String totalAmount;
         String subject = Constant.buy_subject;
-        String outTradeNo = GeneralUtil.getOrderNo(type);
+        String outTradeNo = GeneralUtil.getOrderNo(type)+"W";
         String sessionId = httpRequest.getSession().getId();
 
         String data = dataConfigMapper.getConfigStr(Constant.admin_id);
@@ -308,7 +308,7 @@ public class PayController {
         order.setPayType(2);
         order.setBuyType(type);
         order.setFlowId(flowId);
-        order.setOrderNo(outTradeNo+"W");
+        order.setOrderNo(outTradeNo);
         order.setMerchantId(mvo.getId());
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
