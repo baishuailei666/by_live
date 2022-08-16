@@ -333,9 +333,9 @@ public class PayController {
         request.setAttach(sessionId);//附加数据sessionId
         request.setTradeType("NATIVE"); //网页支付
 
-        JSONObject jo = this.wxService.createOrder(request);
+        Object jo = this.wxService.createOrder(request);
         Map<String, Object> map = Maps.newHashMap();
-        map.put("codeUrl", jo.getString("codeUrl"));
+        map.put("codeUrl", jo);
         map.put("orderNo", outTradeNo);
         return (T) new BaseResult<>(map);
     }
