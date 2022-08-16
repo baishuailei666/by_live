@@ -248,9 +248,6 @@ public class CommonServiceImpl implements CommonService {
         if (user.getId() != Constant.admin_id) {
             return new BaseResult<>(13, "您没有权限操作！");
         }
-        if (!path.startsWith(Constant.split4)) {
-            path = Constant.split4+path;
-        }
         videoMapper.insVideo(title, level, path, cover);
         return new BaseResult<>();
     }
