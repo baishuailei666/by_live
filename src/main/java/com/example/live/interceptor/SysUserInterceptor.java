@@ -7,6 +7,7 @@ import com.example.live.util.UserUtil;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.util.List;
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/8 23:16
  */
+@Slf4j
 @Component
 public class SysUserInterceptor extends HandlerInterceptorAdapter {
 
@@ -69,9 +71,9 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         String path = request.getServletPath();
         String from = request.getHeader("from");
 
+        log.info("## path:" + path + ", from:"+from);
         // 免拦截接口直接请求返回
         if (apis_none.contains(path)) {
-            System.out.println("## path:" + path + ", from:"+from);
             return true;
         }
         if (StringUtils.isBlank(from)) {
@@ -99,7 +101,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
             return handleNoLogin(request, response);
         }
         String from = request.getHeader("from");
-        System.out.println("## path:" + path + ", from:"+from +", user:"+user.getId());
+        log.info("## path:" + path + ", from:"+from +", user:"+user.getId());
 
         // 超级管理员独有权限
         if (apis_admin11.contains(path) && user.getLevel()!=1) {
@@ -115,7 +117,7 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
             return handleNoLogin(request, response);
         }
         String from = request.getHeader("from");
-        System.out.println("## path:" + path + ", from:"+from +", merchant:"+mvo.getId());
+        log.info("## path:" + path + ", from:"+from +", merchant:"+mvo.getId());
 
         if (apis_admin11.contains(path)) {
             handleResponse(request, response, 21, "没有操作权限");

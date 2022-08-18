@@ -5,9 +5,11 @@ import com.example.live.entity.ResourceMerchant;
 import com.example.live.mapper.*;
 import com.example.live.util.GeneralUtil;
 import com.example.live.vo.MerchantVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/29 21:05
  */
+@Slf4j
 @Component
 public class AsyncService {
 
@@ -47,14 +50,14 @@ public class AsyncService {
         merchantAuditMapper.merchantShopAudit(mvo.getId(), mvo.getOpeUser());
         // 消息通知给业务员
         contentMapper.insContent(mvo.getOpeUser(), mvo.getId(), note, 3);
-        System.out.println("## asyncAudit");
+        log.info("## asyncAudit");
     }
 
     @Async("asyncThread")
     public void asyncMerchantLoginOrder(int merchantId, int loginCount, int days, boolean isVip) {
         // 更新登录时间、登录次数
         merchantMapper.updateLt(merchantId, loginCount + 1, days);
-        System.out.println("## asyncMerchantLogin");
+        log.info("## asyncMerchantLogin");
     }
 
     @Async("asyncThread")
@@ -62,14 +65,14 @@ public class AsyncService {
         int i = anchorMapper.queryAnchor(merchantId, anchorId);
         if (i <= 0) {
             anchorMapper.insertAnchor(merchantId, anchorId);
-            System.out.println("## asyncInsertMerchantAnchor");
+            log.info("## asyncInsertMerchantAnchor");
         }
     }
 
     @Async("asyncThread")
     public void asyncSignStatusHandler(List<Integer> ids) {
         contractMapper.updateStatus1(ids);
-        System.out.println("## asyncSignStatusHandler");
+        log.info("## asyncSignStatusHandler");
     }
 
     public void asyncResourceHandler() {
@@ -96,7 +99,7 @@ public class AsyncService {
                         if (coe<5) {
                             list2.forEach(rm -> rm.setOpeUser(list1.get(0).getChildUserId()));
                             resourceMerchantMapper.taskDistribution(list2);
-                            System.out.println("# asyncResourceHandler:数据过少默认分配给第一个业务员");
+                            log.info("# asyncResourceHandler:数据过少默认分配给第一个业务员");
                         } else {
                             // 方法一：随机分
                             list2.forEach(rm -> {
@@ -140,7 +143,6 @@ public class AsyncService {
                 });
             }
         }
-        System.out.println("ok");
     }
 
 }

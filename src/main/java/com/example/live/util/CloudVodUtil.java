@@ -1,11 +1,9 @@
 package com.example.live.util;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.Constant;
 import com.qcloud.vod.VodUploadClient;
 import com.qcloud.vod.model.VodUploadRequest;
 import com.qcloud.vod.model.VodUploadResponse;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

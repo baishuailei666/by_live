@@ -3,9 +3,6 @@ package com.example.live.util;
 import com.example.live.common.Constant;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Random;
 

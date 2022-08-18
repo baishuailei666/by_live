@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="info" packages="org.apache.logging.log4j.core">
+
+    <properties>
+        <property name="LOG_HOME">logs/merchant</property>
+        <property name="ERROR_FILE_NAME">error</property>
+        <property name="INFO_FILE_NAME">info</property>
+    </properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--&lt;!&ndash;格式化输出：%d表示日期，%l log发生位置的详细描述，包括方法名、文件名及行号，%M log发生时所在的方法名称，%L log发生在源文件中的位置，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n 换行符-->
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %t %-5level [%l] - %msg%n" />
+        </Console>
+
+        <!--按天生成日志-->
+        <RollingRandomAccessFile name="InfoFile" fileName="${LOG_HOME}/${INFO_FILE_NAME}.log" filePattern="${LOG_HOME}/${INFO_FILE_NAME}_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %t %-5level [%l] - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <!--按天生成日志-->
+        <RollingRandomAccessFile name="ErrorFile" fileName="${LOG_HOME}/${ERROR_FILE_NAME}.log" filePattern="${LOG_HOME}/${ERROR_FILE_NAME}_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %t %-5level [%l] - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+    </appenders>
+
+    <loggers>
+
+        <root level="INFO">
+            <appender-ref ref="Console" />
+            <appender-ref ref="InfoFile" level="INFO"/>
+            <appender-ref ref="ErrorFile" level="ERROR"/>
+        </root>
+    </loggers>
+</configuration>

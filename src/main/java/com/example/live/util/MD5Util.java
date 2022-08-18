@@ -7,8 +7,7 @@ import java.security.MessageDigest;
  */
 public class MD5Util {
 
-    private static final String SALT = "hangz";
-    private static final String SALT2 = "Taib0";
+    private static final String SALT = "TaiB01";
 
     public static String encode(String password) {
         password = password + SALT;

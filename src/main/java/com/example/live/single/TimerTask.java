@@ -1,6 +1,7 @@
 package com.example.live.single;
 
 import com.example.live.mapper.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/10 17:29
  */
+@Slf4j
 @Component
 @EnableScheduling
 public class TimerTask {
@@ -31,7 +33,6 @@ public class TimerTask {
     // true-不执行、false-执行
     // back执行、merchant不执行
     private boolean execHandler() {
-        System.out.println("port:"+port);
         return !port.equals("8081");
     }
 
@@ -42,7 +43,7 @@ public class TimerTask {
         if (execHandler()) {
             return;
         }
-        System.out.println("## resourceHandler");
+        log.info("## resourceHandler");
         asyncService.asyncResourceHandler();
     }
 
@@ -59,7 +60,7 @@ public class TimerTask {
         if (!execHandler()) {
             return;
         }
-        System.out.println("## clearHandler");
+        log.info("## clearHandler");
 
         // 已失效的验证码
         mobileCodeMapper.clear();

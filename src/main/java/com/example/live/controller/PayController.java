@@ -121,7 +121,7 @@ public class PayController {
             httpResponse.getWriter().close();
             return;
         }
-        if (mvo.getId()==3) {
+        if (mvo.getId()==3 || mvo.getId()==5) {
             totalAmount = "0.01";
         }
 
@@ -134,7 +134,7 @@ public class PayController {
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
         orderMapper.insOrder(order);
-        System.out.println("#pay ali:"+order);
+        log.info("# pay merchant:"+mvo.getId()+",ali orderNo:"+outTradeNo+",order:"+order);
 
         //获得初始化的AlipayClient 向支付宝发送支付请求
         AlipayClient alipayClient = new DefaultAlipayClient(Constant.gatewayUrl, Constant.alipay_app_id,
@@ -187,6 +187,7 @@ public class PayController {
         String trade_status = request.getParameter("trade_status"); // 交易状态
         String passback_params = request.getParameter("passback_params"); // 交易状态
 
+        log.info("# pay ali orderNo:"+order_no+",trade_no:"+trade_no+",trade_status:"+trade_status);
         PrintWriter out = response.getWriter();
         if (signVerified) {
             if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
@@ -300,7 +301,7 @@ public class PayController {
             httpResponse.getWriter().close();
             return (T) new BaseResult<>(httpResponse);
         }
-        if (mvo.getId()==3) {
+        if (mvo.getId()==3 || mvo.getId()==5) {
             totalAmount = "0.01";
         }
 
@@ -313,7 +314,7 @@ public class PayController {
         order.setOpeUser(mvo.getOpeUser());
         order.setMoney(Double.valueOf(totalAmount));
         orderMapper.insOrder(order);
-        System.out.println("#wx ali:"+order);
+        log.info("# pay merchant:"+mvo.getId()+",wx orderNo:"+outTradeNo+",order:"+order);
 
 
         // 调用微信支付接口
@@ -351,6 +352,8 @@ public class PayController {
         String order_no = notifyResult.getOutTradeNo(); // 获取订单号
         long total_fee = (long) notifyResult.getTotalFee() / 100; // 用户支付金额
         String attach = notifyResult.getAttach(); // 交易状态
+
+        log.info("# pay wx orderNo:"+order_no+",trade_no:"+trade_no+",trade_status:"+attach);
 
         Order order = orderMapper.getOrderByNo(order_no);
         if (StringUtils.isNotBlank(order.getTradeNo())) {

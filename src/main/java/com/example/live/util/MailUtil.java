@@ -4,6 +4,7 @@ import com.example.live.common.Constant;
 import com.example.live.entity.Invoice;
 import com.example.live.mapper.DataConfigMapper;
 import com.example.live.mapper.InvoiceMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +21,7 @@ import javax.mail.internet.MimeMessage;
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/10 9:08
  */
+@Slf4j
 @Component
 public class MailUtil {
 
@@ -40,7 +42,7 @@ public class MailUtil {
         Thread thread = new Thread(() -> {
             String con = dataConfigMapper.getConfigStr(agentUser);
             if (StringUtils.isBlank(con)) {
-                System.out.println("##邮箱地址为空, agentUser:"+agentUser);
+                log.error("## 邮箱地址为空");
                 return;
             }
 
@@ -136,7 +138,7 @@ public class MailUtil {
             + "<table>" +
             "            <thead>" +
             "                <tr>" +
-            "                    <th>序号</th>" +
+            "                    <th>序号Id</th>" +
             "                    <th>公司名称</th>" +
             "                    <th>纳税识别号</th>" +
             "                    <th>发票金额</th>" +
