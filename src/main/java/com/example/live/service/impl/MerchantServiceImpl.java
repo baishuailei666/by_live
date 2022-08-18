@@ -331,6 +331,7 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>();
         }
         List<Video> data = videoMapper.videoList(list, GeneralUtil.index2Page(page, 6), 6);
+        data.forEach(v -> v.setCover(Constant.video_img));
         return new BaseResult<>(count, data);
     }
 
@@ -348,6 +349,7 @@ public class MerchantServiceImpl implements MerchantService {
         if (video.getLevel() > mvo.getVipType()) {
             return new BaseResult<>(13, "没有权限");
         }
+        video.setCover(Constant.video_img);
         return new BaseResult<>(GeneralUtil.urlSignHandler(video.getPath()));
     }
 
