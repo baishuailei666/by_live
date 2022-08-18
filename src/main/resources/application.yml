@@ -2,5 +2,5 @@ spring:
   profiles:
     active: prod
 logging:
-  config: classpath:log4j2_back.xml
-#  config: classpath:log4j2_merchant.xml
+#  config: classpath:log4j2_back.xml
+  config: classpath:log4j2_merchant.xml

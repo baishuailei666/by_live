@@ -187,8 +187,14 @@ public class CommonController {
 
     @GetMapping("/handler")
     public void handler(@RequestParam("tag") String tag){
-        if ("tb".equals(tag)) {
+        if ("1".equals(tag)) {
             asyncService.asyncResourceHandler();
+        } else if ("2".equals(tag)) {
+            try {
+                Integer.parseInt("123.4test");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

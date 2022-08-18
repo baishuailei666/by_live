@@ -148,4 +148,88 @@ public class MailUtil {
 
     private static final String footer = " </table>\n" + "</body></html>";
 
+
+    // 服务异常邮箱告警
+    public void sendExceptionMailHandler(Exception e) {
+        Thread thread = new Thread(() -> {
+            String con = dataConfigMapper.getConfigStr(Constant.admin_id);
+            if (StringUtils.isBlank(con)) {
+                log.error("## 邮箱地址为空");
+                return;
+            }
+
+            String sbd = head2 +
+                    "<tbody>" +
+                    "<tr>" + e +
+                    "</tr>" +
+                    "</tbody>" +
+                    footer;
+            //
+            sendExceptionMail("taibowenhua@163.com", "baishuailei@zhejianglab.com", "cy19981317@163.com", sbd);
+        });
+        thread.start();
+    }
+    //
+    public void sendExceptionMail(String from, String to, String cc, String html) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            // 发件人
+            mimeMessageHelper.setFrom(from);
+            // 收件人
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setSubject(Constant.name+"-服务异常");
+            // 抄送人
+            if (StringUtils.isNotEmpty(cc)) {
+                mimeMessageHelper.setCc(cc);
+            }
+            // 编辑邮件内容
+            mimeMessageHelper.setText(html, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final String head2 = "<html><body>  <head>" +
+            "        <meta charset=\"UTF-8\">" +
+            "        <title></title>" +
+            "        <style type=\"text/css\">" +
+            "            \n" +
+            "            table {" +
+            "                /*居中*/" +
+            "                margin: 0 auto;" +
+            "                border-spacing: px;" +
+            "                border-collapse: collapse;" +
+            "                /*设置背景样式*/" +
+            "                /*background-color: #bfa;*/" +
+            "            }" +
+            "            " +
+            "            td," +
+            "            th {" +
+            "                border: 1px solid black;" +
+            "            }" +
+            "            /*" +
+            "             * 设置隔行变色" +
+            "             */" +
+            "            " +
+            "            tr:nth-child(even) {" +
+            "                background-color: #bfa;" +
+            "            }" +
+            "            /*" +
+            "             * 鼠标移入到tr以后，改变颜色" +
+            "             */" +
+            "            " +
+            "            tr:hover {" +
+            "                background-color: #ff0;" +
+            "            }" +
+            "        </style>" +
+            "    </head>"
+            + "<table>" +
+            "            <thead>" +
+            "                <tr>" +
+            "              "+
+            "                </tr>" +
+            "            </thead>";
+
 }
