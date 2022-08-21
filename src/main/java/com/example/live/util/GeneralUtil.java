@@ -71,6 +71,21 @@ public final class GeneralUtil {
             return 0;
         }
     }
+    public static int typeMonths(int type) {
+        int v = 1;
+        switch (type) {
+            case 1:
+                v = 1;
+                break;
+            case 2:
+                v = 3;
+                break;
+            case 3:
+                v = 12;
+                break;
+        }
+        return v;
+    }
 
     // 服务天数
     public static int typeDays(int type) {

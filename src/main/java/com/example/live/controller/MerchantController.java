@@ -7,6 +7,8 @@ import com.example.live.service.impl.MerchantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @Author Chen Rui
  * @Date 2022/7/10 16:14
@@ -23,11 +25,12 @@ public class MerchantController {
     /**
      * 商户端个人中心
      *
+     * @param tag pay:支付跳转
      * @return
      */
     @GetMapping("/info")
-    public BaseResult<?> merchantInfo() {
-        return merchantService.merchantInfo();
+    public BaseResult<?> merchantInfo(HttpSession session, String tag) {
+        return merchantService.merchantInfo(session, tag);
     }
 
     /**

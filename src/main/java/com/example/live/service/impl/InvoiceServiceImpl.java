@@ -43,8 +43,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         List<Integer> opeUserIds = Lists.newArrayList();
         if (user.getLevel()!=3) {
-            // 不是业务员级别
-            opeUserIds = commonService.opeUserIds(user.getId());
+            if (user.getLevel()==1) {
+                // 超管
+                invoiceQuery.setAdmin11(true);
+            } else {
+                // 管理员
+                opeUserIds = commonService.opeUserIds(user.getId());
+            }
         }
         opeUserIds.add(user.getId());
         invoiceQuery.setIds(opeUserIds);

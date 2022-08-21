@@ -61,7 +61,7 @@ spring:
           starttls:
             enable: true
             required: true
-
-logging:
-  level:
-    com.example.live.mapper: debug
+#
+#logging:
+#  level:
+#    com.example.live.mapper: debug

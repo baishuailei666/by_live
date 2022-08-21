@@ -62,8 +62,13 @@ public class ContractServiceImpl implements ContractService {
         }
         List<Integer> opeUserIds = Lists.newArrayList();
         if (u.getLevel()!=3) {
-            // 不是业务员级别
-            opeUserIds = commonService.opeUserIds(u.getId());
+            if (u.getLevel()==1) {
+                // 超管
+                query.setAdmin11(true);
+            } else {
+                // 管理员
+                opeUserIds = commonService.opeUserIds(u.getId());
+            }
         }
         opeUserIds.add(u.getId());
         query.setOpeUserIds(opeUserIds);

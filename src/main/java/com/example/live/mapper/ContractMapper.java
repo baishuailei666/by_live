@@ -26,4 +26,7 @@ public interface ContractMapper {
     @Update("update contract set sign_status=1 where flow_id=#{flowId}")
     void updateStatus2(@Param("flowId") String flowId);
 
+    // 30天内合同份数
+    int contractMonth(@Param("mid") Integer mid);
+
 }

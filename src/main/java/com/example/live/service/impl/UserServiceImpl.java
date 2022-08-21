@@ -327,23 +327,28 @@ public class UserServiceImpl implements UserService {
         }
         List<Integer> opeUserIds = Lists.newArrayList();
         if (u.getLevel() != 3) {
-            // 不是业务员级别
-            opeUserIds = commonService.opeUserIds(u.getId());
+            if (u.getLevel()==1) {
+                // 超管
+                query.setAdmin11(true);
+            } else {
+                // 管理员
+                opeUserIds = commonService.opeUserIds(u.getId());
+            }
+        }
+        opeUserIds.add(u.getId());
+        query.setOpeUserIds(opeUserIds);
+        query.setPage(GeneralUtil.indexPage(query.getPage()));
+
+        // 业务员查询条件：id、remark、mobile
+        List<Integer> userLikeRemark = userMapper.getUserLikeRemark(query.getOpeUser(), opeUserIds);
+        if (userLikeRemark!=null && userLikeRemark.size()!=0) {
+            query.setOpeUserIds(userLikeRemark);
         }
 
-        //业务员查询条件
-        String opeUser = query.getOpeUser();
-        if (opeUserIds == null || opeUserIds.size() == 0) {
-            opeUserIds.add(u.getId());
-        }
-        List<Integer> userLikeRemark = userMapper.getUserLikeRemark(opeUser, opeUserIds);
-        query.setOpeUserIds(userLikeRemark);
-//        query.setOpeUserIds(opeUserIds);
         int count = orderMapper.orderCount(query);
         if (count == 0) {
             return new BaseResult<>();
         }
-        query.setPage(GeneralUtil.indexPage(query.getPage()));
 
         List<Order> data = orderMapper.orderList(query);
         List<Integer> ids = Lists.newArrayList();

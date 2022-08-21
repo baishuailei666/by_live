@@ -184,31 +184,34 @@ public class CloudSignUtil {
             // 乙方：
             // 乙方签字：componentId_20
             // 发起方：法人：componentId_1、手机号：componentId_2、签订时间：componentId_3
-            // 抖店名称：componentId_5、抖店ID：componentId_9、抖店主体名称：componentId_10
-            // 服务合作费用：componentId_11、服务合作时间：componentId_12、
+            // 抖店名称：componentId_5、抖店ID：componentId_13、抖店主体名称：componentId_14
+            // 服务合作权益：componentId_21、服务合作月份：componentId_22、
             // 签署人姓名：componentId_13、签署人手机号：componentId_14、签署时间：componentId_15
-            //
-            // 甲方：日期：componentId_37
+            // 日期：componentId_20、印章：componentId_19
+            // 合同编号：componentId_23
+            // 甲方：日期：componentId_18、印章：componentId_17
 
             // 个人签
-            // 乙方签字：componentId_23
+            // 乙方签字：componentId_5
             // 发起方：法人：componentId_25、手机号：componentId_26、签订时间：componentId_27
-            // 抖店名称：componentId_28、抖店ID：componentId_29、抖店主体名称：componentId_30
-            // 服务合作费用：componentId_31、服务合作时间：componentId_32、
-            // 签署人姓名：componentId_33、签署人手机号：componentId_34、签署时间：componentId_35
-            // 甲方：日期：componentId_22、印章：componentId_21
+            // 抖店名称：componentId_28、抖店ID：componentId_1、抖店主体名称：componentId_2
+            // 服务合作权益：componentId_3、服务合作时间：componentId_4、
+            // 签署人姓名：componentId_8、签署人手机号：componentId_7、签署时间：componentId_6
+            // 甲方：日期：componentId_10、印章：componentId_9
 
+            int buyType0 = jo.getIntValue("buyType");
             String person = jo.getString("person");
             String mobile = jo.getString("mobile");
             String subject = jo.getString("subject");
-            String fee = jo.getString("fee");
+            String buyType = Constant.buyTypeMap.get(buyType0);
             String shop = jo.getString("shop");
             String shopId = jo.getString("shopId");
-            String days = GeneralUtil.typeDays(jo.getIntValue("buyType"))+"";
+            String months = GeneralUtil.typeMonths(buyType0)+"";
+            String signNo = DateUtil.getTime2()+GeneralUtil.get4Random();
 
             if (type==1) {
                 req.setTemplateId(templateId_person);
-                FormField[] formFields = new FormField[11];
+                FormField[] formFields = new FormField[13];
                 FormField fb0 = new FormField();
                 fb0.setComponentId("componentId_25");
                 fb0.setComponentValue(person);
@@ -222,26 +225,32 @@ public class CloudSignUtil {
                 fb3.setComponentId("componentId_28");
                 fb3.setComponentValue(shop);
                 FormField fb4 = new FormField();
-                fb4.setComponentId("componentId_29");
+                fb4.setComponentId("componentId_1");
                 fb4.setComponentValue(shopId);
                 FormField fb5 = new FormField();
-                fb5.setComponentId("componentId_30");
+                fb5.setComponentId("componentId_2");
                 fb5.setComponentValue(subject);
                 FormField fb6 = new FormField();
-                fb6.setComponentId("componentId_31");
-                fb6.setComponentValue(fee);
+                fb6.setComponentId("componentId_3");
+                fb6.setComponentValue(buyType);
                 FormField fb7 = new FormField();
-                fb7.setComponentId("componentId_32");
-                fb7.setComponentValue(days);
+                fb7.setComponentId("componentId_4");
+                fb7.setComponentValue(months);
                 FormField fb9 = new FormField();
-                fb9.setComponentId("componentId_33");
+                fb9.setComponentId("componentId_8");
                 fb9.setComponentValue(person);
                 FormField fb10 = new FormField();
-                fb10.setComponentId("componentId_34");
+                fb10.setComponentId("componentId_7");
                 fb10.setComponentValue(mobile);
                 FormField fb11 = new FormField();
-                fb11.setComponentId("componentId_35");
+                fb11.setComponentId("componentId_6");
                 fb11.setComponentValue(date);
+                FormField fb12 = new FormField();
+                fb12.setComponentId("componentId_11");
+                fb12.setComponentValue(signNo);
+                FormField fb13 = new FormField();
+                fb13.setComponentId("componentId_24");
+                fb13.setComponentValue(subject);
 
                 formFields[0] = fb0;
                 formFields[1] = fb1;
@@ -254,10 +263,12 @@ public class CloudSignUtil {
                 formFields[8] = fb9;
                 formFields[9] = fb10;
                 formFields[10] = fb11;
+                formFields[11] = fb12;
+                formFields[12] = fb13;
                 req.setFormFields(formFields);
             } else {
                 req.setTemplateId(templateId_company);
-                FormField[] formFields = new FormField[11];
+                FormField[] formFields = new FormField[10];
                 // 乙方
                 FormField fb0 = new FormField();
                 fb0.setComponentId("componentId_1");
@@ -272,26 +283,23 @@ public class CloudSignUtil {
                 fb3.setComponentId("componentId_5");
                 fb3.setComponentValue(shop);
                 FormField fb4 = new FormField();
-                fb4.setComponentId("componentId_9");
+                fb4.setComponentId("componentId_13");
                 fb4.setComponentValue(shopId);
                 FormField fb5 = new FormField();
-                fb5.setComponentId("componentId_10");
+                fb5.setComponentId("componentId_14");
                 fb5.setComponentValue(subject);
                 FormField fb6 = new FormField();
-                fb6.setComponentId("componentId_11");
-                fb6.setComponentValue(fee);
+                fb6.setComponentId("componentId_21");
+                fb6.setComponentValue(buyType);
                 FormField fb7 = new FormField();
-                fb7.setComponentId("componentId_12");
-                fb7.setComponentValue(days);
-                FormField fb9 = new FormField();
-                fb9.setComponentId("componentId_13");
-                fb9.setComponentValue(person);
-                FormField fb10 = new FormField();
-                fb10.setComponentId("componentId_14");
-                fb10.setComponentValue(mobile);
-                FormField fb11 = new FormField();
-                fb11.setComponentId("componentId_15");
-                fb11.setComponentValue(date);
+                fb7.setComponentId("componentId_22");
+                fb7.setComponentValue(months);
+                FormField fb12 = new FormField();
+                fb12.setComponentId("componentId_23");
+                fb12.setComponentValue(signNo);
+                FormField fb13 = new FormField();
+                fb13.setComponentId("componentId_25");
+                fb13.setComponentValue(subject);
 
                 formFields[0] = fb0;
                 formFields[1] = fb1;
@@ -301,9 +309,8 @@ public class CloudSignUtil {
                 formFields[5] = fb5;
                 formFields[6] = fb6;
                 formFields[7] = fb7;
-                formFields[8] = fb9;
-                formFields[9] = fb10;
-                formFields[10] = fb11;
+                formFields[8] = fb12;
+                formFields[9] = fb13;
                 req.setFormFields(formFields);
             }
             req.setOperator(getUserInfo());
@@ -453,6 +460,5 @@ public class CloudSignUtil {
         userInfo.setUserId(userInfoId);
         return userInfo;
     }
-
 
 }

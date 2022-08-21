@@ -22,12 +22,15 @@
              ,ope_user as opeUser,days,login_count as loginCount,lt,ct
         FROM `merchant`
         where 1=1
-          <if test="ids!=null and ids.size()!=0">
-              and ope_user in
-              <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
-                  #{item}
-              </foreach>
-          </if>
+        <if test="admin != true">
+            <if test="ids!=null and ids.size()!=0">
+                and ope_user in
+                <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+
         <if test="mobile !=null and mobile!=''">
             and mobile = #{mobile}
         </if>
@@ -51,12 +54,15 @@
         SELECT count(1)
         FROM `merchant`
         where 1=1
-        <if test="ids!=null and ids.size()!=0">
-            and ope_user in
-            <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
-                #{item}
-            </foreach>
+        <if test="admin != true">
+            <if test="ids!=null and ids.size()!=0">
+                and ope_user in
+                <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </if>
+
         <if test="mobile !=null and mobile!=''">
             and mobile = #{mobile}
         </if>

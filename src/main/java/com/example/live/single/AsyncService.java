@@ -71,7 +71,9 @@ public class AsyncService {
 
     @Async("asyncThread")
     public void asyncSignStatusHandler(List<Integer> ids) {
-        contractMapper.updateStatus1(ids);
+        if (ids!=null && ids.size()!=0) {
+            contractMapper.updateStatus1(ids);
+        }
         log.info("## asyncSignStatusHandler");
     }
 

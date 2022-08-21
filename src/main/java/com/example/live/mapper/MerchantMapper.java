@@ -69,9 +69,9 @@ public interface MerchantMapper {
     @Update("update merchant set shop_status=#{shopStatus}, days=#{days} where id=#{merchantId}")
     void updateMerchantDays(@Param("merchantId") Integer merchantId, @Param("shopStatus") String shopStatus, @Param("days") Integer days);
 
-    List<Merchant> getMerchantListByParams(@Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus, @Param("index") Integer index);
+    List<Merchant> getMerchantListByParams(@Param("admin11") boolean admin11, @Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus, @Param("index") Integer index);
 
-    int getMerchantListByParamsCount(@Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
+    int getMerchantListByParamsCount(@Param("admin11") boolean admin11, @Param("ids") List<Integer> ids, @Param("mobile") String mobile, @Param("shop") String shop, @Param("shopStatus") String shopStatus);
 
 
 }

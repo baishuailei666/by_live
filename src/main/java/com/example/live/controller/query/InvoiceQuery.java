@@ -18,5 +18,7 @@ public class InvoiceQuery {
     private String company;
     // ope_user
     private List<Integer> ids;
+    // 是否超管
+    private boolean admin11;
 
 }

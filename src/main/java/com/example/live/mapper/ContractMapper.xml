@@ -6,12 +6,15 @@
         select count(1) from contract c
         left join merchant_sign ms on c.merchant_id=ms.merchant_id
         where 1=1
-        <if test="opeUserIds!=null and opeUserIds.size()!=0">
-            and c.ope_user in
-            <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
-                #{item}
-            </foreach>
+        <if test="admin11 != true">
+            <if test="opeUserIds!=null and opeUserIds.size()!=0">
+                and c.ope_user in
+                <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </if>
+
         <if test="company!=null and company!=''">
             and ms.subject like concat('%',#{company},'%')
         </if>
@@ -31,12 +34,15 @@
         from contract c
         left join merchant_sign ms on c.merchant_id=ms.merchant_id
         where 1=1
-        <if test="opeUserIds!=null and opeUserIds.size()!=0">
-            and c.ope_user in
-            <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
-                #{item}
-            </foreach>
+        <if test="admin != true">
+            <if test="opeUserIds!=null and opeUserIds.size()!=0">
+                and c.ope_user in
+                <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </if>
+
         <if test="company!=null and company!=''">
             and ms.subject like concat('%',#{company},'%')
         </if>
@@ -58,6 +64,11 @@
             #{item}
         </foreach>
     </update>
+
+    <select id="contractMonth" resultType="int">
+        SELECT count(1) FROM contract where DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(ct)
+        and merchant_id=#{mid}
+    </select>
 
 
 </mapper>

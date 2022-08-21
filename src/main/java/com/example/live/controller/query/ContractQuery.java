@@ -20,5 +20,6 @@ public class ContractQuery {
     private Integer buyType;
     // 业务员
     private List<Integer> opeUserIds;
+    private boolean admin11;
     private Integer page;
 }

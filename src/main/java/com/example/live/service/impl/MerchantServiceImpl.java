@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -64,24 +65,29 @@ public class MerchantServiceImpl implements MerchantService {
         if (u == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        int opeUserId = u.getId();
         String shop = jo.getString("shop");
         Integer page = jo.getInteger("page");
         String mobile = jo.getString("mobile");
         String shopStatus = jo.getString("shopStatus");
 
         List<Integer> opeUserIds = Lists.newArrayList();
+        boolean admin11 = false;
         if (u.getLevel()!=3) {
-            // 不是业务员级别
-            opeUserIds = commonService.opeUserIds(u.getId());
+            if (u.getLevel()==1) {
+                // 超管
+                admin11 = true;
+            } else {
+                // 管理员
+                opeUserIds = commonService.opeUserIds(u.getId());
+            }
         }
         opeUserIds.add(u.getId());
 
-        int count = merchantMapper.getMerchantListByParamsCount(opeUserIds, mobile, shop, shopStatus);
+        int count = merchantMapper.getMerchantListByParamsCount(admin11, opeUserIds, mobile, shop, shopStatus);
         if (count == 0) {
             return new BaseResult<>();
         } else {
-            List<Merchant> data = merchantMapper.getMerchantListByParams(opeUserIds, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
+            List<Merchant> data = merchantMapper.getMerchantListByParams(admin11, opeUserIds, mobile, shop, shopStatus, GeneralUtil.indexPage(page));
             List<Integer> mids = Lists.newArrayList();
             Set<Integer> uids = Sets.newHashSet();
             data.forEach(m -> {
@@ -148,7 +154,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public BaseResult<?> merchantInfo() {
+    public BaseResult<?> merchantInfo(HttpSession session, String tag) {
         MerchantVO mvo = UserUtil.getMerchant();
         if (mvo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
@@ -159,6 +165,10 @@ public class MerchantServiceImpl implements MerchantService {
             mvo.setDays(GeneralUtil.buyDays(order.getBuyType(), order.getUt()));
             mvo.setBuyType(Constant.buyTypeMap.get(order.getBuyType()));
             mvo.setVipType(order.getBuyType());
+        }
+        // 支付成功更新session
+        if ("pay".equals(tag)) {
+            session.setAttribute(Constant.session_user2, mvo);
         }
         return new BaseResult<>(mvo);
     }
@@ -331,7 +341,11 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>();
         }
         List<Video> data = videoMapper.videoList(list, GeneralUtil.index2Page(page, 6), 6);
-        data.forEach(v -> v.setCover(Constant.video_img));
+        data.forEach(v -> {
+            if (StringUtils.isBlank(v.getCover())) {
+                v.setCover(Constant.video_img);
+            }
+        });
         return new BaseResult<>(count, data);
     }
 
@@ -426,22 +440,15 @@ public class MerchantServiceImpl implements MerchantService {
         if (type != 1 && type != 0) {
             return new BaseResult<>(14, "参数错误");
         }
-        boolean contains = !Constant.buyTypeMap.keySet().contains(buyType);
+        boolean contains = !Constant.buyTypeMap.containsKey(buyType);
         if (buyType==null||contains){
             return new BaseResult<>(14, "参数错误");
         }
-
-        String configStr = dataConfigMapper.getConfigStr(Constant.admin_id);
-        String[] split = configStr.split(Constant.split2);
-        String[] s = split[2].split(Constant.split);
-        String fee;
-        if (buyType == 1) {
-            fee = s[0];
-        } else if (buyType == 2) {
-            fee = s[1];
-        } else {
-            fee = s[2];
+        int monthCount = contractMapper.contractMonth(mvo.getId());
+        if (monthCount>=5) {
+            return new BaseResult<>(15, "合同份数已达上限, 详情请联系客服");
         }
+
         MerchantSign sign = merchantSignMapper.getSignMerchant(mvo.getId());
         JSONObject jo = new JSONObject();
         jo.put("type", type);
@@ -450,7 +457,6 @@ public class MerchantServiceImpl implements MerchantService {
         jo.put("person", sign.getPerson());
         jo.put("mobile", sign.getMobile());
         jo.put("subject", sign.getSubject());
-        jo.put("fee", fee);
         jo.put("buyType", buyType);
         jo.put("shop", sign.getShop());
         jo.put("shopId", sign.getShopId());

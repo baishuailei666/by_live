@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.live.common.BaseResult;
 import com.example.live.entity.Invoice;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/10 13:42
@@ -19,7 +21,7 @@ public interface MerchantService {
 
     BaseResult<?> merchantSearch();
 
-    BaseResult<?> merchantInfo();
+    BaseResult<?> merchantInfo(HttpSession session, String tag);
 
     BaseResult<?> merchantOrderList();
 
