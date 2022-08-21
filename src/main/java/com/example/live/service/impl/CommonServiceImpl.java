@@ -146,15 +146,15 @@ public class CommonServiceImpl implements CommonService {
         // 0-邮箱地址、1-客服电话、2-服务价格
         String[] email = GeneralUtil.getAgentConfig(val, 0);
         String[] kef = GeneralUtil.getAgentConfig(val, 1);
-        String[] price = GeneralUtil.getAgentConfig(val, 2);
+//        String[] price = GeneralUtil.getAgentConfig(val, 2);
         // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
         vo.setEmailSend(email[0]);
         vo.setEmailReceive(email[1]);
         vo.setKef1(kef[0]);
         vo.setKef2(kef[1]);
-        vo.setMonthCard(price[0]);
-        vo.setSeasonCard(price[1]);
-        vo.setYearCard(price[2]);
+//        vo.setMonthCard(price[0]);
+//        vo.setSeasonCard(price[1]);
+//        vo.setYearCard(price[2]);
         voList.add(vo);
         return new BaseResult<>(voList.size(), voList);
     }
@@ -172,11 +172,23 @@ public class CommonServiceImpl implements CommonService {
         String emailReceive = jo.getString("emailReceive");
         String kef1 = jo.getString("kef1");
         String kef2 = jo.getString("kef2");
-        // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
-        String content = emailSend + Constant.split + emailReceive + Constant.split2 + kef1;
-        if (StringUtils.isNotEmpty(kef2)) {
-            content += Constant.split + kef2;
+        if (StringUtils.isBlank(kef1)) {
+            kef1 = "19357669138";
         }
+        if (StringUtils.isBlank(kef2)) {
+            kef2 = "-";
+        }
+        String c = dataConfigMapper.getConfigStr(Constant.admin_id);
+        String[] price = GeneralUtil.getAgentConfig(c, 2);
+
+        // 发件邮箱,收件邮箱;客服电话1,客服电话2;月卡,季卡,年卡
+        String content = emailSend + Constant.split
+                + emailReceive + Constant.split2
+                + kef1 + Constant.split
+                + kef2 + Constant.split2
+                + price[0]  + Constant.split
+                + price[1]  + Constant.split
+                + price[2];
         dataConfigMapper.modifyConfig(Constant.admin_id, content);
         return new BaseResult<>();
     }

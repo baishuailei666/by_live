@@ -3,7 +3,7 @@
 <mapper namespace="com.example.live.mapper.MerchantAuditMapper">
 
     <select id="merchantAuditWait" resultType="com.example.live.vo.MerchantAuditVO">
-        select a.id, a.merchant_id as merchantId,m.mobile,m.shop, u.mobile as opeUser, u.remark as opeUserRemark
+        select a.id, a.merchant_id as merchantId,m.mobile,m.shop, u.id as opeUserId, u.mobile as opeUser, u.remark as opeUserRemark
              ,a.status,m.introduce,a.ct,a.ut,a.remark
         from `merchant_audit` a
         left join `merchant` m on a.merchant_id=m.id

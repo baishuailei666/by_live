@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     private BaseResult<?> loginMerchant(HttpSession session, MerchantVO mvo, String mobile, String pwd, String code) {
         Merchant merchant = merchantMapper.getMerchant1(mobile);
         if (merchant == null) {
-            return new BaseResult<>(12, "请求参数错误");
+            return new BaseResult<>(12, "用户不存在");
         }
         if (StringUtils.isBlank(code)) {
             String en = MD5Util.encode(pwd);
@@ -228,11 +228,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> modifyPwd(JSONObject jo) {
         // source：back-管理端、merchant-商户端
+        UserVO vo = UserUtil.getUser();
+        if (vo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         String source = jo.getString("source");
         String mobile = jo.getString("mobile");
         String code = jo.getString("code");
         String pwd = jo.getString("pwd");
 
+        if (!mobile.equals(vo.getMobile())) {
+            return new BaseResult<>(12, "修改失败,手机号不匹配");
+        }
         String val = mobileCodeMapper.getCode(mobile);
         if (StringUtils.isBlank(val)) {
             return new BaseResult<>(13, "验证码无效");

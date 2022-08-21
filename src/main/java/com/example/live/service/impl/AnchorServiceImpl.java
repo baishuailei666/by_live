@@ -10,6 +10,7 @@ import com.example.live.mapper.ContentMapper;
 import com.example.live.service.AnchorService;
 import com.example.live.single.AsyncService;
 import com.example.live.util.GeneralUtil;
+import com.example.live.util.MerchantUtil;
 import com.example.live.util.UserUtil;
 import com.example.live.vo.AnchorVO;
 import com.example.live.vo.ContentVO;
@@ -35,6 +36,9 @@ public class AnchorServiceImpl implements AnchorService {
     private ContentMapper contentMapper;
     @Autowired
     private AsyncService asyncService;
+    @Autowired
+    private MerchantUtil merchantUtil;
+
 
     private List<JSONObject> categoryHandler(String category) {
         if (StringUtils.isBlank(category)) {
@@ -94,7 +98,7 @@ public class AnchorServiceImpl implements AnchorService {
     }
     @Override
     public BaseResult<?> anchorInfo(Integer id) {
-        MerchantVO mvo = UserUtil.getMerchant();
+        MerchantVO mvo = merchantUtil.getMerchant();
         if (mvo==null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }

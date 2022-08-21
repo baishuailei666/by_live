@@ -34,7 +34,7 @@
         from contract c
         left join merchant_sign ms on c.merchant_id=ms.merchant_id
         where 1=1
-        <if test="admin != true">
+        <if test="admin11 != true">
             <if test="opeUserIds!=null and opeUserIds.size()!=0">
                 and c.ope_user in
                 <foreach collection="opeUserIds" item="item" index="index" open="(" separator="," close=")">

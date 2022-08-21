@@ -163,7 +163,7 @@ public class Constant {
     public static Map<Integer, String> auditStatusMap;
     static {
         auditStatusMap = new HashMap<>();
-        auditStatusMap.put(0, "审核中");
+        auditStatusMap.put(0, "待审核");
         auditStatusMap.put(1, "已通过");
         auditStatusMap.put(2, "已拒绝");
     }

@@ -17,13 +17,13 @@ import java.util.List;
 public interface ContentMapper {
 
     // 查询5s内的消息
-    @Select("select count(1) from `content` where type=3 and rid=#{id} and ts between date_add(now(), interval - 5 second) and now() ")
+    @Select("select count(1) from `content` where type=3 and oid=#{id} and ts between date_add(now(), interval - 5 second) and now() ")
     int getMsg3(@Param("id") Integer id);
 
     @Insert("insert into `content`(oid, rid, note, type) values(#{oid}, #{rid}, #{note}, #{type})")
     void insContent(@Param("oid") int oid, @Param("rid") int rid, @Param("note") String note, @Param("type") int type);
 
-    @Select("select id, note, ts from `content` where type=3 and oid=#{oid} limit #{page}, 10")
+    @Select("select id, note, ts from `content` where type=3 and oid=#{oid} limit #{page}, 10 order by ts desc")
     List<Content> contentList(@Param("oid") int oid, @Param("page") int page);
 
     @Select("select note, ts from `content` where oid=#{oid} and rid=#{rid} and type=#{type}")

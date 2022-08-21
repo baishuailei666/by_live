@@ -19,7 +19,7 @@ public class OrderQuery {
     private String end;
     private String opeUser;
     private List<Integer> opeUserIds;
-    private boolean admin11;
+    private Boolean admin11;
     private String orderNo;
     // 购买类型：1-月卡、2-季卡、3-年卡
     private Integer buyType;

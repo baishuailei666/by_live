@@ -71,7 +71,10 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
         String path = request.getServletPath();
         String from = request.getHeader("from");
 
-        log.info("## path:" + path + ", from:"+from);
+        if (!path.equals("/common/msg")) {
+            log.info("## path:" + path + ", from:"+from);
+        }
+
         // 免拦截接口直接请求返回
         if (apis_none.contains(path)) {
             return true;
@@ -101,7 +104,9 @@ public class SysUserInterceptor extends HandlerInterceptorAdapter {
             return handleNoLogin(request, response);
         }
         String from = request.getHeader("from");
-        log.info("## path:" + path + ", from:"+from +", user:"+user.getId());
+        if (!path.equals("/common/msg")) {
+            log.info("## path:" + path + ", from:"+from +", user:"+user.getId());
+        }
 
         // 超级管理员独有权限
         if (apis_admin11.contains(path) && user.getLevel()!=1) {

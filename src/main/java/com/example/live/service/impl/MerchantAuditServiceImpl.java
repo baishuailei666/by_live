@@ -49,7 +49,10 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         int i = merchantAuditMapper.merchantAuditWaitCount(userId, status, mobile, shop);
         if (i!=0) {
             List<MerchantAuditVO> merchantAudits = merchantAuditMapper.merchantAuditWait(userId, status, mobile, shop, GeneralUtil.indexPage(page));
-            merchantAudits.forEach(v -> v.setStatus(Constant.auditStatusMap.get(Integer.valueOf(v.getStatus()))));
+            merchantAudits.forEach(v -> {
+                v.setOpeUser(v.getOpeUserId()+"/"+v.getOpeUser()+"/"+v.getOpeUserRemark());
+                v.setStatus(Constant.auditStatusMap.get(Integer.valueOf(v.getStatus())));
+            });
             return new BaseResult<>(i, merchantAudits);
         }
         return new BaseResult<>();
@@ -73,7 +76,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
             // 更新merchant表
             merchantMapper.updateMerchantCheck(merchantId);
         } else {
-            reason = "审核拒绝:"+ reason;
+            reason = "审核拒绝："+ reason;
         }
         contentMapper.insContent(GeneralUtil.parseInt(merchantId), id, reason, 3);
         return new BaseResult<>();

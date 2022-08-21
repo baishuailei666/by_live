@@ -62,7 +62,7 @@ public class PayController {
     public void successHandler(Order order) {
         int mid = order.getMerchantId();
         Merchant merchant = merchantMapper.getMerchant3(mid);
-        if (merchant!=null) {
+        if (merchant!=null && StringUtils.isNotBlank(merchant.getShopId())) {
             String buy = "已认证-"+Constant.buyTypeMap.get(order.getBuyType());
             int days = GeneralUtil.typeDays(order.getBuyType());
             merchantMapper.updateMerchantDays(mid, buy, GeneralUtil.parseInt(merchant.getDays())+days);
@@ -121,7 +121,7 @@ public class PayController {
             httpResponse.getWriter().close();
             return;
         }
-        if (mvo.getId()==3 || mvo.getId()==5) {
+        if (mvo.getId()==Constant.admin_id) {
             totalAmount = "0.01";
         }
 
@@ -301,7 +301,7 @@ public class PayController {
             httpResponse.getWriter().close();
             return (T) new BaseResult<>(httpResponse);
         }
-        if (mvo.getId()==3 || mvo.getId()==5) {
+        if (mvo.getId()==Constant.admin_id) {
             totalAmount = "0.01";
         }
 

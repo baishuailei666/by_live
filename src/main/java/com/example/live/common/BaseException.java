@@ -22,11 +22,11 @@ public class BaseException {
     private MailUtil mailUtil;
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handlerException(Exception ex) {
+    protected BaseResult<?> handlerException(Exception ex) {
+        ex.printStackTrace();
         mailUtil.sendExceptionMailHandler(ex);
 
-        return new ResponseEntity<>(ex, HttpStatus.OK);
+        return new BaseResult<>(500, "服务器异常");
     }
-
 
 }
