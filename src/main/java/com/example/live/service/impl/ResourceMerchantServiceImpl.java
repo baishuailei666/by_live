@@ -100,7 +100,7 @@ public class ResourceMerchantServiceImpl implements ResourceMerchantService {
         Integer id = jo.getInteger("id");
         String note = jo.getString("note");
         // 跟进记录-1、备注-2、消息通知-3
-        contentMapper.insContent(uvo.getId(), id, note, 2);
+        contentMapper.insContent(uvo.getId(), id, note, 2, 0);
         return new BaseResult<>();
     }
 

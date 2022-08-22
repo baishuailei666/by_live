@@ -179,7 +179,7 @@ public class AnchorServiceImpl implements AnchorService {
     @Override
     public BaseResult<?> anchorFollowAdd(Integer id, String content) {
         Integer mid = UserUtil.getMerchantId();
-        contentMapper.insContent(mid, id, content, 1);
+        contentMapper.insContent(mid, id, content, 1, 1);
         return new BaseResult<>();
     }
 

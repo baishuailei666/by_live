@@ -167,5 +167,12 @@ public class Constant {
         auditStatusMap.put(1, "已通过");
         auditStatusMap.put(2, "已拒绝");
     }
+    // 0-back, 1-merchant
+    public static Map<String, Integer> sourceMap;
+    static {
+        sourceMap = new HashMap<>();
+        sourceMap.put("back", 0);
+        sourceMap.put("merchant", 1);
+    }
 
 }

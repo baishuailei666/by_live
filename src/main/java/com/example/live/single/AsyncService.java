@@ -49,7 +49,7 @@ public class AsyncService {
         // 提交审核
         merchantAuditMapper.merchantShopAudit(mvo.getId(), mvo.getOpeUser());
         // 消息通知给业务员
-        contentMapper.insContent(mvo.getOpeUser(), mvo.getId(), note, 3);
+        contentMapper.insContent(mvo.getOpeUser(), mvo.getId(), note, 3, 0);
         log.info("## asyncAudit");
     }
 

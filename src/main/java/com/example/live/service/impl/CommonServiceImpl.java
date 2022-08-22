@@ -105,11 +105,11 @@ public class CommonServiceImpl implements CommonService {
         Integer val = null;
         if (Constant.source_back.equals(source)) {
             // 后台接收消息
-            val = contentMapper.getMsg3(UserUtil.getUserId());
+            val = contentMapper.getMsg3(UserUtil.getUserId(), Constant.sourceMap.get(source));
         }
         if (Constant.source_merchant.equals(source)) {
             // 商户端接收消息
-            val = contentMapper.getMsg3(UserUtil.getMerchantId());
+            val = contentMapper.getMsg3(UserUtil.getMerchantId(), Constant.sourceMap.get(source));
         }
         return new BaseResult<>(val);
     }

@@ -60,10 +60,15 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
 
     @Override
     public BaseResult<?> merchantAudit(JSONObject jo) {
-        String merchantId = jo.getString("merchantId");
+        UserVO uvo = UserUtil.getUser();
+        if (uvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+
         int id = jo.getIntValue("id");
         int status = jo.getIntValue("status");
         String reason = jo.getString("reason");
+        String merchantId = jo.getString("merchantId");
         if (StringUtils.isEmpty(merchantId)) {
             return new BaseResult<>(12, "参数不能为空");
         }
@@ -78,7 +83,7 @@ public class MerchantAuditServiceImpl implements MerchantAuditService {
         } else {
             reason = "审核拒绝："+ reason;
         }
-        contentMapper.insContent(GeneralUtil.parseInt(merchantId), id, reason, 3);
+        contentMapper.insContent(GeneralUtil.parseInt(merchantId), uvo.getId(), reason, 3, 1);
         return new BaseResult<>();
     }
 

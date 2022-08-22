@@ -22,4 +22,6 @@ public class Content {
     private int type;
     // 时间
     private String ts;
+    // 给source端使用：0-back, 1-merchant
+    private int source;
 }
