@@ -44,9 +44,12 @@ public class CloudVodUtil {
             String format = split[split.length - 1];
 
             VodUploadRequest request = new VodUploadRequest();
+            // 太博甄选课程学习视频
+            request.setClassId(909525L);
             request.setMediaType(format);
             request.setStorageRegion(cos_region);
-            request.setConcurrentUploadNumber(5);
+            request.setConcurrentUploadNumber(7);
+            request.setMediaName(file.getResource().getFilename());
             request.setMediaFilePath(localFile.getCanonicalPath());
             try {
                 VodUploadResponse response = vodClient.upload(cos_region, request);

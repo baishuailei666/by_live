@@ -114,12 +114,7 @@ public class CommonController {
      */
     @PostMapping("/upload/video")
     public BaseResult<?> uploadVideo(@RequestBody MultipartFile file) {
-        UserVO u = UserUtil.getUser();
-        if (u!=null&&u.getId()==Constant.admin_id) {
-            return commonService.uploadVideo(file);
-        } else {
-            return new BaseResult<>(17, "接口请求失败");
-        }
+        return commonService.uploadVideo(file);
     }
 
     /**
