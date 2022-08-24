@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -22,9 +23,11 @@ public class BaseException {
     private MailUtil mailUtil;
 
     @ExceptionHandler(Exception.class)
-    protected BaseResult<?> handlerException(Exception ex) {
+    protected BaseResult<?> handlerException(HttpServletRequest request, Exception ex) {
         ex.printStackTrace();
-        mailUtil.sendExceptionMailHandler(ex);
+        String path = request.getServletPath();
+        log.error("# {} {}, 发生业务异常, 原因:{}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+        mailUtil.sendExceptionMailHandler(path, ex);
 
         return new BaseResult<>(500, "服务器异常");
     }

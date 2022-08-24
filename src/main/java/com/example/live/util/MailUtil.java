@@ -150,7 +150,7 @@ public class MailUtil {
 
 
     // 服务异常邮箱告警
-    public void sendExceptionMailHandler(Exception e) {
+    public void sendExceptionMailHandler(String s, Exception e) {
         Thread thread = new Thread(() -> {
             String con = dataConfigMapper.getConfigStr(Constant.admin_id);
             if (StringUtils.isBlank(con)) {
@@ -160,6 +160,8 @@ public class MailUtil {
 
             String sbd = head2 +
                     "<tbody>" +
+                    "<tr>" + s +
+                    "</tr>" +
                     "<tr>" + e +
                     "</tr>" +
                     "</tbody>" +
@@ -227,6 +229,9 @@ public class MailUtil {
             "    </head>"
             + "<table>" +
             "            <thead>" +
+            "                <tr>" +
+            "              "+
+            "                </tr>" +
             "                <tr>" +
             "              "+
             "                </tr>" +

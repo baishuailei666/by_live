@@ -39,7 +39,7 @@
         </if>
         <if test="shopStatus !=null and shopStatus!=''">
           <if test="shopStatus='已认证'">
-              and shop_status CONCAT('%',#{shop},'%')
+              and shop_status LIKE CONCAT('%',#{shop},'%')
           </if>
 
           <if test="shopStatus='已付费'">
@@ -70,12 +70,15 @@
             and shop LIKE CONCAT('%',#{shop},'%')
         </if>
         <if test="shopStatus !=null and shopStatus!=''">
+            <if test="shopStatus='未认证'">
+                and shop_status is null
+            </if>
             <if test="shopStatus='已认证'">
-                and shop_status CONCAT('%',#{shop},'%')
+                and shop_status LIKE CONCAT('%',#{shop},'%')
             </if>
 
             <if test="shopStatus='已付费'">
-                and shop_status CONCAT('%','卡','%')
+                and shop_status LIKE CONCAT('%','卡','%')
             </if>
 
         </if>
