@@ -1,6 +1,7 @@
 package com.example.live.common;
 
 
+import com.example.live.util.GeneralUtil;
 import com.example.live.util.MailUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,8 @@ public class BaseException {
     protected BaseResult<?> handlerException(HttpServletRequest request, Exception ex) {
         ex.printStackTrace();
         String path = request.getServletPath();
-        log.error("# {} {}, 发生业务异常, 原因:{}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+        String ip = GeneralUtil.getIpAdd(request);
+        log.error("# {}, {}, {}, Err:{}", request.getMethod(), request.getRequestURI(), ip, ex.getMessage());
         mailUtil.sendExceptionMailHandler(path, ex);
 
         return new BaseResult<>(500, "服务器异常");

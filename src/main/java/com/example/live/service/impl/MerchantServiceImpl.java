@@ -326,11 +326,13 @@ public class MerchantServiceImpl implements MerchantService {
         if (vo == null) {
             return new BaseResult<>(BaseEnum.No_Login);
         }
-        if (type > vo.getVipType()) {
-            return new BaseResult<>(16, "没有权限");
-        }
+
         List<Integer> list = Lists.newArrayList();
-        list.add(type);
+        if (type==null || type==0) {
+            list.add(1);
+        } else {
+            list.add(type);
+        }
         int count = videoMapper.count(list);
         if (count == 0) {
             return new BaseResult<>();
@@ -355,10 +357,14 @@ public class MerchantServiceImpl implements MerchantService {
         if (video == null) {
             return new BaseResult<>(12, "没有数据");
         }
-        if (video.getLevel() > mvo.getVipType()) {
-            return new BaseResult<>(13, "没有权限");
+        if (video.getLevel() != 0) {
+            if (video.getLevel() > mvo.getVipType()) {
+                return new BaseResult<>(13, "没有权限");
+            }
         }
-        video.setCover(Constant.video_img);
+        if (StringUtils.isBlank(video.getCover())) {
+            video.setCover(Constant.video_img);
+        }
         return new BaseResult<>(GeneralUtil.urlSignHandler(video.getPath()));
     }
 

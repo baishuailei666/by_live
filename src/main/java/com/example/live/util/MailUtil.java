@@ -160,7 +160,8 @@ public class MailUtil {
 
             String sbd = head2 +
                     "<tbody>" +
-                    "<tr>" + s +
+                    "<tr>" + s
+                    + "  " +
                     "</tr>" +
                     "<tr>" + e +
                     "</tr>" +
