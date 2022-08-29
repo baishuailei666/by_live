@@ -106,6 +106,14 @@ public class CommonController {
         return new BaseResult<>();
     }
 
+//    @GetMapping("/upload/del")
+//    public BaseResult<?> delVideo(@RequestParam("key") String key, @RequestParam("uuid") String uuid) {
+//        if (!"mNqiOpq9".equals(uuid)) {
+//            return new BaseResult<>(12, "无效请求");
+//        }
+//        return commonService.delVideo(key);
+//    }
+
     /**
      * 视频上传
      *

@@ -20,5 +20,9 @@
         limit #{from}, #{size}
     </select>
 
+    <delete id="delVideo">
+        delete from video where id=#{key}
+    </delete>
+
 
 </mapper>

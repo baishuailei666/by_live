@@ -230,6 +230,12 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
+    public BaseResult<?> delVideo(String key) {
+        videoMapper.delVideo(key);
+        return new BaseResult<>();
+    }
+
+    @Override
     public BaseResult<?> uploadVideo(MultipartFile file) {
         UserVO user = UserUtil.getUser();
         if (user == null) {

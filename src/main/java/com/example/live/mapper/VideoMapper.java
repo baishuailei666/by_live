@@ -24,4 +24,6 @@ public interface VideoMapper {
 
     @Insert("insert into video(title, level, path, cover) values(#{title}, #{level}, #{path}, #{cover})")
     void insVideo(@Param("title") String title, @Param("level") int level, @Param("path") String path, @Param("cover") String cover);
+
+    void delVideo(@Param("key") String key);
 }

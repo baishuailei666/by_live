@@ -37,6 +37,8 @@ public interface CommonService {
 
     BaseResult<?> showPrices();
 
+    BaseResult<?> delVideo(String key);
+
     BaseResult<?> uploadVideo(MultipartFile file);
 
     BaseResult<?> uploadVideoParam(String path, String title, Integer level, String cover);
