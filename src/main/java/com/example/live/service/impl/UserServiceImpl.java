@@ -228,16 +228,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public BaseResult<?> modifyPwd(JSONObject jo) {
         // source：back-管理端、merchant-商户端
-        UserVO vo = UserUtil.getUser();
-        if (vo==null) {
-            return new BaseResult<>(BaseEnum.No_Login);
-        }
+        String existMobile = null;
         String source = jo.getString("source");
+        if (Constant.source_back.equals(source)) {
+            UserVO vo = UserUtil.getUser();
+            if (vo==null) {
+                return new BaseResult<>(BaseEnum.No_Login);
+            }
+            existMobile = vo.getMobile();
+        }
+        if (Constant.source_merchant.equals(source)) {
+            MerchantVO vo = UserUtil.getMerchant();
+            if (vo==null) {
+                return new BaseResult<>(BaseEnum.No_Login);
+            }
+            existMobile = vo.getMobile();
+        }
         String mobile = jo.getString("mobile");
         String code = jo.getString("code");
         String pwd = jo.getString("pwd");
-
-        if (!mobile.equals(vo.getMobile())) {
+        if (!mobile.equals(existMobile)) {
             return new BaseResult<>(12, "修改失败,手机号不匹配");
         }
         String val = mobileCodeMapper.getCode(mobile);
@@ -248,9 +258,9 @@ public class UserServiceImpl implements UserService {
             return new BaseResult<>(14, "验证码不正确");
         }
         String encode = MD5Util.encode(pwd);
-        if ("back".equals(source)) {
+        if (Constant.source_back.equals(source)) {
             userMapper.modifyPwd(mobile, encode);
-        } else if ("merchant".equals(source)) {
+        } else {
             merchantMapper.modifyPwd(mobile, encode);
         }
         return new BaseResult<>();
