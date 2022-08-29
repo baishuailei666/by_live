@@ -14,6 +14,7 @@ import com.example.live.vo.DataConfigVO;
 import com.example.live.vo.MerchantVO;
 import com.example.live.vo.UserVO;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * @author baishuailei@zhejianglab.com
  * @date 2022/7/11 11:53
  */
+@Slf4j
 @Service("commonService")
 public class CommonServiceImpl implements CommonService {
 
@@ -124,6 +126,7 @@ public class CommonServiceImpl implements CommonService {
         if (user2==null) {
             user2 = new User();
             user2.setRemark("--");
+            log.info("## kef no user:"+mvo.getId()+","+mvo.getOpeUser());
         }
         String val = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);

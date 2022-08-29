@@ -70,5 +70,8 @@
         and merchant_id=#{mid}
     </select>
 
+    <select id="getOne" resultType="string">
+        SELECT flow_id FROM contract where sign_status=0 and merchant_id=#{mid} order by ct limit 1
+    </select>
 
 </mapper>

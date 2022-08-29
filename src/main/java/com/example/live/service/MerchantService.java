@@ -45,6 +45,8 @@ public interface MerchantService {
 
     BaseResult<?> paySuccessCheck(String orderNo);
 
+    BaseResult<?> merchantSignCheck();
+
     BaseResult<?> merchantSignCreate(Integer type, Integer buyType);
 
     BaseResult<?> merchantSignUrl(String flowId);

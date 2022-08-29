@@ -442,6 +442,24 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public BaseResult<?> merchantSignCheck() {
+        MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo==null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
+
+        String flowId = contractMapper.getOne(mvo.getId());
+        if (StringUtils.isNotBlank(flowId)) {
+            boolean sign = cloudSignUtil.signStatus(flowId);
+            if (!sign) {
+                String url = cloudSignUtil.signUrl(flowId);
+                return new BaseResult<>(url);
+            }
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
     public BaseResult<?> merchantSignCreate(Integer type, Integer buyType) {
         MerchantVO mvo = UserUtil.getMerchant();
         // type 0-企业、1-个人

@@ -153,6 +153,15 @@ public class MerchantController {
         return merchantService.paySuccessCheck(orderNo);
     }
 
+    /**
+     * 商户电子签检查是否存在未签署
+     *
+     * @return
+     */
+    @GetMapping("/sign/check")
+    public BaseResult<?> merchantSignCheck() {
+        return merchantService.merchantSignCheck();
+    }
 
     /**
      * 商户电子签
