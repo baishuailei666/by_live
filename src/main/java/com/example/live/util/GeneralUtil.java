@@ -18,10 +18,17 @@ public final class GeneralUtil {
 
     public static void main(String[] args) throws Exception {
         System.out.println("***GeneralUtil main***");
+        System.out.println(isLetterDigit("9122022NA6CY239G是"));
         
-        for (int i = 0; i < 150; i++) {
-            System.out.println(getIntRandom(13));
-        }
+//        for (int i = 0; i < 150; i++) {
+//            System.out.println(getIntRandom(13));
+//        }
+    }
+
+    // 格式校验
+    public static boolean isLetterDigit(String str) {
+        String regex = "^[a-z0-9A-Z]+$";
+        return str.matches(regex);
     }
 
     // 获取4位随机数

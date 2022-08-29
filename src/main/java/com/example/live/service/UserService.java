@@ -17,7 +17,7 @@ public interface UserService {
 
     BaseResult<?> userInfo();
 
-    BaseResult<?> userList(String keyword, Integer page);
+    BaseResult<?> userList(Integer level, String keyword, Integer page);
 
     BaseResult<?> mobileCode(String mobile);
 

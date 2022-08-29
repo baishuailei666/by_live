@@ -187,17 +187,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResult<?> userList(String keyword, Integer page) {
+    public BaseResult<?> userList(Integer level, String keyword, Integer page) {
         Integer agentUser = UserUtil.getUserId();
         // 超级管理员查看所有
         if (agentUser == Constant.admin_id) {
             agentUser = null;
         }
-        int count = userMapper.count(agentUser, keyword);
+        int count = userMapper.count(level, agentUser, keyword);
         if (count == 0) {
             return new BaseResult<>();
         }
-        List<User> list = userMapper.userList(agentUser, keyword, GeneralUtil.indexPage(page));
+        List<User> list = userMapper.userList(level, agentUser, keyword, GeneralUtil.indexPage(page));
         List<UserListVO> voList = Lists.newLinkedList();
         list.forEach(u -> {
             UserListVO vo = new UserListVO();

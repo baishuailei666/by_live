@@ -20,7 +20,9 @@
         <if test="agentUser==null">
             is not null and id != 11
         </if>
-
+        <if test="level!=null">
+            and level = #{level}
+        </if>
         <if test="keyword!=null and keyword!=''">
             and mobile LIKE CONCAT('%', #{keyword}, '%')
         </if>
@@ -29,7 +31,7 @@
     </select>
 
     <select id="count" resultType="int">
-        select count(1) from user
+        select count(1) from `user`
         where id
         <if test="agentUser!=null">
             in (select child_user_id from relation_user where main_user_id=#{agentUser})
@@ -37,7 +39,9 @@
         <if test="agentUser==null">
             is not null and id != 11
         </if>
-
+        <if test="level!=null">
+            and level = #{level}
+        </if>
         <if test="keyword!=null and keyword!=''">
             and mobile LIKE CONCAT('%', #{keyword}, '%')
         </if>

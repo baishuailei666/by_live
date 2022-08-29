@@ -74,13 +74,14 @@ public class UserController {
     /**
      * 用户列表
      *
+     * @param level 管理员、业务员
      * @param keyword 手机号筛选
      * @param page    1
      * @return
      */
     @GetMapping("/user")
-    public BaseResult<?> userList(@RequestParam("keyword") String keyword, @RequestParam("page") Integer page) {
-        return userService.userList(keyword, page);
+    public BaseResult<?> userList(Integer level, @RequestParam("keyword") String keyword, @RequestParam("page") Integer page) {
+        return userService.userList(level, keyword, page);
     }
 
     /**

@@ -401,6 +401,12 @@ public class MerchantServiceImpl implements MerchantService {
         String subject = jo.getString("subject");
         String tax = jo.getString("tax");
         Integer id = jo.getInteger("id");
+
+        boolean is = GeneralUtil.isLetterDigit(tax);
+        if (!is) {
+            return new BaseResult<>(17, "输入格式不正确");
+        }
+
         MerchantSign sign = new MerchantSign();
         sign.setMerchantId(mvo.getId());
         sign.setSubject(subject);

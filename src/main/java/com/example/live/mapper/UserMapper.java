@@ -20,9 +20,9 @@ public interface UserMapper {
     @Select("SELECT id,remark,mobile,level,wx,ct FROM `user` where id=#{id}")
     User getUser2(@Param("id") Integer id);
 
-    List<User> userList(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword, @Param("page") int page);
+    List<User> userList(@Param("level") Integer level, @Param("agentUser") Integer agentUser, @Param("keyword") String keyword, @Param("page") int page);
 
-    int count(@Param("agentUser") Integer agentUser, @Param("keyword") String keyword);
+    int count(@Param("level") Integer level, @Param("agentUser") Integer agentUser, @Param("keyword") String keyword);
 
     @Update("update `user` set pwd=#{pwd} where mobile=#{mobile}")
     void modifyPwd(@Param("mobile") String mobile, @Param("pwd") String pwd);
