@@ -25,7 +25,7 @@ public class Constant {
     public static final int admin_id = 11;
 
     // session最大过期时间
-    public static final int interval = 3600;
+    public static final int interval = 86400;
 
     public static final String session_user = "back_user";
     public static final String session_user2 = "merchant_user";

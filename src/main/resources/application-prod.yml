@@ -5,7 +5,7 @@ server:
 #  port: 8089
   servlet:
     session:
-      timeout: 3600
+      timeout: 86400
 
 # 微信支付
 wx:

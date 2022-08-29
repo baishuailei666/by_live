@@ -33,7 +33,9 @@ public class TimerTask {
     // true-不执行、false-执行
     // back执行、merchant不执行
     private boolean execHandler() {
-        return !port.equals("8081");
+        boolean p = !port.equals("8081");
+        System.out.println("## port:"+port+", "+p);
+        return p;
     }
 
     // 每天23:30进行数据资源分配
