@@ -121,6 +121,10 @@ public class CommonServiceImpl implements CommonService {
             return new BaseResult<>();
         }
         User user2 = userMapper.getUser2(mvo.getOpeUser());
+        if (user2==null) {
+            user2 = new User();
+            user2.setRemark("--");
+        }
         String val = dataConfigMapper.getConfigStr(Constant.admin_id);
         String[] phone = GeneralUtil.getAgentConfig(val, 1);
         JSONObject jo = new JSONObject();
