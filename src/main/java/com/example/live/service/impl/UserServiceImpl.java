@@ -26,6 +26,8 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,29 +57,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResult<?> userLogin(HttpSession session, JSONObject jo) {
-        // opeUser 业务员
-        Integer opeUser = jo.getInteger("promotion");
         // source:back-管理端、merchant-商户端
         String source = jo.getString("source");
         String mobile = jo.getString("mobile");
         String code = jo.getString("code");
         String pwd = jo.getString("pwd");
         if (StringUtils.isBlank(mobile)) {
-            return new BaseResult<>(11, "手机号不能未空");
+            return new BaseResult<>(11, "手机号不能为空");
         }
-        if (opeUser == null) {
-            opeUser = Constant.admin_id;
+        Integer opeUser;
+        try {
+            opeUser = jo.getInteger("promotion");
+        } catch (Exception e) {
+            return new BaseResult<>(19, "登录异常,请联系客服");
         }
+
         if ("back".equals(source)) {
             // 后台管理系统
             String en = MD5Util.encode(pwd);
             User user = userMapper.getUser1(mobile, en);
             if (user == null) {
-                return new BaseResult<>(12, "账号密码错误,登录失败");
+                return new BaseResult<>(12, "登录失败,账号密码错误");
             }
             UserVO vo = new UserVO();
             vo.setId(user.getId());
             vo.setWx(user.getWx());
+            vo.setTs(user.getUt());
             vo.setLevel(user.getLevel());
             vo.setMobile(user.getMobile());
             vo.setRemark(user.getRemark());
@@ -89,7 +94,6 @@ public class UserServiceImpl implements UserService {
 //                // 超级管理员、管理员使用自己的id
 //                vo.setAgentUser(user.getId());
 //            }
-            vo.setTs(user.getUt());
 //            List<LevelRight> rightList = commonService.getLevelRight(user.getLevel());
 //            vo.setRights(rightList);
             session.setAttribute(Constant.session_user, vo);
@@ -102,7 +106,11 @@ public class UserServiceImpl implements UserService {
                 // 验证码登录
                 String val = mobileCodeMapper.getCode(mobile);
                 if (!code.equals(val)) {
-                    return new BaseResult<>(11, "验证码不正确");
+                    return new BaseResult<>(11, "验证码不正确或已过期");
+                }
+                // merchant bind opeUser
+                if (opeUser == null) {
+                    opeUser = Constant.admin_id;
                 }
 
                 Merchant merchant = merchantMapper.getMerchant1(mobile);
@@ -110,7 +118,7 @@ public class UserServiceImpl implements UserService {
                     // 注册商户
                     merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
                     String ts = DateUtil.getTime();
-                    mvo.setId(merchantMapper.lastId());
+//                    mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
                     mvo.setLoginCount(1);
@@ -140,7 +148,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(code)) {
             String en = MD5Util.encode(pwd);
             if (!Objects.equals(en, merchant.getPwd())) {
-                return new BaseResult<>(14, "登录失败,密码错误");
+                return new BaseResult<>(14, "登录失败,账号密码错误");
             }
         }
         mvo.setMobile(mobile);

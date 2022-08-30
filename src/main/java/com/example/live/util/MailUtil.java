@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
+import java.util.Arrays;
 
 
 /**
@@ -161,9 +162,12 @@ public class MailUtil {
             String sbd = head2 +
                     "<tbody>" +
                     "<tr>" + s
-                    + "  " +
+                    + " *** " +
                     "</tr>" +
-                    "<tr>" + e +
+                    "<tr>" + e
+                    + " *** " +
+                    "</tr>" +
+                    "<tr>" + Arrays.toString(e.getStackTrace()) +
                     "</tr>" +
                     "</tbody>" +
                     footer;
@@ -230,6 +234,9 @@ public class MailUtil {
             "    </head>"
             + "<table>" +
             "            <thead>" +
+            "                <tr>" +
+            "              "+
+            "                </tr>" +
             "                <tr>" +
             "              "+
             "                </tr>" +
