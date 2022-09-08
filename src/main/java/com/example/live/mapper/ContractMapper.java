@@ -29,6 +29,6 @@ public interface ContractMapper {
     // 30天内合同份数
     int contractMonth(@Param("mid") Integer mid);
 
-    String getOne(@Param("mid") Integer mid);
+    Contract getOne(@Param("mid") Integer mid);
 
 }

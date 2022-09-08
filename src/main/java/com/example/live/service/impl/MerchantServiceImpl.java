@@ -448,15 +448,26 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(BaseEnum.No_Login);
         }
 
-        String flowId = contractMapper.getOne(mvo.getId());
-        if (StringUtils.isNotBlank(flowId)) {
-            boolean sign = cloudSignUtil.signStatus(flowId);
-            if (!sign) {
-                String url = cloudSignUtil.signUrl(flowId);
-                return new BaseResult<>(url);
-            }
+        // 查询是否存在电子签状态
+        Contract contract = contractMapper.getOne(mvo.getId());
+        if (contract == null) {
+            return new BaseResult<>(20, "暂无签署状态");
         }
-        return new BaseResult<>();
+
+        if (contract.getSignStatus() == 1) {
+            // 已签署
+            return new BaseResult<>(21, "已签署");
+        } else {
+            // 未签署
+            String flowId = contract.getFlowId();
+            boolean sign = cloudSignUtil.signStatus(flowId);
+            if (sign) {
+                return new BaseResult<>(21, "已签署");
+            }
+            // 未签署，返回电子签二维码
+            String url = cloudSignUtil.signUrl(flowId);
+            return new BaseResult<>(22, "未签署", url);
+        }
     }
 
     @Override

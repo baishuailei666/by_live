@@ -65,12 +65,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(mobile)) {
             return new BaseResult<>(11, "手机号不能为空");
         }
-        Integer opeUser;
-        try {
-            opeUser = jo.getInteger("promotion");
-        } catch (Exception e) {
-            return new BaseResult<>(19, "登录异常,请联系客服");
-        }
+
 
         if ("back".equals(source)) {
             // 后台管理系统
@@ -107,6 +102,12 @@ public class UserServiceImpl implements UserService {
                 String val = mobileCodeMapper.getCode(mobile);
                 if (!code.equals(val)) {
                     return new BaseResult<>(11, "验证码不正确或已过期");
+                }
+                Integer opeUser;
+                try {
+                    opeUser = jo.getInteger("promotion");
+                } catch (Exception e) {
+                    return new BaseResult<>(19, "登录异常,请联系客服");
                 }
                 // merchant bind opeUser
                 if (opeUser == null) {
@@ -433,6 +434,7 @@ public class UserServiceImpl implements UserService {
         order.setBuyType(buyType);
         order.setMerchantId(merchantId);
         String orderNo = GeneralUtil.getOrderNo(buyType);
+        order.setTradeNo("UserID:"+uvo.getId()+"创建支付订单");
         order.setOrderNo(orderNo);
         order.setOpeUser(uvo.getId());
         order.setStatus(Constant.pay_success);

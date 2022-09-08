@@ -70,8 +70,8 @@
         and merchant_id=#{mid}
     </select>
 
-    <select id="getOne" resultType="string">
-        SELECT flow_id FROM contract where sign_status=0 and merchant_id=#{mid} order by ct limit 1
+    <select id="getOne" resultType="com.example.live.entity.Contract">
+        SELECT flow_id as flowId, sign_status as signStatus, ct FROM contract where merchant_id=#{mid} order by ct limit 1
     </select>
 
 </mapper>
