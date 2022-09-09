@@ -56,8 +56,12 @@ public class UserController {
      * @return BaseResult
      */
     @GetMapping("/logout")
-    public BaseResult<?> logout(HttpSession session) {
-        session.removeAttribute(Constant.session_user);
+    public BaseResult<?> logout(HttpSession session, String tag) {
+        if (Constant.source_merchant.equals(tag)) {
+            session.removeAttribute(Constant.session_user2);
+        } else {
+            session.removeAttribute(Constant.session_user);
+        }
         return new BaseResult<>();
     }
 

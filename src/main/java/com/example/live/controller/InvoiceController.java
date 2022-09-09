@@ -26,7 +26,7 @@ public class InvoiceController {
      * @param jo
      * @return
      */
-    @PostMapping("/list")
+    @RequestMapping("/list")
     public BaseResult<?> invoiceList(@RequestBody JSONObject jo) {
         return invoiceService.invoiceList(jo);
     }
@@ -37,7 +37,7 @@ public class InvoiceController {
      * @param jo id-发票id、status：1-通过、2-拒绝、remark-拒绝原因
      * @return
      */
-    @PostMapping("/check")
+    @RequestMapping("/check")
     public BaseResult<?> invoiceCheck(@RequestBody JSONObject jo){
         return invoiceService.invoiceCheck(jo);
     }

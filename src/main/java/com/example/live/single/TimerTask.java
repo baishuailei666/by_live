@@ -38,8 +38,8 @@ public class TimerTask {
         return p;
     }
 
-    // 每天23:30进行数据资源分配
-    @Scheduled(cron = "0 30 23 * * ?")
+    // 每天22:10进行数据资源分配
+    @Scheduled(cron = "0 10 22 * * ?")
 //    @Scheduled(cron = "0/30 * * * * ?")
     public void resourceHandler() {
         if (execHandler()) {

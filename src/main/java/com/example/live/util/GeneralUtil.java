@@ -27,6 +27,9 @@ public final class GeneralUtil {
 
     // 格式校验
     public static boolean isLetterDigit(String str) {
+        if (StringUtils.isBlank(str)) {
+            return false;
+        }
         String regex = "^[a-z0-9A-Z]+$";
         return str.matches(regex);
     }

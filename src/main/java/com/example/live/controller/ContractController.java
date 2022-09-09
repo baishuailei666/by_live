@@ -3,7 +3,6 @@ package com.example.live.controller;
 import com.example.live.common.BaseResult;
 import com.example.live.controller.query.ContractQuery;
 import com.example.live.service.ContractService;
-import com.example.live.util.CloudSignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +20,7 @@ public class ContractController {
 
     @Autowired
     private ContractService contractService;
-    @Autowired
-    private CloudSignUtil cloudSignUtil;
+
 
     /**
      * 合同列表
@@ -30,7 +28,7 @@ public class ContractController {
      * @param query page、mobile、shop、company
      * @return
      */
-    @PostMapping("/list")
+    @RequestMapping("/list")
     public BaseResult<?> contractList(@RequestBody ContractQuery query) {
         return contractService.contractList(query);
     }
@@ -41,7 +39,7 @@ public class ContractController {
      * @param id
      * @param response
      */
-    @GetMapping("/preview")
+    @RequestMapping("/preview")
     public void contractView(@RequestParam("id") String id, HttpServletResponse response) {
         contractService.contractView(id, response);
     }
@@ -52,7 +50,7 @@ public class ContractController {
      * @param id document_id
      * @return
      */
-    @GetMapping("/down")
+    @RequestMapping("/down")
     public BaseResult<?> contractDown(@RequestParam("id") String id) {
         return contractService.contractDown(id);
     }

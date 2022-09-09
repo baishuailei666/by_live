@@ -159,7 +159,7 @@ public class MerchantServiceImpl implements MerchantService {
     public BaseResult<?> merchantInfo(HttpSession session, String tag) {
         MerchantVO mvo = merchantUtil.getMerchant();
         if (mvo == null) {
-            return new BaseResult<>(BaseEnum.No_Login);
+            return new BaseResult<>();
         }
         mvo.setOpeUserWx(null);
 //        Order order = orderMapper.getOrder1(mvo.getId());
@@ -455,19 +455,22 @@ public class MerchantServiceImpl implements MerchantService {
             return new BaseResult<>(20, "暂无签署状态");
         }
 
+        JSONObject json = new JSONObject();
+        String flowId = contract.getFlowId();
+        json.put("flowId", flowId);
         if (contract.getSignStatus() == 1) {
             // 已签署
-            return new BaseResult<>(21, "已签署");
+            return new BaseResult<>(21, "已签署", json);
         } else {
             // 未签署
-            String flowId = contract.getFlowId();
             boolean sign = cloudSignUtil.signStatus(flowId);
             if (sign) {
-                return new BaseResult<>(21, "已签署");
+                return new BaseResult<>(21, "已签署", flowId);
             }
             // 未签署，返回电子签二维码
-            String url = cloudSignUtil.signUrl(flowId);
-            return new BaseResult<>(22, "未签署", url);
+            String url = cloudSignUtil.signSingleUrl(flowId);
+            json.put("url", url);
+            return new BaseResult<>(22, "未签署", json);
         }
     }
 

@@ -80,6 +80,9 @@ public class CloudSignUtil {
         String result = signProcess3(flowId);
         return signProcess4(flowId);
     }
+    public String signSingleUrl(String flowId) {
+        return signProcess4(flowId);
+    }
     // 签署状态
     public boolean signStatus(String flowId) {
         return signProcess5(flowId);
