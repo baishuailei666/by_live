@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                     // 注册商户
                     merchantMapper.creatMerchant(mobile, GeneralUtil.defaultPwd(), opeUser);
                     String ts = DateUtil.getTime();
-//                    mvo.setId(merchantMapper.lastId());
+                    mvo.setId(merchantMapper.lastId());
                     mvo.setOpeUser(opeUser);
                     mvo.setMobile(mobile);
                     mvo.setLoginCount(1);

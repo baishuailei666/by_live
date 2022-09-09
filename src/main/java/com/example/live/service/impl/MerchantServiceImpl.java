@@ -240,6 +240,7 @@ public class MerchantServiceImpl implements MerchantService {
 
         JSONObject jo = new JSONObject();
         jo.put("mid", mvo.getId());
+        jo.put("auditStatus", "未绑定");
         Merchant merchant = merchantMapper.getMerchant2(mvo.getId());
         // // 状态：待审核-0、审核通过-1、已拒绝-2
         if (merchant != null) {
