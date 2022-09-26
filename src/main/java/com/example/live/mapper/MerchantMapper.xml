@@ -38,13 +38,15 @@
             and shop LIKE CONCAT('%',#{shop},'%')
         </if>
         <if test="shopStatus !=null and shopStatus!=''">
-          <if test="shopStatus='已认证'">
-              and shop_status LIKE CONCAT('%',#{shop},'%')
-          </if>
-
-          <if test="shopStatus='已付费'">
-              and shop_status CONCAT('%','卡','%')
-          </if>
+            <if test="shopStatus=='未认证'.toString()">
+                and shop_status is null
+            </if>
+            <if test="shopStatus=='已认证'.toString()">
+                and shop_status LIKE CONCAT('%',#{shopStatus},'%')
+            </if>
+            <if test="shopStatus=='已付费'.toString()">
+                and shop_status LIKE CONCAT('%','卡','%')
+            </if>
 
         </if>
         limit #{index}, 10
@@ -70,18 +72,34 @@
             and shop LIKE CONCAT('%',#{shop},'%')
         </if>
         <if test="shopStatus !=null and shopStatus!=''">
-            <if test="shopStatus='未认证'">
+            <if test="shopStatus=='未认证'.toString()">
                 and shop_status is null
             </if>
-            <if test="shopStatus='已认证'">
-                and shop_status LIKE CONCAT('%',#{shop},'%')
+            <if test="shopStatus=='已认证'.toString()">
+                and shop_status LIKE CONCAT('%',#{shopStatus},'%')
             </if>
-
-            <if test="shopStatus='已付费'">
+            <if test="shopStatus=='已付费'.toString()">
                 and shop_status LIKE CONCAT('%','卡','%')
             </if>
 
         </if>
     </select>
+
+<!--    mybatis使用OGNL表达式来进行解析的，这个地方有坑需要注意下：单引号内有一个字符的情况下，OGNL会将其以java中的char类型进行解析-->
+<!--    那么此时char类型与参数string类型用等号进行比较的时候结果都是false-->
+<!--    不行：
+            <if test="str=='Y'">
+
+            </if>
+
+        可以：
+            <if test="str=='Y'.toString()">
+
+            </if>
+
+            <if test=' str=="Y" '>
+
+            </if>
+-->
 
 </mapper>

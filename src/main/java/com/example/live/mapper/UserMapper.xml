@@ -5,10 +5,13 @@
     <select id="userList2" resultType="com.example.live.entity.User">
         select id, mobile, level, remark, ct from `user`
         where 1=1
-        and id in
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        <if test="ids!=null and ids.size()!=0">
+            and id in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
     </select>
 
     <select id="userList" resultType="com.example.live.entity.User">
