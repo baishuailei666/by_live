@@ -1,0 +1,35 @@
+/* 公共的css */
+html,
+body,
+#app {
+  min-width: 960px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+.el-card {
+  padding-bottom: 20px;
+}
+
+.el-card .search span {
+  font-size: 18px !important;
+}
+
+.el-table {
+  font-size: 17px;
+}
+
+.el-table .el-button span {
+  font-size: 17px;
+}
+
+.el-pagination span {
+  font-size: 16px;
+}

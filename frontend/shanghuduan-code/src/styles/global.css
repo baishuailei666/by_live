@@ -1,0 +1,25 @@
+/* 公共的css */
+html,
+body,
+#app {
+  /* 就是下面这两行就可以 */
+  overflow: auto !important;
+  padding: 0 !important;
+  min-width: 960px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", 微软雅黑, Arial, sans-serif;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+* {
+  box-sizing: border-box;
+  word-break: break-all;
+}
