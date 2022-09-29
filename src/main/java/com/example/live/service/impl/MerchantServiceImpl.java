@@ -397,6 +397,9 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public BaseResult<?> merchantContractModify(JSONObject jo) {
         MerchantVO mvo = UserUtil.getMerchant();
+        if (mvo == null) {
+            return new BaseResult<>(BaseEnum.No_Login);
+        }
         String mobile = jo.getString("mobile");
         String person = jo.getString("person");
         String subject = jo.getString("subject");
@@ -416,8 +419,15 @@ public class MerchantServiceImpl implements MerchantService {
         sign.setTax(tax);
 
         if (id != null) {
-            sign.setId(id);
-            merchantSignMapper.modifyOne(sign);
+            MerchantSign merchantSign = merchantSignMapper.getOne(mvo.getId());
+            if (merchantSign == null) {
+                merchantSignMapper.insOne(sign);
+            } else {
+                if (id == merchantSign.getId()) {
+                    sign.setId(id);
+                    merchantSignMapper.modifyOne(sign);
+                }
+            }
         } else {
             merchantSignMapper.insOne(sign);
         }
