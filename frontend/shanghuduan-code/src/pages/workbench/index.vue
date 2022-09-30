@@ -210,11 +210,8 @@
                @close="erweimaDialogClosed">
       <div style="text-align:center;line-height:22px;">
         <div class="returnStep"
-            v-if="!notSignedStatus"
              @click="returnFun">返回上一步</div>
         <el-button @click="SignedFun" style="margin-bottom:14px;">已签署</el-button>
-        <!-- <el-button @click="SignedFun">重新发起电子签</el-button> -->
-        <div v-if="notSignedStatus" @click="relaunchElectronicSignature" style="color:blue;cursor: pointer;width:160px;hiehgt:20px;line-height:20px;margin:0 auto;">重新发起电子签</div>
         <img :src="erweimaUrl"
              alt="">
         <div>请使用
@@ -235,7 +232,7 @@
 </template>
 
 <script>
-import { content, submit, signCreate, url, status, shop,check } from "./api.js";
+import { content, submit, signCreate, url, status, shop } from "./api.js";
 export default {
   data () {
     return {
@@ -277,8 +274,6 @@ export default {
       phoneTeap: null,//用于存放当前签署人的手机号
       flowIdTeap: null,//用于暂时存储flowId
       documentIdTeap: null,//查看合同的id
-      notSignedStatus: false,//用于判断是否直接弹出二维码；2022-9-9加
-
     }
   },
   created () {
@@ -386,20 +381,19 @@ export default {
     },
     // 二维码弹框关闭事件，关闭之后就先判断是不是扫码签署了电子签，如果没有就跳回选卡页面，签署后跳到支付页面；
     async  erweimaDialogClosed () {
-      this.notSignedStatus=false;//关闭就要把这个状态变为false,防止污染其他的东西，回到正常逻辑该有的状态；
-      let params = {
-        flowId: this.flowIdTeap
-      }
-      let res = await status(params)
-      if (res.data) {
+      // let params = {
+      //   flowId: this.flowIdTeap
+      // }
+      // let res = await status(params)
+      // if (res.data) {
         this.$router.push({ path: '/open-service/cashier', query: { type: this.cardType, getFlowIdTeap: this.flowIdTeap } })
-      } else {
-        this.$message({
-          type: "error",
-          message: '由于您没有扫码签署电子签，所以无法进行支付！',
-        });
-        this.$router.replace({ path: '/workbench' })
-      }
+      // } else {
+      //   this.$message({
+      //     type: "error",
+      //     message: '由于您没有扫码签署电子签，所以无法进行支付！',
+      //   });
+      //   this.$router.replace({ path: '/workbench' })
+      // }
 
     },
     // 合同查看弹框关闭事件
@@ -446,28 +440,9 @@ export default {
       if (res1.data.auditStatus != '已通过') {//不等于已通过就直接支付
         this.$router.push({ path: '/open-service/cashier', query: { type: this.cardType } })
       } else {
-        let res2 = await check()
-        // console.log(res2)
-        if(res2.data){
-          this.flowIdTeap = res2.data.flowId
-        }
-        if(res2.code==20){
-          this.dianziqianDialogVisible = true;
-        }else if(res2.code==21){
-          this.$router.push({ path: '/open-service/cashier', query: { type: this.cardType, getFlowIdTeap: res2.data.flowId } })
-        }else {
-          this.notSignedStatus = true;
-          this.erweimaDialogVisible = true
-          this.erweimaUrl = res2.data.url;
-        }
         // console.log(this.userInfo.shopStatus)
-        
+        this.dianziqianDialogVisible = true;
       }
-    },
-    // 重新创建发起电子签
-    relaunchElectronicSignature(){
-      this.erweimaDialogVisible = false
-     this.dianziqianDialogVisible = true;
     },
     // 切换服务等级
     active (typeTeap) {

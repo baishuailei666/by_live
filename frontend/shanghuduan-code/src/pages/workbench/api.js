@@ -59,12 +59,3 @@ export function status(params) {
     params,
   });
 }
-
-//6、 判断电子签是否创建未签署状态；
-export function check(params) {
-  return fetch({
-    url: SH + '/merchant/sign/check',
-    method: 'GET',
-    params,
-  });
-}

@@ -11,9 +11,12 @@ module.exports = {
   devServer: {
     publicPath: publicPath, // 和 baseUrl 保持一致
     proxy: {
+      // 测试环境
       '/ZBDH/MERCHANT': {
-        // target: 'http://10.11.12.212:8081/',
-        target: 'https://taizb.com/', // 线上
+        // target: 'http://192.168.31.165:8081/', // 陈瑞服务器地址
+        target: 'http://10.11.12.212:8081/', // 帅雷服务器地址
+        // target:'http://10.11.12.212:8081',
+        // target: "https://taizb.com/",
         changeOrigin: true,
         pathRewrite: {
           '^/ZBDH/MERCHANT': ''
