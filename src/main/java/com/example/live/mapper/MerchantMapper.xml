@@ -11,10 +11,13 @@
         select id, mobile, shop
         from merchant
         where 1=1
-        and id in
-        <foreach collection="ids" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+          <if test="ids!=null and ids.size()!=0">
+              and id in
+              <foreach collection="ids" item="item" open="(" separator="," close=")">
+                  #{item}
+              </foreach>
+          </if>
+
     </select>
 
     <select id="getMerchantListByParams" resultType="com.example.live.entity.Merchant">
