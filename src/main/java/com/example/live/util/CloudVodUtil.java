@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * 视频云点播
@@ -37,7 +38,7 @@ public class CloudVodUtil {
     public static String videoUpload(MultipartFile file) {
         String url = null;
         try {
-            File localFile = File.createTempFile("temp", null);
+            File localFile = File.createTempFile("temp", "vod");
             file.transferTo(localFile);
 
             String[] split = file.getOriginalFilename().split("\\.");
@@ -55,7 +56,8 @@ public class CloudVodUtil {
                 VodUploadResponse response = vodClient.upload(cos_region, request);
                 url = response.getMediaUrl();
 
-                localFile.deleteOnExit();
+                // 删除temp临时文件
+                localFile.delete();
             } catch (Exception e) {
                 e.printStackTrace();
             }
